@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{%block content%}
+<main>
+<h1>Lista de Tutores</h1>
+<ul>
+    {% for tutor in tutores %}
+    <li>
+        <a href="{% url 'tutores_detail' tutor.pk %}">{{ tutor }}</a>
+        <a href="{% url 'tutores_update' tutor.pk %}">Editar</a>
+        <a href="{% url 'tutores_delete' tutor.pk %}">Eliminar</a>
+        
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'index' %}">Volver</a>
+</main>
+{%endblock%}

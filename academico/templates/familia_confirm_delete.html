@@ -1,0 +1,7 @@
+<h1>Eliminar Familia</h1>
+<p>¿Está seguro de que desea eliminar la familia "{{ familia.Nombre_Familia }}"? </p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'familias:familia_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>

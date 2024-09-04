@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{%block content%}
+<h1>Lista de Parentezcos</h1>
+
+<a href="{% url 'index' %}">Regresar al Index</a>
+
+<ul>
+    {% for parentesco in parentescos %}
+    <li>
+        <a href="{% url 'parentezcos_update' parentesco.pk %}">Editar</a>
+        <a href="{% url 'parentezcos_delete' parentesco.pk %}">Eliminar</a>
+        {{ parentesco }}
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'parentezcos_create' %}">Crear Parentezco</a>
+
+{%endblock%}
+
+
+
+

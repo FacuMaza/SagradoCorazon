@@ -24,7 +24,8 @@ class Tutores(models.Model):
     Celular = models.CharField(max_length=255)
     Ocupacion = models.CharField(max_length=255)
     Email = models.EmailField()
-    Vive = models.CharField(max_length=255)
+    vive = [('S', 'Si'),('N', 'No'),]
+    Vive = models.CharField(max_length=1, choices=vive)
     Responsable_de_pago = models.BooleanField()
     Parentezco = models.ForeignKey(Parentezco, on_delete=models.CASCADE)
 
@@ -158,7 +159,7 @@ class Asistencias(models.Model):
     Valor = models.ForeignKey(Valor, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s %s '%(self.Alumno)
+        return '%s  '%(self.Alumno)
 
     class Meta:
         db_table = 'Asistencias'
