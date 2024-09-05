@@ -1,0 +1,11 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+
+<h1>{% if casa.pk %}Editar{% else %}Crear{% endif %} Casa</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="Nombre">Nombre:</label>
+    <input type="text" name="Nombre" id="Nombre" value="{% if casa.pk %}{{ casa.Nombre }}{% endif %}">
+    <button type="submit">Guardar</button>
+</form>
+{%endblock%}

@@ -41,3 +41,35 @@ urlpatterns += [
     path('<int:pk>/detail/', views.familia_detail, name='familia_detail'),
     path('<int:pk>/eliminar/', views.familia_delete, name='familia_delete'),
 ]
+
+
+
+# CASAS, COLEGIOS , LUGAR DE NACIMIENTO , LOCALIDAD , NACIONALIDAD  
+urlpatterns += [
+    path('casas/', views.casa_list, name='casa_list'),
+   
+    path('casas/create/', views.casa_create, name='casa_create'),
+  
+    path('colegios/', views.colegio_list, name='colegio_list'),
+    
+    path('colegios/create/', views.colegio_create, name='colegio_create'),
+
+
+    path('lugar_nacimiento/', views.lugar_nacimiento_list, name='lugar_nacimiento_list'),
+   
+    path('lugar_nacimiento/create/', views.lugar_nacimiento_create, name='lugar_nacimiento_create'),
+    path('lugar_nacimiento/<int:pk>/update/', views.lugar_nacimiento_update, name='lugar_nacimiento_update'),
+ 
+
+    path('nacionalidad/', views.nacionalidad_list, name='nacionalidad_list'),
+ 
+    path('nacionalidad/create/', views.nacionalidad_create, name='nacionalidad_create'),
+    path('nacionalidad/<int:pk>/update/', views.nacionalidad_update, name='nacionalidad_update'),
+  
+
+    path('localidad/', views.localidad_list, name='localidad_list'),
+
+    path('localidad/create/', views.localidad_create, name='localidad_create'),
+    path('localidad/<int:pk>/update/', views.localidad_update, name='localidad_update'),
+
+]

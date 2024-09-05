@@ -1,0 +1,10 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<h1>{% if lugar_nacimiento.pk %}Editar{% else %}Crear{% endif %} Lugar de Nacimiento</h1>
+<form method="POST">
+    {% csrf_token %}
+    <label for="Lugar">Lugar:</label>
+    <input type="text" name="Lugar" id="Lugar" value="{% if lugar_nacimiento.pk %}{{ lugar_nacimiento.Lugar }}{% endif %}">
+    <button type="submit">Guardar</button>
+</form>
+{%endblock%}

@@ -1,0 +1,12 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<h1>Lista de Nacionalidades</h1>
+<ul>
+    {% for nacionalidad in nacionalidades %}
+        <li>
+            {{ nacionalidad.Nacionalidad }}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'nacionalidad_create' %}">Crear Nacionalidad</a>
+{%endblock%}

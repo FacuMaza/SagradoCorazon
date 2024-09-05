@@ -1,0 +1,12 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<h1>Lista de Localidades</h1>
+<ul>
+    {% for localidad in localidades %}
+        <li>
+            {{ localidad.Localidad }}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'localidad_create' %}">Crear Localidad</a>
+{%endblock%}

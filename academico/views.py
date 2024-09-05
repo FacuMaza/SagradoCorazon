@@ -1,5 +1,6 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Familia, Parentezco, Tutores
+from .models import Casas, Colegios, Familia, Localidad, Lugar_Nacimiento, Nacionalidad, Parentezco, Tutores
 from .forms import FamiliaForm, ParentezcoForm, TutorForm
 
 def index(request):
@@ -148,6 +149,144 @@ def familia_delete(request, pk):
     return render(request, 'familia_confirm_delete.html', context)
 
 
+
+                        # CASAS
+
+def casa_list(request):
+    casas = Casas.objects.all()
+    context = {'casas': casas}
+    return render(request, 'casa_list.html', context)
+
+
+
+def casa_create(request):
+    if request.method == 'POST':
+        # Procesar datos del formulario
+        nombre = request.POST['Nombre']
+        casa = Casas.objects.create(Nombre=nombre)
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario vacío
+        return render(request, 'casa_form.html')
+
+
+
+
+
+                            # COLEGIOS
+
+
+def colegio_list(request):
+    colegios = Colegios.objects.all()
+    context = {'colegios': colegios}
+    return render(request, 'colegio_list.html', context)
+
+
+
+def colegio_create(request):
+    if request.method == 'POST':
+        # Procesar datos del formulario
+        nombre = request.POST['Nombre']
+        colegio = Colegios.objects.create(Nombre=nombre)
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario vacío
+        return render(request, 'colegio_form.html')
+
+
+
+                            # LUGAR DE NACIMIENTO
+def lugar_nacimiento_list(request):
+    lugares_nacimiento = Lugar_Nacimiento.objects.all()
+    context = {'lugares_nacimiento': lugares_nacimiento}
+    return render(request, 'lugar_nacimiento_list.html', context)
+
+
+
+def lugar_nacimiento_create(request):
+    if request.method == 'POST':
+        # Procesar datos del formulario
+        lugar = request.POST['Lugar']
+        lugar_nacimiento = Lugar_Nacimiento.objects.create(Lugar=lugar)
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario vacío
+        return render(request, 'lugar_nacimiento_form.html')
+
+def lugar_nacimiento_update(request, pk):
+    lugar_nacimiento = get_object_or_404(Lugar_Nacimiento, pk=pk)
+    if request.method == 'POST':
+        # Actualizar datos del formulario
+        lugar_nacimiento.Lugar = request.POST['Lugar']
+        lugar_nacimiento.save()
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario con datos existentes
+        context = {'lugar_nacimiento': lugar_nacimiento}
+        return render(request, 'lugar_nacimiento_form.html', context)
+
+
+
+                                # NACIONALIDAD
+def nacionalidad_list(request):
+    nacionalidades = Nacionalidad.objects.all()
+    context = {'nacionalidades': nacionalidades}
+    return render(request, 'nacionalidad_list.html', context)
+
+
+
+def nacionalidad_create(request):
+    if request.method == 'POST':
+        # Procesar datos del formulario
+        nacionalidad = request.POST['Nacionalidad']
+        nacionalidad_obj = Nacionalidad.objects.create(Nacionalidad=nacionalidad)
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario vacío
+        return render(request, 'nacionalidad_form.html')
+
+def nacionalidad_update(request, pk):
+    nacionalidad = get_object_or_404(Nacionalidad, pk=pk)
+    if request.method == 'POST':
+        # Actualizar datos del formulario
+        nacionalidad.Nacionalidad = request.POST['Nacionalidad']
+        nacionalidad.save()
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario con datos existentes
+        context = {'nacionalidad': nacionalidad}
+        return render(request, 'nacionalidad_form.html', context)
+
+
+
+                                    # LOCALIDAD
+def localidad_list(request):
+    localidades = Localidad.objects.all()
+    context = {'localidades': localidades}
+    return render(request, 'localidad_list.html', context)
+
+
+def localidad_create(request):
+    if request.method == 'POST':
+        # Procesar datos del formulario
+        localidad = request.POST['Localidad']
+        localidad_obj = Localidad.objects.create(Localidad=localidad)
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario vacío
+        return render(request, 'localidad_form.html')
+
+def localidad_update(request, pk):
+    localidad = get_object_or_404(Localidad, pk=pk)
+    if request.method == 'POST':
+        # Actualizar datos del formulario
+        localidad.Localidad = request.POST['Localidad']
+        localidad.save()
+        return HttpResponseRedirect('/configuracion/')
+    else:
+        # Mostrar el formulario con datos existentes
+        context = {'localidad': localidad}
+        return render(request, 'localidad_form.html', context)
 
 
 

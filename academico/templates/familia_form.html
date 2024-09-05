@@ -1,6 +1,9 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
 <h1>{% if familia.pk %}Editar{% else %}Agregar{% endif %} Familia</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Guardar</button>
 </form>
+{%endblock%}

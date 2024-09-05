@@ -1,0 +1,12 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<h1>Lista de Casas</h1>
+<ul>
+    {% for casa in casas %}
+        <li>
+            {{ casa.Nombre }}
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'casa_create' %}">Crear Casa</a>
+{%endblock%}

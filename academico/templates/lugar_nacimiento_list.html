@@ -1,0 +1,12 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<h1>Lista de Lugares de Nacimiento</h1>
+<ul>
+    {% for lugar_nacimiento in lugares_nacimiento %}
+        <li>
+           {{ lugar_nacimiento.Lugar }}</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'lugar_nacimiento_create' %}">Crear Lugar de Nacimiento</a>
+{%endblock%}
