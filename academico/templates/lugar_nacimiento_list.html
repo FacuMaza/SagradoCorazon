@@ -1,5 +1,8 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
+
+
 <h1>Lista de Lugares de Nacimiento</h1>
 <ul>
     {% for lugar_nacimiento in lugares_nacimiento %}
@@ -9,4 +12,7 @@
     {% endfor %}
 </ul>
 <a href="{% url 'lugar_nacimiento_create' %}">Crear Lugar de Nacimiento</a>
+
+
+</main>
 {%endblock%}

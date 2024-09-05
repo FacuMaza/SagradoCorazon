@@ -37,9 +37,9 @@ urlpatterns += [
 urlpatterns += [
     path('familia_list', views.familia_list, name='familia_list'),
     path('crear/', views.familia_create, name='familia_create'),
-    path('<int:pk>/editar/', views.familia_update, name='familia_update'),
-    path('<int:pk>/detail/', views.familia_detail, name='familia_detail'),
-    path('<int:pk>/eliminar/', views.familia_delete, name='familia_delete'),
+    path('familia/<int:pk>/editar/', views.familia_update, name='familia_update'),
+    path('familia/<int:pk>/detail/', views.familia_detail, name='familia_detail'),
+    path('familia/<int:pk>/eliminar/', views.familia_delete, name='familia_delete'),
 ]
 
 
@@ -72,4 +72,16 @@ urlpatterns += [
     path('localidad/create/', views.localidad_create, name='localidad_create'),
     path('localidad/<int:pk>/update/', views.localidad_update, name='localidad_update'),
 
+]
+
+
+
+                                        #ALUMNOS
+
+urlpatterns += [
+    path('lista_alumnos/', views.lista_alumnos, name='lista_alumnos'),
+    path('alumnos/<int:pk>/', views.detalle_alumno, name='detalle_alumno'),
+    path('nuevo/', views.nuevo_alumno, name='nuevo_alumno'),
+    path('alumnos/<int:pk>/editar/', views.editar_alumno, name='editar_alumno'),
+    path('alumnos/<int:pk>/eliminar/', views.eliminar_alumno, name='eliminar_alumno'),
 ]

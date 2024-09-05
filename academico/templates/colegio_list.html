@@ -1,5 +1,6 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
 <h1>Lista de Colegios</h1>
 <ul>
     {% for colegio in colegios %}
@@ -9,4 +10,5 @@
     {% endfor %}
 </ul>
 <a href="{% url 'colegio_create' %}">Crear Colegio</a>
+</main>
 {%endblock%}

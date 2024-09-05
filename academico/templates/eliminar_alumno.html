@@ -1,0 +1,13 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<main>
+    <h1>Eliminar Alumno</h1>
+    <p>¿Está seguro de que desea eliminar a {{ alumno }}?</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Eliminar</button>
+    </form>
+
+
+</main>
+{%endblock%}

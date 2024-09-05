@@ -1,5 +1,7 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
+
 <h1>Lista de Localidades</h1>
 <ul>
     {% for localidad in localidades %}
@@ -9,4 +11,5 @@
     {% endfor %}
 </ul>
 <a href="{% url 'localidad_create' %}">Crear Localidad</a>
+</main>
 {%endblock%}

@@ -1,5 +1,8 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
+
+
 
 <h1>{% if casa.pk %}Editar{% else %}Crear{% endif %} Casa</h1>
 <form method="POST">
@@ -8,4 +11,5 @@
     <input type="text" name="Nombre" id="Nombre" value="{% if casa.pk %}{{ casa.Nombre }}{% endif %}">
     <button type="submit">Guardar</button>
 </form>
+</main>
 {%endblock%}

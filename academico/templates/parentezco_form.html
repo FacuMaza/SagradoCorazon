@@ -1,8 +1,12 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
 <h1>{% if tutor %} Editar Parentezco {% else %} Crear Parentezco {% endif %}</h1>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Guardar</button>
 </form>
+
+</main>
+{%endblock%}

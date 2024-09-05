@@ -19,3 +19,10 @@ class FamiliaForm(forms.ModelForm):
         widgets = {
             'Tutores': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
         }
+
+
+
+class AlumnosForm(forms.ModelForm):
+    class Meta:
+        model = Alumnos
+        fields = '__all__'

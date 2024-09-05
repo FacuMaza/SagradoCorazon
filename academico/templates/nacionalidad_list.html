@@ -1,5 +1,7 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
+
 <h1>Lista de Nacionalidades</h1>
 <ul>
     {% for nacionalidad in nacionalidades %}
@@ -9,4 +11,6 @@
     {% endfor %}
 </ul>
 <a href="{% url 'nacionalidad_create' %}">Crear Nacionalidad</a>
+
+</main>
 {%endblock%}

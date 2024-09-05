@@ -1,3 +1,8 @@
+{% extends "base.html" %}
+{%block content%}
+<main>
+
+
 <h1>Detalles del Tutor</h1>
 <p><strong>Nombre:</strong> {{ tutor.Nombre }}</p>
 <p><strong>Apellido:</strong> {{ tutor.Apellido }}</p>
@@ -11,3 +16,8 @@
 <p><strong>Vive:</strong> {{ tutor.Vive }}</p>
 
 <a href="{% url 'tutores_list' %}">Volver</a>
+
+
+
+</main>
+{%endblock%}

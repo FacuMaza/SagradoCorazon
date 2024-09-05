@@ -1,6 +1,7 @@
-
 {% extends "baseconfiguracion.html" %}
 {%block content%}
+<main>
+
 <h1>{% if nacionalidad.pk %}Editar{% else %}Crear{% endif %} Nacionalidad</h1>
 <form method="POST">
     {% csrf_token %}
@@ -8,4 +9,5 @@
     <input type="text" name="Nacionalidad" id="Nacionalidad" value="{% if nacionalidad.pk %}{{ nacionalidad.Nacionalidad }}{% endif %}">
     <button type="submit">Guardar</button>
 </form>
+</main>
 {%endblock%}

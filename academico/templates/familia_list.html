@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {%block content%}
+<main>
 <h1>Lista de Familias</h1>
 <ul>
     {% for familia in familias %}
@@ -11,4 +12,5 @@
     {% endfor %}
 </ul>
 <a href="{% url 'index' %}">Volver</a>
+</main>
 {%endblock%}

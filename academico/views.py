@@ -1,7 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Casas, Colegios, Familia, Localidad, Lugar_Nacimiento, Nacionalidad, Parentezco, Tutores
-from .forms import FamiliaForm, ParentezcoForm, TutorForm
+from .models import Alumnos, Casas, Colegios, Familia, Localidad, Lugar_Nacimiento, Nacionalidad, Parentezco, Tutores
+from .forms import AlumnosForm, FamiliaForm, ParentezcoForm, TutorForm
 
 def index(request):
     return render(request, "index.html")
@@ -288,7 +288,50 @@ def localidad_update(request, pk):
         context = {'localidad': localidad}
         return render(request, 'localidad_form.html', context)
 
+                                            ##ALUMNOS
 
+
+
+def lista_alumnos(request):
+    alumnos = Alumnos.objects.all()
+    context = {'alumnos': alumnos}
+    return render(request, 'lista_alumnos.html', context)
+
+def detalle_alumno(request, pk):
+    alumno = Alumnos.objects.get(pk=pk)
+    context = {'alumno': alumno}
+    return render(request, 'alumnos_detail.html', context)
+
+def nuevo_alumno(request):
+    if request.method == 'POST':
+        form = AlumnosForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_alumnos')
+    else:
+        form = AlumnosForm()
+    context = {'form': form}
+    return render(request, 'alumnos_list.html', context)
+
+def editar_alumno(request, pk):
+    alumno = Alumnos.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = AlumnosForm(request.POST, instance=alumno)
+        if form.is_valid():
+            form.save()
+            return redirect('lista_alumnos')
+    else:
+        form = AlumnosForm(instance=alumno)
+    context = {'form': form}
+    return render(request, 'editar_alumno.html', context)
+
+def eliminar_alumno(request, pk):
+    alumno = Alumnos.objects.get(pk=pk)
+    if request.method == 'POST':
+        alumno.delete()
+        return redirect('lista_alumnos')
+    context = {'alumno': alumno}
+    return render(request, 'eliminar_alumno.html', context)
 
 
 
