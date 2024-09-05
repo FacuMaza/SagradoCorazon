@@ -3,5 +3,5 @@
 <form method="post">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Eliminar</button>
-    <a href="{% url 'familias:familia_list' %}" class="btn btn-secondary">Cancelar</a>
+    <a href="{% url 'familia_list' %}" class="btn btn-secondary">Cancelar</a>
 </form>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{%block content%}
+<h1>Detalles de la Familia</h1>
+<p><strong>Nombre:</strong> {{ familia.Nombre_Familia }}</p>
+<!-- Agrega aquí los campos que quieras mostrar -->
+<p><strong>Dirección:</strong> {{ familia.Dirección }}</p>
+<p><strong>Teléfono:</strong> {{ familia.Telefono }}</p>
+<!-- Agrega aquí el código HTML para mostrar otros campos de la familia -->
+<a href="{% url 'familia_list' %}">Volver a la lista de familias</a>
+{%endblock%}

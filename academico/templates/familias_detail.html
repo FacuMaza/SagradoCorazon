@@ -1,9 +1,0 @@
-<h1>{{ familia.nombre_familia }}</h1>
-<p>Tutores:</p>
-<ul>
-    {% for tutor in familia.tutores.all %}
-        <li>{{ tutor }}</li>
-    {% endfor %}
-</ul>
-<a href="{% url 'editar_familia' familia.id %}">Editar Familia</a>
-<a href="{% url 'eliminar_familia' familia.id %}">Eliminar Familia</a>

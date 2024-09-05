@@ -115,7 +115,7 @@ def familia_create(request):
         form = FamiliaForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('familias:familia_list')
+            return redirect('familia_list')
     else:
         form = FamiliaForm()
     context = {'form': form}
@@ -127,17 +127,23 @@ def familia_update(request, pk):
         form = FamiliaForm(request.POST, instance=familia)
         if form.is_valid():
             form.save()
-            return redirect('familias:familia_list')
+            return redirect('familia_list')
     else:
         form = FamiliaForm(instance=familia)
     context = {'form': form}
-    return render(request, 'familia_form.html', context)
+    return render(request, 'editar_familia.html', context)
+    
+def familia_detail(request, pk):
+    familia = get_object_or_404(Familia, pk=pk)
+    context = {'familia': familia}
+    return render(request, 'familia_detail.html', context)
+
 
 def familia_delete(request, pk):
     familia = get_object_or_404(Familia, pk=pk)
     if request.method == 'POST':
         familia.delete()
-        return redirect('familias:familia_list')
+        return redirect('familia_list')
     context = {'familia': familia}
     return render(request, 'familia_confirm_delete.html', context)
 

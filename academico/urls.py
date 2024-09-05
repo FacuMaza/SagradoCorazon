@@ -7,6 +7,7 @@ urlpatterns = [
 ]
 
 ##URLS DE TUTORES
+
 urlpatterns += [
     path('tutores_list/', views.tutores_list, name='tutores_list'),
     path('tutores/crear/', views.tutores_create, name='tutores_create'),
@@ -37,5 +38,6 @@ urlpatterns += [
     path('familia_list', views.familia_list, name='familia_list'),
     path('crear/', views.familia_create, name='familia_create'),
     path('<int:pk>/editar/', views.familia_update, name='familia_update'),
+    path('<int:pk>/detail/', views.familia_detail, name='familia_detail'),
     path('<int:pk>/eliminar/', views.familia_delete, name='familia_delete'),
 ]

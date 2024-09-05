@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{%block content%}
+<h1>Lista de Familias</h1>
+<ul>
+    {% for familia in familias %}
+        <li>
+            <a href="{% url 'familia_detail' familia.pk %}">{{ familia.Nombre_Familia }}</a>
+            <a href="{% url 'familia_update' familia.pk %}" class="btn btn-danger">Editar</a>
+            <a href="{% url 'familia_delete' familia.pk %}" class="btn btn-danger">Eliminar</a>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'index' %}">Volver</a>
+{%endblock%}
