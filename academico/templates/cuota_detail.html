@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Detalle de Cuota</h1>
+
+<p><strong>Alumno:</strong> {{ cuota.Alumnos }}</p>
+<p><strong>Mes-Año:</strong> {{ cuota.Mes_año }}</p>
+<p><strong>Fecha-Hora:</strong> {{ cuota.Fecha_hora }}</p>
+<p><strong>Pagado:</strong> {{ cuota.Pagado }}</p>
+
+<a href="{% url 'cuota_update' cuota.pk %}">Editar</a>
+<a href="{% url 'cuota_delete' cuota.pk %}">Eliminar</a>
+{% endblock %}

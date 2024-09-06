@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Años</h1>
+<ul>
+    {% for año in años %}
+        <li>{{ año }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'crear_año' %}">Crear nuevo año</a>
+{% endblock %}

@@ -1,7 +1,8 @@
+from pyexpat.errors import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Alumnos, Casas, Colegios, Familia, Localidad, Lugar_Nacimiento, Nacionalidad, Parentezco, Tutores
-from .forms import AlumnosForm, FamiliaForm, ParentezcoForm, TutorForm
+from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Division, Familia, Localidad, Lugar_Nacimiento, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor
+from .forms import AlumnosForm, AsistenciaForm, CuotaForm, DivisionForm, FamiliaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
 
 def index(request):
     return render(request, "index.html")
@@ -334,10 +335,183 @@ def eliminar_alumno(request, pk):
     return render(request, 'eliminar_alumno.html', context)
 
 
+                                            ##
+
+def listar_valores(request):
+    valores = Valor.objects.all()
+    return render(request, 'listar_valores.html', {'valores': valores})
+
+def crear_valor(request):
+    if request.method == 'POST':
+        form = ValorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_valores')
+    else:
+        form = ValorForm()
+    return render(request, 'crear_valor.html', {'form': form})
+
+def editar_valor(request, valor_id):
+    valor = Valor.objects.get(pk=valor_id)
+    if request.method == 'POST':
+        form = ValorForm(request.POST, instance=valor)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_valores')
+    else:
+        form = ValorForm(instance=valor)
+    return render(request, 'editar_valor.html', {'form': form})
+
+
+
+##ASISTENCIAS
+
+def asistencias_list(request):
+    asistencias = Asistencias.objects.all()
+    return render(request, 'asistencias_list.html', {'asistencias': asistencias})
+
+def asistencia_add(request):
+    if request.method == 'POST':
+        form = AsistenciaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('asistencias_list')
+    else:
+        form = AsistenciaForm()
+    return render(request, 'asistencia_add.html', {'form': form})
+
+def asistencia_edit(request, pk):
+    asistencia = get_object_or_404(Asistencias, pk=pk)
+    if request.method == 'POST':
+        form = AsistenciaForm(request.POST, instance=asistencia)
+        if form.is_valid():
+            form.save()
+            return redirect('asistencias_list')
+    else:
+        form = AsistenciaForm(instance=asistencia)
+    return render(request, 'asistencia_edit.html', {'form': form})
+
+
+                                ##CUOTAS
+
+
+def cuotas_list(request):
+    cuotas = Cuotas.objects.all()
+    context = {'cuotas': cuotas}
+    return render(request, 'cuotas_list.html', context)
+
+def cuota_detail(request, pk):
+    cuota = get_object_or_404(Cuotas, pk=pk)
+    context = {'cuota': cuota}
+    return render(request, 'cuota_detail.html', context)
+
+def cuota_create(request):
+    if request.method == 'POST':
+        form = CuotaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Cuota creada correctamente')
+            return redirect('cuotas:cuotas_list')
+    else:
+        form = CuotaForm()
+    context = {'form': form}
+    return render(request, 'cuota_form.html', context)
+
+def cuota_update(request, pk):
+    cuota = get_object_or_404(Cuotas, pk=pk)
+    if request.method == 'POST':
+        form = CuotaForm(request.POST, instance=cuota)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Cuota actualizada correctamente')
+            return redirect('cuotas:cuota_detail', pk=cuota.pk)
+    else:
+        form = CuotaForm(instance=cuota)
+    context = {'form': form, 'cuota': cuota}
+    return render(request, 'cuota_form.html', context)
+
+def cuota_delete(request, pk):
+    cuota = get_object_or_404(Cuotas, pk=pk)
+    if request.method == 'POST':
+        cuota.delete()
+        messages.success(request, 'Cuota eliminada correctamente')
+        return redirect('cuotas:cuotas_list')
+    context = {'cuota': cuota}
+    return render(request, 'cuota_confirm_delete.html', context)
 
 
 
 
+
+##DIVISIONES
+
+def list_division(request):
+    divisiones = Division.objects.all()
+    return render(request, 'list_division.html', {'divisiones': divisiones})
+
+def crear_division(request):
+    if request.method == 'POST':
+        form = DivisionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_division')
+    else:
+        form = DivisionForm()
+    return render(request, 'division_form.html', {'form': form})
+
+
+##NIVELES
+
+def list_nivel(request):
+    niveles = Nivel.objects.all()
+    return render(request, 'list_nivel.html', {'niveles': niveles})
+
+def crear_nivel(request):
+    if request.method == 'POST':
+        form = NivelForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_nivel')
+    else:
+        form = NivelForm()
+    return render(request, 'nivel_form.html', {'form': form})
+
+
+##NIVEL DOCENTES
+
+
+def list_nivel_docente(request):
+    niveles_docentes = Nivel_Docente.objects.all()
+    return render(request, 'list_nivel_docente.html', {'niveles_docentes': niveles_docentes})
+
+def crear_nivel_docente(request):
+    if request.method == 'POST':
+        form = NivelDocenteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_nivel_docente')
+    else:
+        form = NivelDocenteForm()
+    return render(request, 'nivel_docente_form.html', {'form': form})
+
+
+
+##TITULOS DOCENTES
+
+
+def list_titulos_profesionales(request):
+    titulos_profesionales = Titulos_Profesionales.objects.all()
+    return render(request, 'list_titulos_profesionales.html', {'titulos_profesionales': titulos_profesionales})
+
+def crear_titulo_profesional(request):
+    if request.method == 'POST':
+        form = TitulosProfesionalesForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_titulos_profesionales')
+    else:
+        form = TitulosProfesionalesForm()
+    return render(request, 'titulos_profesionales_form.html', {'form': form})
 
 
 

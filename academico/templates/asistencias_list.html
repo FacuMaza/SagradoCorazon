@@ -1,0 +1,14 @@
+<h1>Asistencias</h1>
+
+<ul>
+    {% for asistencia in asistencias %}
+        <li>
+            <a href="{% url 'asistencia_edit' asistencia.pk %}">
+                {{ asistencia.Alumno }} - {{ asistencia.Dia }} - {{ asistencia.Valor }}
+            </a>
+            <a href="{% url 'asistencia_delete' asistencia.pk %}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'asistencia_add' %}">Add Asistencia</a>

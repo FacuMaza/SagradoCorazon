@@ -75,9 +75,9 @@ class LocalidadAdmin(admin.ModelAdmin):
 
 @admin.register(Cuotas)
 class CuotasAdmin(admin.ModelAdmin):
-    list_display = ('Alumnos', 'Mes_año', 'Fecha_hora', 'Pagado')
-    search_fields = ('Alumnos__apellidos', 'Alumnos__nombres', 'Mes_año', 'Fecha_hora')  # Buscar por campos relacionados
-    list_filter = ('Mes_año', 'Pagado') 
+    list_display = ('Alumnos',  'Fecha_hora', 'Pagado',)
+    search_fields = ('Alumnos__apellidos', 'Alumnos__nombres',  'Fecha_hora',)  # Buscar por campos relacionados
+    list_filter = ( 'Pagado',) 
 
     # Puedes añadir más opciones a tu administrador aquí:
     #  -  ordering = ('Mes_año',) # para ordenar por mes y año
@@ -87,9 +87,9 @@ class CuotasAdmin(admin.ModelAdmin):
 
 @admin.register(Cursos)
 class CursosAdmin(admin.ModelAdmin):
-    list_display = ('Año', 'Division', 'Nivel', 'get_materias') 
-    search_fields = ('Año__Año', 'Division__Division', 'Nivel__Nivel') # Buscar por campos relacionados
-    list_filter = ('Año', 'Division', 'Nivel') 
+    list_display = ( 'Division', 'get_materias',) 
+    search_fields = ( 'Division__Division', 'Nivel__Nivel',) # Buscar por campos relacionados
+    list_filter = ( 'Division',) 
     filter_horizontal = ('Materias',) # Usa filter_horizontal para la relación ManyToMany
 
     def get_materias(self, obj):
@@ -102,11 +102,7 @@ class CursosAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(Año)
-class AñoAdmin(admin.ModelAdmin):
-    list_display = ('Año', )
-    search_fields = ('Año', )
-    list_filter = ('Año',)
+
 
 @admin.register(Division)
 class DivisionAdmin(admin.ModelAdmin):

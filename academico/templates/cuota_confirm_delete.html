@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Eliminar Cuota</h1>
+
+<p>¿Seguro que quieres eliminar la cuota de {{ cuota.Alumnos }}? Esta acción no se puede deshacer.</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Eliminar</button>
+</form>
+<a href="{% url 'cuotas:cuotas_list' %}">Cancelar</a>
+{% endblock %}

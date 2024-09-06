@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Divisiones</h1>
+<ul>
+    {% for division in divisiones %}
+        <li>{{ division }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'crear_division' %}">Crear nueva division</a>
+{% endblock %}

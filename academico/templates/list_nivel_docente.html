@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Niveles de Docentes</h1>
+<ul>
+    {% for nivel_docente in niveles_docentes %}
+        <li>{{ nivel_docente }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'crear_nivel_docente' %}">Crear nuevo nivel de docente</a>
+{% endblock %}

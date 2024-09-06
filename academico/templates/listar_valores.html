@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Valores</title>
+</head>
+<body>
+    <h1>Lista de Valores</h1>
+    <ul>
+        {% for valor in valores %}
+        <li>
+            {{ valor.Valor }}
+            <a href="{% url 'editar_valor' valor.id %}">Editar</a>
+            <a href="{% url 'eliminar_valor' valor.id %}">Eliminar</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'crear_valor' %}">Crear nuevo valor</a>
+</body>
+</html>

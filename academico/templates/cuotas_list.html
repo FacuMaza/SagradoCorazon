@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Cuotas</h1>
+
+<ul>
+    {% for cuota in cuotas %}
+    <li>
+        <a href="{% url 'cuota_detail' cuota.pk %}">
+            {{ cuota.Alumnos }} - {{ cuota.Mes_año }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'cuota_create' %}">Agregar cuota</a>
+{% endblock %}

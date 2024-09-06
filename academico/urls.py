@@ -85,3 +85,51 @@ urlpatterns += [
     path('alumnos/<int:pk>/editar/', views.editar_alumno, name='editar_alumno'),
     path('alumnos/<int:pk>/eliminar/', views.eliminar_alumno, name='eliminar_alumno'),
 ]
+
+
+                        ##ASISTENCIAS
+
+urlpatterns += [
+    path('asistencia/', views.asistencias_list, name='asistencias_list'),
+    path('asistencia/add/', views.asistencia_add, name='asistencia_add'),
+    path('asistencia/<int:pk>/edit/', views.asistencia_edit, name='asistencia_edit'),
+    
+]
+
+                            ##VALOR
+
+urlpatterns += [
+    path('valor/', views.listar_valores, name='listar_valores'),
+    path('valor/crear/', views.crear_valor, name='crear_valor'),
+    path('valoreditar/<int:valor_id>/', views.editar_valor, name='editar_valor'),
+]
+
+                    ##CUOTAS
+
+
+urlpatterns += [
+    path('cuotas/', views.cuotas_list, name='cuotas_list'),
+    path('cuotas/<int:pk>/', views.cuota_detail, name='cuota_detail'),
+    path('cuotas/create/', views.cuota_create, name='cuota_create'),
+    path('cuotas/<int:pk>/update/', views.cuota_update, name='cuota_update'),
+    path('cuotas/<int:pk>/delete/', views.cuota_delete, name='cuota_delete'),
+]
+
+
+urlpatterns += [
+
+    path('division/', views.list_division, name='list_division'),
+    path('division/crear/', views.crear_division, name='crear_division'),
+
+
+    path('nivel/', views.list_nivel, name='list_nivel'),
+    path('nivel/crear/', views.crear_nivel, name='crear_nivel'),
+
+
+    path('nivel_docente/', views.list_nivel_docente, name='list_nivel_docente'),
+    path('nivel_docente/crear/', views.crear_nivel_docente, name='crear_nivel_docente'),
+
+
+    path('titulo_profesional/', views.list_titulos_profesionales, name='list_titulos_profesionales'),
+    path('titulo_profesional/crear/', views.crear_titulo_profesional, name='crear_titulo_profesional'),
+]

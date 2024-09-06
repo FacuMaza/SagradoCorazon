@@ -146,7 +146,7 @@ class Valor(models.Model):
     Valor = models.CharField(max_length=255)
 
     def __str__(self):
-        return '%s %s '%(self.Valor)
+        return '%s  '%(self.Valor)
 
     class Meta:
         db_table = 'Valores'
@@ -181,18 +181,6 @@ class Cuotas(models.Model):
         verbose_name = 'Cuota'
         verbose_name_plural = 'Cuotas'
 
-
-class Año(models.Model):
-    Año = models.IntegerField()
-
-
-    def __str__(self):
-        return '%s '%(self.Año)
-
-    class Meta:
-        db_table = 'Años'
-        verbose_name = 'Año'
-        verbose_name_plural = 'Años'
 
 
 class Division(models.Model):
@@ -276,10 +264,12 @@ class Materias(models.Model):
 
 
 class Cursos(models.Model):
-    Año = models.ForeignKey(Año, on_delete=models.CASCADE)
+    año = [('1', 'Primero'),('2', 'Segundo'),('3', 'Tercero'),('4', 'Cuarto'),('5', 'Quinto'),('6', 'Sexto'),('7', 'Septimo'),]
+    años = models.CharField(max_length=1, choices=año, default=1)
     Division = models.ForeignKey(Division, on_delete=models.CASCADE)
     Materias = models.ManyToManyField(Materias,blank=False)
-    Nivel = models.ForeignKey(Nivel, on_delete=models.CASCADE)
+    nivel = [('1', 'Inicial'),('2', 'Primario'),('3', 'Secundario')]
+    Nivels = models.CharField(max_length=1, choices=nivel, default=1)
 
     def __str__(self):
         return ' %s '%(self.Año)

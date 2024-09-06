@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Títulos Profesionales</h1>
+<ul>
+    {% for titulo_profesional in titulos_profesionales %}
+        <li>{{ titulo_profesional }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'crear_titulo_profesional' %}">Crear nuevo título profesional</a>
+{% endblock %}

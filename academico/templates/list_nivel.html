@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Lista de Niveles</h1>
+<ul>
+    {% for nivel in niveles %}
+        <li>{{ nivel }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'crear_nivel' %}">Crear nuevo nivel</a>
+{% endblock %}
