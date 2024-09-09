@@ -72,3 +72,24 @@ class TitulosProfesionalesForm(forms.ModelForm):
     class Meta:
         model = Titulos_Profesionales
         fields = '__all__'
+
+
+class DocenteForm(forms.ModelForm):
+    class Meta:
+        model = Docentes
+        fields = '__all__' # Incluir todos los campos del modelo
+
+        widgets = {
+            'F_Nacimiento': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['Nivel_Docente'].queryset = Nivel_Docente.objects.all()
+        self.fields['Titulo'].queryset = Titulos_Profesionales.objects.all()
+
+
+class MateriaForm(forms.ModelForm):
+    class Meta:
+        model = Materias
+        fields = ['Denominación', 'Docente_Titular']

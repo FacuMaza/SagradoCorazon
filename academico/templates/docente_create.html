@@ -1,0 +1,10 @@
+{% extends "baseconfiguracion.html" %}
+{%block content%}
+<h1>Agregar Docente</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar</button>
+</form>
+<a href="{% url 'configuracion' %}">Volver</a>
+{%endblock%}

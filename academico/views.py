@@ -1,8 +1,8 @@
 from pyexpat.errors import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Division, Familia, Localidad, Lugar_Nacimiento, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor
-from .forms import AlumnosForm, AsistenciaForm, CuotaForm, DivisionForm, FamiliaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
+from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor
+from .forms import AlumnosForm, AsistenciaForm, CuotaForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
 
 def index(request):
     return render(request, "index.html")
@@ -335,7 +335,7 @@ def eliminar_alumno(request, pk):
     return render(request, 'eliminar_alumno.html', context)
 
 
-                                            ##
+                                            ##VALOR ASISTENCIAS
 
 def listar_valores(request):
     valores = Valor.objects.all()
@@ -514,6 +514,93 @@ def crear_titulo_profesional(request):
     return render(request, 'titulos_profesionales_form.html', {'form': form})
 
 
+
+
+#DONDENTES
+
+def docentes_list(request):
+    docentes = Docentes.objects.all()
+    context = {'docentes': docentes}
+    return render(request, 'docentes_list.html', context)
+
+def docente_detail(request, pk):
+    docente = get_object_or_404(Docentes, pk=pk)
+    context = {'docente': docente}
+    return render(request, 'docente_detail.html', context)
+
+def docente_create(request):
+    if request.method == 'POST':
+        form = DocenteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('docentes_list')
+    else:
+        form = DocenteForm()
+    context = {'form': form}
+    return render(request, 'docente_create.html', context)
+
+def docente_update(request, pk):
+    docente = get_object_or_404(Docentes, pk=pk)
+    if request.method == 'POST':
+        form = DocenteForm(request.POST, instance=docente)
+        if form.is_valid():
+            form.save()
+            return redirect('docentes_list')
+    else:
+        form = DocenteForm(instance=docente)
+    context = {'form': form}
+    return render(request, 'docente_update.html', context)
+
+def docente_delete(request, pk):
+    docente = get_object_or_404(Docentes, pk=pk)
+    if request.method == 'POST':
+        docente.delete()
+        return redirect('docentes_list')
+    context = {'docente': docente}
+    return render(request, 'docente_delete.html', context)
+
+
+#MATERIAS
+def materia_list(request):
+    materias = Materias.objects.all()
+    context = {'materias': materias}
+    return render(request, 'materia_list.html', context)
+
+def materia_detail(request, pk):
+    materia = get_object_or_404(Materias, pk=pk)
+    context = {'materia': materia}
+    return render(request, 'materia_detail.html', context)
+
+def materia_create(request):
+    if request.method == 'POST':
+        form = MateriaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('materia_list')
+    else:
+        form = MateriaForm()
+    context = {'form': form}
+    return render(request, 'materia_form.html', context)
+
+def materia_update(request, pk):
+    materia = get_object_or_404(Materias, pk=pk)
+    if request.method == 'POST':
+        form = MateriaForm(request.POST, instance=materia)
+        if form.is_valid():
+            form.save()
+            return redirect('materia_list')
+    else:
+        form = MateriaForm(instance=materia)
+    context = {'form': form}
+    return render(request, 'materia_form.html', context)
+
+def materia_delete(request, pk):
+    materia = get_object_or_404(Materias, pk=pk)
+    if request.method == 'POST':
+        materia.delete()
+        return redirect('materia_list')
+    context = {'materia': materia}
+    return render(request, 'materia_confirm_delete.html', context)
 
 
 

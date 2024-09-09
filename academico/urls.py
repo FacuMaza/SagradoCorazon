@@ -133,3 +133,24 @@ urlpatterns += [
     path('titulo_profesional/', views.list_titulos_profesionales, name='list_titulos_profesionales'),
     path('titulo_profesional/crear/', views.crear_titulo_profesional, name='crear_titulo_profesional'),
 ]
+
+
+
+#DOCENTES
+
+urlpatterns += [
+    path('docentes/', views.docentes_list, name='docentes_list'),
+    path('docentes/<int:pk>/', views.docente_detail, name='docente_detail'),
+    path('docentes/create/', views.docente_create, name='docente_create'),
+    path('docentes/<int:pk>/update/', views.docente_update, name='docente_update'),
+    path('docentes/<int:pk>/delete/', views.docente_delete, name='docente_delete'),
+]
+
+#MATERIAS
+urlpatterns += [
+    path('materia/', views.materia_list, name='materia_list'),
+    path('materia/<int:pk>/', views.materia_detail, name='materia_detail'),
+    path('materia/create/', views.materia_create, name='materia_create'),
+    path('materia/<int:pk>/update/', views.materia_update, name='materia_update'),
+    path('materia/<int:pk>/delete/', views.materia_delete, name='materia_delete'),
+]
