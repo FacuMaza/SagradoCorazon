@@ -1,8 +1,8 @@
 from pyexpat.errors import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor
-from .forms import AlumnosForm, AsistenciaForm, CuotaForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
+from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Cursos, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor
+from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
 
 def index(request):
     return render(request, "index.html")
@@ -602,7 +602,48 @@ def materia_delete(request, pk):
     context = {'materia': materia}
     return render(request, 'materia_confirm_delete.html', context)
 
+##CURSOS
 
+def cursos_list(request):
+    cursos = Cursos.objects.all()
+    context = {'cursos': cursos}
+    return render(request, 'curso_list.html', context)
+
+def curso_detail(request, curso_id):
+    curso = get_object_or_404(Cursos, pk=curso_id)
+    context = {'curso': curso}
+    return render(request, 'curso_detail.html', context)
+
+def curso_create(request):
+    if request.method == 'POST':
+        form = CursosForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('cursos_list')
+    else:
+        form = CursosForm()
+    context = {'form': form}
+    return render(request, 'curso_form.html', context)
+
+def curso_update(request, curso_id):
+    curso = get_object_or_404(Cursos, pk=curso_id)
+    if request.method == 'POST':
+        form = CursosForm(request.POST, instance=curso)
+        if form.is_valid():
+            form.save()
+            return redirect('cursos_list')
+    else:
+        form = CursosForm(instance=curso)
+    context = {'form': form}
+    return render(request, 'curso_form.html', context)
+
+def curso_delete(request, curso_id):
+    curso = get_object_or_404(Cursos, pk=curso_id)
+    if request.method == 'POST':
+        curso.delete()
+        return redirect('cursos_list')
+    context = {'curso': curso}
+    return render(request, 'curso_delete.html', context)
 
 
 

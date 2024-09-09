@@ -1,0 +1,10 @@
+<h1>{{ curso.años }} - {{ curso.Division }}</h1>
+<p>Nivel: {{ curso.get_Nivels_display }}</p>
+<h2>Materias</h2>
+<ul>
+    {% for materia in curso.Materias.all %}
+    <li>{{ materia }}</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'curso_update' curso.id %}">Editar</a>
+<a href="{% url 'curso_delete' curso.id %}">Eliminar</a>

@@ -272,9 +272,11 @@ class Cursos(models.Model):
     Nivels = models.CharField(max_length=1, choices=nivel, default=1)
 
     def __str__(self):
-        return ' %s '%(self.Año)
+        return ' %s '%(self.años)
 
     class Meta:
         db_table = 'Cursos'
         verbose_name = 'Curso'
         verbose_name_plural = 'Cursos'
+
+

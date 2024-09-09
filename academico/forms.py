@@ -93,3 +93,12 @@ class MateriaForm(forms.ModelForm):
     class Meta:
         model = Materias
         fields = ['Denominación', 'Docente_Titular']
+
+
+class CursosForm(forms.ModelForm):
+    class Meta:
+        model = Cursos
+        fields = '__all__'
+        widgets = {
+            'Materias': forms.CheckboxSelectMultiple,  # Use checkboxes for multi-select
+        }

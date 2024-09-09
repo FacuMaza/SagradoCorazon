@@ -154,3 +154,13 @@ urlpatterns += [
     path('materia/<int:pk>/update/', views.materia_update, name='materia_update'),
     path('materia/<int:pk>/delete/', views.materia_delete, name='materia_delete'),
 ]
+
+#CURSOS
+
+urlpatterns += [
+    path('cursos/', views.cursos_list, name='cursos_list'),
+    path('cursos/<int:curso_id>/', views.curso_detail, name='curso_detail'),
+    path('cursos/create/', views.curso_create, name='curso_create'),
+    path('cursos/<int:curso_id>/update/', views.curso_update, name='curso_update'),
+    path('cursos/<int:curso_id>/delete/', views.curso_delete, name='curso_delete'),
+]

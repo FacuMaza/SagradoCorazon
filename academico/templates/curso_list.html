@@ -1,0 +1,10 @@
+<h1>Lista de Cursos</h1>
+<ul>
+    {% for curso in cursos %}
+    <li>
+        <a href="{% url 'curso_detail' curso.id %}">
+            {{ curso.años }} - {{ curso.Division }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
