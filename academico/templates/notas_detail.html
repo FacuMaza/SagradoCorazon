@@ -1,0 +1,25 @@
+<h1>Detalles de la Nota</h1>
+<ul>
+    <li><strong>Alumno:</strong> {{ nota.alumnos.nombre }} {{ nota.alumnos.apellido }}</li>
+    <li><strong>Materias:</strong>
+        <ul>
+            {% for materia in nota.materias.all %}
+                <li>{{ materia.nombre }}</li>
+            {% endfor %}
+        </ul>
+    </li>
+    <li><strong>Participación en clases:</strong> {{ nota.participacion_en_clases }}</li>
+    <li><strong>TP Individual 1:</strong> {{ nota.tp_individual_1 }}</li>
+    <li><strong>TP Individual 2:</strong> {{ nota.tp_individual_2 }}</li>
+    <li><strong>Lección oral individual:</strong> {{ nota.leccion_oral_individual }}</li>
+    <li><strong>Evaluación escrita:</strong> {{ nota.evaluacion_escrita }}</li>
+    <li><strong>Exposición grupal - Nota grupal:</strong> {{ nota.exposicion_grupal_nota_grupal }}</li>
+    <li><strong>Exposición grupal - Nota individual:</strong> {{ nota.exposicion_grupal_nota_individual }}</li>
+    <li><strong>Exposición grupal - Soporte presentación:</strong> {{ nota.exposicion_grupal_soporte_presentacion }}</li>
+    <li><strong>Laboratorio/Taller:</strong> {{ nota.laboratorio_taller }}</li>
+    <li><strong>Carpeta:</strong> {{ nota.carpeta }}</li>
+    <li><strong>Material:</strong> {{ nota.material }}</li>
+    <li><strong>Conducta:</strong> {{ nota.conducta }}</li>
+</ul>
+<a href="{% url 'notas_update' nota.pk %}">Editar</a>
+<a href="{% url 'notas_delete' nota.pk %}">Eliminar</a>

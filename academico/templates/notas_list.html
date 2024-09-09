@@ -1,0 +1,11 @@
+<h1>Lista de Notas</h1>
+<ul>
+    {% for nota in notas %}
+    <li>
+        <a href="{% url 'notas_detail' nota.pk %}">
+            {{ nota.alumnos.nombre }} - {{ nota.materias.first.nombre }}
+        </a>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'notas_create' %}">Crear nueva nota</a>

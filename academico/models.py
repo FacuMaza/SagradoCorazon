@@ -279,4 +279,24 @@ class Cursos(models.Model):
         verbose_name = 'Curso'
         verbose_name_plural = 'Cursos'
 
+class notas(models.Model):
+    alumnos = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
+    materias = models.ManyToManyField(Materias,blank=False)
+    participacion_en_clases = models.CharField(max_length=255,blank=True)
+    tp_individual_1 = models.CharField(max_length=255,blank=True)
+    tp_individual_2 = models.CharField(max_length=255,blank=True)
+    leccion_oral_individual = models.CharField(max_length=255,blank=True)
+    evaluacion_escrita = models.CharField(max_length=255,blank=True)
+    exposicion_grupal_nota_grupal = models.CharField(max_length=255,blank=True)
+    exposicion_grupal_nota_individual = models.CharField(max_length=255,blank=True)
+    exposicion_grupal_soporte_presentacion = models.CharField(max_length=255,blank=True)
+    laboratorio_taller = models.CharField(max_length=255,blank=True)
+    carpeta = models.CharField(max_length=255,blank=True)
+    material = models.CharField(max_length=255,blank=True)
+    conducta = models.CharField(max_length=255,blank=True)
+
+    class Meta:
+        db_table = 'notas'
+        verbose_name = 'nota'
+        verbose_name_plural = 'notas'
 

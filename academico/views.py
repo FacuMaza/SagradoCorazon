@@ -1,8 +1,8 @@
 from pyexpat.errors import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Cursos, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor
-from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
+from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Cursos, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor, notas
+from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, NotasForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
 
 def index(request):
     return render(request, "index.html")
@@ -561,6 +561,8 @@ def docente_delete(request, pk):
 
 
 #MATERIAS
+
+
 def materia_list(request):
     materias = Materias.objects.all()
     context = {'materias': materias}
@@ -644,6 +646,50 @@ def curso_delete(request, curso_id):
         return redirect('cursos_list')
     context = {'curso': curso}
     return render(request, 'curso_delete.html', context)
+
+
+##NOTAS
+
+def notas_list(request):
+    nota = notas.objects.all()
+    context = {'nota': nota}
+    return render(request, 'notas_list.html', context)
+
+def notas_detail(request, pk):
+    nota = notas.objects.get(pk=pk)
+    context = {'nota': nota}
+    return render(request, 'notas_detail.html', context)
+
+def notas_create(request):
+    if request.method == 'POST':
+        form = NotasForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('notas_list')
+    else:
+        form = NotasForm()
+    context = {'form': form}
+    return render(request, 'notas_create.html', context)
+
+def notas_update(request, pk):
+    nota = notas.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = NotasForm(request.POST, instance=nota)
+        if form.is_valid():
+            form.save()
+            return redirect('notas_list')
+    else:
+        form = NotasForm(instance=nota)
+    context = {'form': form}
+    return render(request, 'notas_update.html', context)
+
+def notas_delete(request, pk):
+    nota = notas.objects.get(pk=pk)
+    if request.method == 'POST':
+        nota.delete()
+        return redirect('notas_list')
+    context = {'nota': nota}
+    return render(request, 'notas_delete.html', context)
 
 
 
