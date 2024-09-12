@@ -165,13 +165,3 @@ urlpatterns += [
     path('cursos/<int:curso_id>/delete/', views.curso_delete, name='curso_delete'),
 ]
 
-#NOTAS
-
-urlpatterns += [
-    path('notas/', views.notas_list, name='notas_list'),
-    path('notas/<int:pk>/', views.notas_detail, name='notas_detail'),
-    path('notas/create/', views.notas_create, name='notas_create'),
-    path('notas/<int:pk>/update/', views.notas_update, name='notas_update'),
-    path('notas/<int:pk>/delete/', views.notas_delete, name='notas_delete'),
-
-]

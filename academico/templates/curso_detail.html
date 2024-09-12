@@ -3,7 +3,9 @@
 <h2>Materias</h2>
 <ul>
     {% for materia in curso.Materias.all %}
-    <li>{{ materia }}</li>
+    <li>
+        <a href="{% url 'materia_detail' materia.id %}">{{ materia }}</a>
+    </li>
     {% endfor %}
 </ul>
 <a href="{% url 'curso_update' curso.id %}">Editar</a>

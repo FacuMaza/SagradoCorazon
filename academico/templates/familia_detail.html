@@ -1,13 +1,19 @@
 {% extends "baseconfiguracion.html" %}
 {%block content%}
 <main>
-<h1>Detalles de la Familia</h1>
-<p><strong>Nombre:</strong> {{ familia.Nombre_Familia }}</p>
-<!-- Agrega aquí los campos que quieras mostrar -->
-<p><strong>Dirección:</strong> {{ familia.Dirección }}</p>
-<p><strong>Teléfono:</strong> {{ familia.Telefono }}</p>
-<!-- Agrega aquí el código HTML para mostrar otros campos de la familia -->
-<a href="{% url 'familia_list' %}">Volver a la lista de familias</a>
+    {% extends "baseconfiguracion.html" %}
+    {%block content%}
+    <main>
+      <h1>Detalles de la Familia</h1>
+      <p><strong>Nombre:</strong> {{ familia.Nombre_Familia }}</p>
+    
+      <h2>Tutores Asociados</h2>
+      <ul>
+        {% for tutor in familia.Tutores.all %}
+          <li>{{ tutor }}</li>
+        {% endfor %}
+      </ul>
+      <a href="{% url 'familia_list' %}">Volver a la lista de familias</a>
 
 </main>
 {%endblock%}

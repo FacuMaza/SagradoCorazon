@@ -2,9 +2,10 @@ from django import forms
 from .models import *
 
 class TutorForm(forms.ModelForm):
+    
     class Meta:
         model = Tutores
-        fields = '__all__' 
+        fields = '__all__'
 
 
 class ParentezcoForm(forms.ModelForm):
@@ -16,9 +17,7 @@ class FamiliaForm(forms.ModelForm):
     class Meta:
         model = Familia
         fields = ['Nombre_Familia', 'Tutores']
-        widgets = {
-            'Tutores': forms.CheckboxSelectMultiple(attrs={'class': 'form-control'}),
-        }
+       
 
 
 
@@ -96,12 +95,11 @@ class MateriaForm(forms.ModelForm):
 
 
 class CursosForm(forms.ModelForm):
+ 
+
     class Meta:
         model = Cursos
-        fields = '__all__'
-        widgets = {
-            'Materias': forms.CheckboxSelectMultiple,  # Use checkboxes for multi-select
-        }
+        fields = ['años', 'Division', 'Materias', 'Nivels'] 
 
 class NotasForm(forms.ModelForm):
     class Meta:

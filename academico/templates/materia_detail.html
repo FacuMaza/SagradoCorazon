@@ -1,8 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Detalles de la Materia</h1>
-  <p><strong>Denominación:</strong> {{ materia.Denominación }}</p>
-  <p><strong>Docente Titular:</strong> {{ materia.Docente_Titular }}</p>
-  <a href="{% url 'materia_list' %}">Volver a la lista</a>
+  <h1>Detalles del Curso</h1>
+  <p><strong>Año:</strong> {{ curso.años }}</p>
+  <p><strong>División:</strong> {{ curso.Division }}</p>
+  <p><strong>Nivel:</strong> {{ curso.Nivels }}</p>
+
+  <h2>Alumnos Inscriptos</h2>
+  <ul>
+    {% for alumno in curso.alumnos.all %}
+      <li>
+        <strong>{{ alumno.Apellidos }}, {{ alumno.Nombres }}</strong>
+        <ul>
+          {% for materia in alumno.curso_set.all %}
+            <li>{{ materia.Denominación }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="{% url 'cursos_list' %}">Volver a la lista</a>
 {% endblock %}

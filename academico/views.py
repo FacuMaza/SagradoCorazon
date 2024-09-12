@@ -14,7 +14,11 @@ def configuracion(request):
 # Lista de tutores
 def tutores_list(request):
     tutores = Tutores.objects.all()
-    context = {'tutores': tutores}
+    parentezcos = Parentezco.objects.all()
+    form = TutorForm()  # Crea una instancia vacía del formulario
+    context = {'tutores': tutores, 
+               'form': form,
+               'parentezcos':parentezcos} 
     return render(request, 'tutores_list.html', context)
 
 # Crear un tutor
@@ -568,8 +572,8 @@ def materia_list(request):
     context = {'materias': materias}
     return render(request, 'materia_list.html', context)
 
-def materia_detail(request, pk):
-    materia = get_object_or_404(Materias, pk=pk)
+def materia_detail(request, pk):  # Recibe el argumento 'pk'
+    materia = get_object_or_404(Materias, pk=pk)  # Utiliza 'pk' para obtener la materia
     context = {'materia': materia}
     return render(request, 'materia_detail.html', context)
 
@@ -612,8 +616,9 @@ def cursos_list(request):
     return render(request, 'curso_list.html', context)
 
 def curso_detail(request, curso_id):
-    curso = get_object_or_404(Cursos, pk=curso_id)
-    context = {'curso': curso}
+    curso = Cursos.objects.get(pk=curso_id)
+    alumnos = curso.alumnos.all()  # Alumnos del curso
+    context = {'curso': curso, 'alumnos': alumnos}
     return render(request, 'curso_detail.html', context)
 
 def curso_create(request):
@@ -648,48 +653,6 @@ def curso_delete(request, curso_id):
     return render(request, 'curso_delete.html', context)
 
 
-##NOTAS
-
-def notas_list(request):
-    nota = notas.objects.all()
-    context = {'nota': nota}
-    return render(request, 'notas_list.html', context)
-
-def notas_detail(request, pk):
-    nota = notas.objects.get(pk=pk)
-    context = {'nota': nota}
-    return render(request, 'notas_detail.html', context)
-
-def notas_create(request):
-    if request.method == 'POST':
-        form = NotasForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('notas_list')
-    else:
-        form = NotasForm()
-    context = {'form': form}
-    return render(request, 'notas_create.html', context)
-
-def notas_update(request, pk):
-    nota = notas.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = NotasForm(request.POST, instance=nota)
-        if form.is_valid():
-            form.save()
-            return redirect('notas_list')
-    else:
-        form = NotasForm(instance=nota)
-    context = {'form': form}
-    return render(request, 'notas_update.html', context)
-
-def notas_delete(request, pk):
-    nota = notas.objects.get(pk=pk)
-    if request.method == 'POST':
-        nota.delete()
-        return redirect('notas_list')
-    context = {'nota': nota}
-    return render(request, 'notas_delete.html', context)
 
 
 

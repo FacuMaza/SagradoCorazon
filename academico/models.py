@@ -28,6 +28,7 @@ class Tutores(models.Model):
     Vive = models.CharField(max_length=1, choices=vive)
     Responsable_de_pago = models.BooleanField()
     Parentezco = models.ForeignKey(Parentezco, on_delete=models.CASCADE)
+    asignado = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s %s '%(self.Nombre,self.Apellido)
@@ -108,10 +109,104 @@ class Localidad(models.Model):
         verbose_name_plural = 'Localidades'
 
 
+class Nivel_Docente(models.Model):
+    Nivel = models.CharField(max_length=255)
+
+    def __str__(self):
+        return ' %s '%(self.Nivel)
+
+    class Meta:
+        db_table = 'Nivel de Docentes'
+        verbose_name = 'Nivel de Docente'
+        verbose_name_plural = 'Nivel de Docentes'
+
+class Titulos_Profesionales(models.Model):
+    Denominación = models.CharField(max_length=255)
+    Observación = models.TextField()
+
+    def __str__(self):
+        return ' %s '%(self.Denominación)
+
+    class Meta:
+        db_table = 'Titulos Profesionales'
+        verbose_name = 'Titulos Profesional'
+        verbose_name_plural = 'Titulos Profesionales'
+
+class Docentes(models.Model):
+    Nivel_Docente = models.ForeignKey(Nivel_Docente, on_delete=models.CASCADE)
+    Apellidos = models.CharField(max_length=255)
+    Nombres = models.CharField(max_length=255)
+    CUIL = models.CharField(max_length=255)
+    Tel = models.CharField(max_length=255)
+    F_Nacimiento = models.DateField()
+    Titulo = models.ForeignKey(Titulos_Profesionales, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '%s %s '%(self.Apellidos, self.Nombres)
+
+    class Meta:
+        db_table = 'Docentes'
+        verbose_name = 'Docente'
+        verbose_name_plural = 'Docentes'
+
+
+
+class Materias(models.Model):
+    Denominación = models.CharField(max_length=255)
+    Docente_Titular = models.ForeignKey(Docentes, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return '%s %s '%(self.Denominación, self.Docente_Titular)
+
+    class Meta:
+        db_table = 'Materias'
+        verbose_name = 'Materia'
+        verbose_name_plural = 'Materias'
+    
+
+class Division(models.Model):
+    Division = models.CharField(max_length=255)
+    def __str__(self):
+        return '%s '%(self.Division)
+
+    class Meta:
+        db_table = 'Divisiones'
+        verbose_name = 'Division'
+        verbose_name_plural = 'Divisiones'
+
+
+class Nivel(models.Model):
+    Nivel = models.CharField(max_length=255)
+
+    def __str__(self):
+        return '%s '%(self.Nivel)
+
+    class Meta:
+        db_table = 'Niveles'
+        verbose_name = 'Nivel'
+        verbose_name_plural = 'Niveles'
+
+
+class Cursos(models.Model):
+    año = [('1', 'Primero'),('2', 'Segundo'),('3', 'Tercero'),('4', 'Cuarto'),('5', 'Quinto'),('6', 'Sexto'),('7', 'Septimo'),]
+    años = models.CharField(max_length=1, choices=año, default=1)
+    Division = models.ForeignKey(Division, on_delete=models.CASCADE)
+    Materias = models.ManyToManyField(Materias,blank=False)
+    nivel = [('1', 'Inicial'),('2', 'Primario'),('3', 'Secundario')]
+    Nivels = models.CharField(max_length=1, choices=nivel, default=1)
+
+    def __str__(self):
+        return ' %s '%(self.años)
+
+    class Meta:
+        db_table = 'Cursos'
+        verbose_name = 'Curso'
+        verbose_name_plural = 'Cursos'
 
 
 class Alumnos(models.Model):
     Familia = models.ForeignKey(Familia, on_delete=models.CASCADE)
+    curso = models.ForeignKey(Cursos, on_delete=models.CASCADE, related_name='alumnos')
     Baja_Alumno = models.BooleanField()
     Casa = models.ForeignKey(Casas, on_delete=models.CASCADE)
     Colegio = models.ForeignKey(Colegios, on_delete=models.CASCADE)
@@ -181,103 +276,6 @@ class Cuotas(models.Model):
         verbose_name = 'Cuota'
         verbose_name_plural = 'Cuotas'
 
-
-
-class Division(models.Model):
-    Division = models.CharField(max_length=255)
-    def __str__(self):
-        return '%s '%(self.Division)
-
-    class Meta:
-        db_table = 'Divisiones'
-        verbose_name = 'Division'
-        verbose_name_plural = 'Divisiones'
-
-
-class Nivel(models.Model):
-    Nivel = models.CharField(max_length=255)
-
-    def __str__(self):
-        return '%s '%(self.Nivel)
-
-    class Meta:
-        db_table = 'Niveles'
-        verbose_name = 'Nivel'
-        verbose_name_plural = 'Niveles'
-
-
-
-
-
-class Nivel_Docente(models.Model):
-    Nivel = models.CharField(max_length=255)
-
-    def __str__(self):
-        return ' %s '%(self.Nivel)
-
-    class Meta:
-        db_table = 'Nivel de Docentes'
-        verbose_name = 'Nivel de Docente'
-        verbose_name_plural = 'Nivel de Docentes'
-
-class Titulos_Profesionales(models.Model):
-    Denominación = models.CharField(max_length=255)
-    Observación = models.TextField()
-
-    def __str__(self):
-        return ' %s '%(self.Denominación)
-
-    class Meta:
-        db_table = 'Titulos Profesionales'
-        verbose_name = 'Titulos Profesional'
-        verbose_name_plural = 'Titulos Profesionales'
-
-class Docentes(models.Model):
-    Nivel_Docente = models.ForeignKey(Nivel_Docente, on_delete=models.CASCADE)
-    Apellidos = models.CharField(max_length=255)
-    Nombres = models.CharField(max_length=255)
-    CUIL = models.CharField(max_length=255)
-    Tel = models.CharField(max_length=255)
-    F_Nacimiento = models.DateField()
-    Titulo = models.ForeignKey(Titulos_Profesionales, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return '%s %s '%(self.Apellidos, self.Nombres)
-
-    class Meta:
-        db_table = 'Docentes'
-        verbose_name = 'Docente'
-        verbose_name_plural = 'Docentes'
-
-
-class Materias(models.Model):
-    Denominación = models.CharField(max_length=255)
-    Docente_Titular = models.ForeignKey(Docentes, on_delete=models.SET_NULL, null=True)
-
-    def __str__(self):
-        return '%s %s '%(self.Denominación, self.Docente_Titular)
-
-    class Meta:
-        db_table = 'Materias'
-        verbose_name = 'Materia'
-        verbose_name_plural = 'Materias'
-
-
-class Cursos(models.Model):
-    año = [('1', 'Primero'),('2', 'Segundo'),('3', 'Tercero'),('4', 'Cuarto'),('5', 'Quinto'),('6', 'Sexto'),('7', 'Septimo'),]
-    años = models.CharField(max_length=1, choices=año, default=1)
-    Division = models.ForeignKey(Division, on_delete=models.CASCADE)
-    Materias = models.ManyToManyField(Materias,blank=False)
-    nivel = [('1', 'Inicial'),('2', 'Primario'),('3', 'Secundario')]
-    Nivels = models.CharField(max_length=1, choices=nivel, default=1)
-
-    def __str__(self):
-        return ' %s '%(self.años)
-
-    class Meta:
-        db_table = 'Cursos'
-        verbose_name = 'Curso'
-        verbose_name_plural = 'Cursos'
 
 class notas(models.Model):
     alumnos = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
