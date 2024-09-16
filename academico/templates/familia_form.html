@@ -1,17 +1,25 @@
 {% extends "baseconfiguracion.html" %}
-{%block content%}
+{% block content %}
 <main>
-<h1>{% if familia.pk %}
-    Editar
-    {% else %}
-    Agregar
-    {% endif %} 
-    Familia</h1>
-<form method="post">
+  <h1>{% if familia.pk %}
+      Editar
+      {% else %}
+      Agregar
+      {% endif %} 
+      Familia</h1>
+  <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    
+    <!-- Mostrar los tutores disponibles -->
+    <label for="Tutores">Tutores:</label>
+    <select multiple name="Tutores" id="Tutores">
+      {% for tutor in tutores %}
+        <option value="{{ tutor.pk }}">{{ tutor }}</option>
+      {% endfor %}
+    </select>
+    
     <button type="submit" class="btn btn-primary">Guardar</button>
-</form>
-
+  </form>
 </main>
-{%endblock%}
+{% endblock %}

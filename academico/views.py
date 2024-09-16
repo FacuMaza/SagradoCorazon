@@ -110,21 +110,32 @@ def parentezcos_delete(request, pk):
 
 
                                             # VIWS DE FAMILIAS 
+                  
 
 def familia_list(request):
     familias = Familia.objects.all()
-    context = {'familias': familias}
+    tutores = Tutores.objects.all()
+    form = FamiliaForm()
+    context = {'familias': familias,
+               'tutores': tutores,
+               'form': form}
     return render(request, 'familia_list.html', context)
 
 def familia_create(request):
     if request.method == 'POST':
         form = FamiliaForm(request.POST)
         if form.is_valid():
-            form.save()
+            familia = form.save()
+            # Obtener los tutores seleccionados
+            tutores_seleccionados = request.POST.getlist('Tutores')
+            # Asignar los tutores a la familia
+            familia.Tutores.set(tutores_seleccionados)
             return redirect('familia_list')
     else:
         form = FamiliaForm()
-    context = {'form': form}
+        # Obtener la lista de todos los tutores
+        tutores = Tutores.objects.all()
+        context = {'form': form, 'tutores': tutores}  # Pasar la lista al contexto
     return render(request, 'familia_form.html', context)
 
 def familia_update(request, pk):
@@ -132,6 +143,9 @@ def familia_update(request, pk):
     if request.method == 'POST':
         form = FamiliaForm(request.POST, instance=familia)
         if form.is_valid():
+            # Si el nombre de la familia está vacío, reemplázalo con el nombre actual
+            if not form.cleaned_data['Nombre_Familia']:
+                form.cleaned_data['Nombre_Familia'] = familia.Nombre_Familia 
             form.save()
             return redirect('familia_list')
     else:
@@ -299,7 +313,22 @@ def localidad_update(request, pk):
 
 def lista_alumnos(request):
     alumnos = Alumnos.objects.all()
-    context = {'alumnos': alumnos}
+    Familias = Familia.objects.all()
+    curso = Cursos.objects.all()
+    colegio = Colegios.objects.all()
+    Casa = Casas.objects.all()
+    Lugar_Nacimientos = Lugar_Nacimiento.objects.all()
+    Nacionalidades = Nacionalidad.objects.all()
+   
+    Localidades = Localidad.objects.all()
+    context = {'alumnos': alumnos,
+               'Familias':Familias,
+               'curso': curso,
+               'Casa': Casa,
+               'Lugar_Nacimientos': Lugar_Nacimientos,
+               'Nacionalidades': Nacionalidades,
+               'Localidades': Localidades,
+               'colegio':colegio}
     return render(request, 'lista_alumnos.html', context)
 
 def detalle_alumno(request, pk):
@@ -320,6 +349,15 @@ def nuevo_alumno(request):
 
 def editar_alumno(request, pk):
     alumno = Alumnos.objects.get(pk=pk)
+    Familias = Familia.objects.all()
+    curso = Cursos.objects.all()
+    colegio = Colegios.objects.all()
+    Casa = Casas.objects.all()
+    Lugar_Nacimientos = Lugar_Nacimiento.objects.all()
+    Nacionalidades = Nacionalidad.objects.all()
+    Localidades = Localidad.objects.all()
+    
+
     if request.method == 'POST':
         form = AlumnosForm(request.POST, instance=alumno)
         if form.is_valid():
@@ -327,7 +365,14 @@ def editar_alumno(request, pk):
             return redirect('lista_alumnos')
     else:
         form = AlumnosForm(instance=alumno)
-    context = {'form': form}
+    context = {'form': form,
+               'Familias':Familias,
+               'curso': curso,
+               'Casa': Casa,
+               'Lugar_Nacimientos': Lugar_Nacimientos,
+               'Nacionalidades': Nacionalidades,
+               'Localidades': Localidades,
+               'colegio':colegio}
     return render(request, 'editar_alumno.html', context)
 
 def eliminar_alumno(request, pk):
@@ -524,7 +569,11 @@ def crear_titulo_profesional(request):
 
 def docentes_list(request):
     docentes = Docentes.objects.all()
-    context = {'docentes': docentes}
+    nivel_docente = Nivel_Docente.objects.all()
+    titulo = Titulos_Profesionales.objects.all()
+    context = {'docentes': docentes,
+               'nivel_docente': nivel_docente,
+               'titulo': titulo,}
     return render(request, 'docentes_list.html', context)
 
 def docente_detail(request, pk):
@@ -536,6 +585,9 @@ def docente_create(request):
     if request.method == 'POST':
         form = DocenteForm(request.POST)
         if form.is_valid():
+            # Si el campo F_Nacimiento está presente, incluimos la información al guardar
+            if 'F_Nacimiento' in request.POST:
+                form.instance.F_Nacimiento = form.cleaned_data['F_Nacimiento']
             form.save()
             return redirect('docentes_list')
     else:
@@ -548,6 +600,9 @@ def docente_update(request, pk):
     if request.method == 'POST':
         form = DocenteForm(request.POST, instance=docente)
         if form.is_valid():
+            # Si el campo F_Nacimiento está presente, incluimos la información al guardar
+            if 'F_Nacimiento' in request.POST:
+                form.instance.F_Nacimiento = form.cleaned_data['F_Nacimiento']
             form.save()
             return redirect('docentes_list')
     else:
@@ -569,7 +624,8 @@ def docente_delete(request, pk):
 
 def materia_list(request):
     materias = Materias.objects.all()
-    context = {'materias': materias}
+    docentes = Docentes.objects.all() # Agrega esto
+    context = {'materias': materias, 'docentes': docentes,}
     return render(request, 'materia_list.html', context)
 
 def materia_detail(request, pk):  # Recibe el argumento 'pk'

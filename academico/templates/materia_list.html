@@ -1,16 +1,189 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{%block content%}
+<main>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">Lista de Materias</h1>
+      </div>
+    </div>
+    <div class="row justify-content-center"> 
+      <div class="col-md-12"> <div class="table-responsive">  <!-- Ajusta el ancho de la columna -->
+        <table class="table table-striped table-hover"> 
+          <thead>
+            <tr>
+              <th style="width: 50%;">Denominación</th>
+              <th style="width: 25%; text-align: center;">Docente Titular</th>  <!-- Centra el texto -->
+              <th style="width: 25%; text-align: right;">Acciones</th>  <!-- Alinea a la derecha -->
+            </tr>
+          </thead>
+          <tbody>
+            {% for materia in materias %}
+            <tr>
+              <td>
+                {{ materia.Denominación }}
+              </td>
+              <td style="text-align: center;">{{ materia.Docente_Titular }}</td>  <!-- Centra el texto -->
+              <td style="text-align: right;">
+                <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
+                        data-toggle="modal" data-target="#materiaDetailsModal{{ materia.pk }}">Detalle</button> | 
+                <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" 
+                        data-toggle="modal" data-target="#materiaEditModal{{ materia.pk }}">Editar</button> | 
+                <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
+                        data-toggle="modal" data-target="#materiaDeleteModal{{ materia.pk }}">Eliminar</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-8 text-center">
+        <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="location.href='{% url 'index' %}'">Volver</button>
+        <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" onclick="location.href='{% url 'materia_create' %}'">Agregar Materia</button>
+      </div>
+    </div>
 
-{% block content %}
-  <h1>Lista de Materias</h1>
-  <ul>
+    <!-- Modales para Detalle, Editar y Eliminar -->
     {% for materia in materias %}
-      <li>
-        <a href="{% url 'materia_detail' materia.pk %}">{{ materia.Denominación }}</a> 
-        - {{ materia.Docente_Titular }}
-        <a href="{% url 'materia_update' materia.pk %}">Editar</a>
-        <a href="{% url 'materia_delete' materia.pk %}">Eliminar</a>
-      </li>
+    <!-- Modal Detalle -->
+    <div class="modal fade" id="materiaDetailsModal{{ materia.pk }}" tabindex="-1" role="dialog" aria-labelledby="materiaDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="materiaDetailsModalLabel">Detalles de la Materia - {{ materia.Denominación }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th style="width: 30%;">Campo</th>
+                  
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Denominación</td>
+                  <td>{{ materia.Denominación }}</td>
+                </tr>
+                <tr>
+                  <td>Docente Titular</td>
+                  <td>{{ materia.Docente_Titular }}</td>
+                </tr>
+                <tr>
+                  <td>Año</td>
+                  <td>{{ materia.Año }}</td>
+                </tr>
+                <tr>
+                  <td>Curso</td>
+                  <td>{{ materia.Curso }}</td>
+                </tr>
+                <tr>
+                  <td>Turno</td>
+                  <td>{{ materia.Turno }}</td>
+                </tr>
+                <tr>
+                  <td>Día</td>
+                  <td>{{ materia.Día }}</td>
+                </tr>
+                <tr>
+                  <td>Horario</td>
+                  <td>{{ materia.Horario }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Editar -->
+    <div class="modal fade" id="materiaEditModal{{ materia.pk }}" tabindex="-1" role="dialog" aria-labelledby="materiaEditModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="materiaEditModalLabel">Editar Materia - {{ materia.Denominación }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Formulario para editar la materia -->
+            <form method="post" action="{% url 'materia_update' materia.pk %}">
+              {% csrf_token %}
+              <!-- Denominación de la materia -->
+              <div class="form-group">
+                <label for="id_Denominación">Denominación:</label>
+                <input type="text" class="form-control" id="id_Denominación" name="Denominación" value="{{ materia.Denominación }}">
+              </div>
+              <!-- Docente Titular de la materia -->
+              <div class="form-group">
+                <label for="id_Docente_Titular">Docente Titular:</label>
+                <select class="form-control" id="id_Docente_Titular" name="Docente_Titular">
+                  {% for docente in docentes %}
+                    <option value="{{ docente.pk }}" {% if materia.Docente_Titular.pk == docente.pk %}selected{% endif %}>{{ docente }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+             
+              <!-- Día de la materia -->
+              <div class="form-group">
+                <label for="id_Día">Día:</label>
+                <select class="form-control" id="id_Día" name="Día">
+                  {% for dia in dias %}
+                    <option value="{{ dia.pk }}" {% if materia.Día.pk == dia.pk %}selected{% endif %}>{{ dia }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!-- Horario de la materia -->
+              <div class="form-group">
+                <label for="id_Horario">Horario:</label>
+                <input type="text" class="form-control" id="id_Horario" name="Horario" value="{{ materia.Horario }}">
+              </div>
+
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Eliminar -->
+    <div class="modal fade" id="materiaDeleteModal{{ materia.pk }}" tabindex="-1" role="dialog" aria-labelledby="materiaDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="materiaDeleteModalLabel">Eliminar Materia - {{ materia.Denominación }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ¿Estás seguro de que quieres eliminar a {{ materia.Denominación }}?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <a href="{% url 'materia_delete' materia.pk %}" class="btn btn-danger">Eliminar</a>
+          </div>
+        </div>
+      </div>
+    </div>
     {% endfor %}
-  </ul>
-  <a href="{% url 'materia_create' %}">Agregar Materia</a>
-{% endblock %}
+  </div>
+</main>
+
+<script>
+  // No se necesita la función confirmDelete ya que ahora usamos modales
+</script>
+{%endblock%}`

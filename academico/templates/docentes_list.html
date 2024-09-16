@@ -1,16 +1,196 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
 
-<h1>Listado de Docentes</h1>
-<ul>
-    {% for docente in docentes %}
-    <li>
-        <a href="{% url 'docente_detail' docente.pk %}">{{ docente }}</a>
-        <a href="{% url 'docente_update' docente.pk %}">Editar</a>
-        <a href="{% url 'docente_delete' docente.pk %}">Eliminar</a>
-    </li>
-    {% endfor %}
-</ul>
-<a href="{% url 'index' %}">Volver</a>
+<main>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">Lista de Docentes</h1>
+      </div>
+    </div>
+    <div class="row justify-content-center"> 
+      <div class="col-md-12"> <div class="table-responsive">  <!-- Ajusta el ancho de la columna -->
+        <table class="table table-striped table-hover"> 
+          <thead>
+            <tr>
+              <th style="width: 70%;">Nombre</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for docente in docentes %}
+            <tr>
+              <td>
+                {{ docente }}
+              </td>
+              <td>
+                <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
+                        data-toggle="modal" data-target="#docenteDetailsModal{{ docente.pk }}">Detalle</button> | 
+                <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" 
+                        data-toggle="modal" data-target="#docenteEditModal{{ docente.pk }}">Editar</button> | 
+                <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
+                        data-toggle="modal" data-target="#docenteDeleteModal{{ docente.pk }}">Eliminar</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-8 text-center">
+        <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" onclick="location.href='{% url 'docente_create' %}'">Agregar Docente</button>
+        <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="location.href='{% url 'index' %}'">Volver</button>
+      </div>
+    </div>
 
-{% endblock %}
+    <!-- Modales para Detalle, Editar y Eliminar -->
+    {% for docente in docentes %}
+    <!-- Modal Detalle -->
+    <div class="modal fade" id="docenteDetailsModal{{ docente.pk }}" tabindex="-1" role="dialog" aria-labelledby="docenteDetailsModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="docenteDetailsModalLabel">Docente - {{ docente }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  
+                
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Nombre</td>
+                  <td>{{ docente.Nombres }}</td>
+                </tr>
+                <tr>
+                  <td>Apellido</td>
+                  <td>{{ docente.Apellidos }}</td>
+                </tr>
+                <tr>
+                  <td>Nivel Docente</td>
+                  <td>{{ docente.Nivel_Docente }}</td>
+                </tr>
+                <tr>
+                  <td>CUIL</td>
+                  <td>{{ docente.CUIL }}</td>
+                </tr>
+                <tr>
+                  <td>Teléfono</td>
+                  <td>{{ docente.Tel }}</td>
+                </tr>
+                <tr>
+                  <td>Fecha de Nacimiento</td>
+                  <td>{{ docente.F_Nacimiento }}</td>
+                </tr>
+                <tr>
+                  <td>Título</td>
+                  <td>{{ docente.Titulo }}</td>
+                </tr>
+                
+                <!-- Agrega los demás campos del docente -->
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Editar -->
+    <div class="modal fade" id="docenteEditModal{{ docente.pk }}" tabindex="-1" role="dialog" aria-labelledby="docenteEditModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="docenteEditModalLabel">Editar Docente - {{ docente }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <!-- Formulario para editar el docente -->
+            <form method="POST" action="{% url 'docente_update' docente.pk %}">
+              {% csrf_token %}
+              <!-- Otros Niños de la familia -->
+              <div class="form-group">
+                <label for="id_Nombres">Nombre:</label>
+                <input type="text" class="form-control" id="id_Nombres" name="Nombres" value="{{ docente.Nombres }}">
+              </div>
+              <div class="form-group">
+                <label for="id_Apellidos">Apellido:</label>
+                <input type="text" class="form-control" id="id_Apellidos" name="Apellidos" value="{{ docente.Apellidos }}">
+              </div>
+              <div class="form-group">
+                <label for="id_Nivel_Docente">Nivel Docente:</label>
+                <select class="form-control" id="id_Nivel_Docente" name="Nivel_Docente">
+                  {% for nivel in nivel_docente %}
+                    <option value="{{ nivel.pk }}" {% if docente.Nivel_Docente.pk == nivel.pk %}selected{% endif %}>{{ nivel }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="id_CUIL">CUIL:</label>
+                <input type="text" class="form-control" id="id_CUIL" name="CUIL" value="{{ docente.CUIL }}">
+              </div>
+              <div class="form-group">
+                <label for="id_Tel">Teléfono:</label>
+                <input type="text" class="form-control" id="id_Tel" name="Tel" value="{{ docente.Tel }}">
+              </div>
+          
+              <div class="form-group">
+                <label for="id_Titulo">Título:</label>
+                <select class="form-control" id="id_Titulo" name="Titulo">
+                  {% for titulo in titulo %}
+                    <option value="{{ titulo.pk }}" {% if docente.Titulo.pk == titulo.pk %}selected{% endif %}>{{ titulo }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Eliminar -->
+    <div class="modal fade" id="docenteDeleteModal{{ docente.pk }}" tabindex="-1" role="dialog" aria-labelledby="docenteDeleteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="docenteDeleteModalLabel">Eliminar Docente - {{ docente }}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            ¿Estás seguro de que quieres eliminar a {{ docente }}?
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+            <a href="{% url 'docente_delete' docente.pk %}" class="btn btn-danger">Eliminar</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+</main>
+
+<script>
+  // No se necesita la función confirmDelete ya que ahora usamos modales
+</script>
+
+{% endblock %}"

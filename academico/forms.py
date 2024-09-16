@@ -16,7 +16,14 @@ class ParentezcoForm(forms.ModelForm):
 class FamiliaForm(forms.ModelForm):
     class Meta:
         model = Familia
-        fields = ['Nombre_Familia', 'Tutores']
+        fields = ['Nombre_Familia']
+        widgets = {
+            'Nombre_Familia': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['Nombre_Familia'].required = False
        
 
 
@@ -25,6 +32,9 @@ class AlumnosForm(forms.ModelForm):
     class Meta:
         model = Alumnos
         fields = '__all__'
+        exclude = ('Fecha_Nacimiento',)  # Excluye el campo Fecha_Nacimiento
+
+
 
 
 class AsistenciaForm(forms.ModelForm):
@@ -76,22 +86,22 @@ class TitulosProfesionalesForm(forms.ModelForm):
 class DocenteForm(forms.ModelForm):
     class Meta:
         model = Docentes
-        fields = '__all__' # Incluir todos los campos del modelo
-
-        widgets = {
-            'F_Nacimiento': forms.DateInput(attrs={'type': 'date'}),
-        }
+        fields = ['Nivel_Docente', 'Apellidos', 'Nombres', 'CUIL', 'Tel', 'Titulo'] 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['Nivel_Docente'].queryset = Nivel_Docente.objects.all()
         self.fields['Titulo'].queryset = Titulos_Profesionales.objects.all()
 
+        # Si el formulario es para crear un nuevo docente, incluimos el campo F_Nacimiento
+        if self.instance.pk is None:
+            self.fields['F_Nacimiento'] = forms.DateField(label='Fecha de Nacimiento', required=True)
+
 
 class MateriaForm(forms.ModelForm):
     class Meta:
         model = Materias
-        fields = ['Denominación', 'Docente_Titular']
+        fields = ['Docente_Titular', 'Denominación',]
 
 
 class CursosForm(forms.ModelForm):
