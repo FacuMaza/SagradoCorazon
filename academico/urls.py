@@ -165,3 +165,16 @@ urlpatterns += [
     path('cursos/<int:curso_id>/delete/', views.curso_delete, name='curso_delete'),
 ]
 
+
+
+#AGREGAR MATERIAS EN CURSOS
+urlpatterns += [
+     path('materias_curso/<int:curso_id>/', views.materias_curso, name='materias_curso'),
+]
+
+#AGREGAR ALUMNOS EN CURSOS
+urlpatterns += [
+   
+    path('cursos/<int:curso_id>/agregar_alumno/', views.agregar_alumno_curso, name='agregar_alumno_curso'),
+    path('materia/<int:materia_id>/alumnos/', views.alumnos_por_materia, name='alumnos_por_materia'),
+]

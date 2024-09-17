@@ -191,7 +191,7 @@ class Cursos(models.Model):
     año = [('1', 'Primero'),('2', 'Segundo'),('3', 'Tercero'),('4', 'Cuarto'),('5', 'Quinto'),('6', 'Sexto'),('7', 'Septimo'),]
     años = models.CharField(max_length=1, choices=año, default=1)
     Division = models.ForeignKey(Division, on_delete=models.CASCADE)
-    Materias = models.ManyToManyField(Materias,blank=False)
+    Materias = models.ManyToManyField(Materias,blank=False, related_name="cursos")
     nivel = [('1', 'Inicial'),('2', 'Primario'),('3', 'Secundario')]
     Nivels = models.CharField(max_length=1, choices=nivel, default=1)
 
@@ -206,7 +206,7 @@ class Cursos(models.Model):
 
 class Alumnos(models.Model):
     Familia = models.ForeignKey(Familia, on_delete=models.CASCADE)
-    curso = models.ForeignKey(Cursos, on_delete=models.CASCADE, related_name='alumnos')
+    curso = models.ForeignKey(Cursos, on_delete=models.CASCADE, related_name='alumnos', null=True, blank=True)
     Baja_Alumno = models.BooleanField()
     Casa = models.ForeignKey(Casas, on_delete=models.CASCADE)
     Colegio = models.ForeignKey(Colegios, on_delete=models.CASCADE)
@@ -278,8 +278,8 @@ class Cuotas(models.Model):
 
 
 class notas(models.Model):
-    alumnos = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
-    materias = models.ManyToManyField(Materias,blank=False)
+    alumno = models.ForeignKey(Alumnos,  default=1, on_delete=models.CASCADE)
+    materia = models.ForeignKey(Materias, default=1, on_delete=models.CASCADE)
     participacion_en_clases = models.CharField(max_length=255,blank=True)
     tp_individual_1 = models.CharField(max_length=255,blank=True)
     tp_individual_2 = models.CharField(max_length=255,blank=True)

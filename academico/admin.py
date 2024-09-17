@@ -144,9 +144,8 @@ class MateriasAdmin(admin.ModelAdmin):
 
 @admin.register(notas)
 class notasAdmin(admin.ModelAdmin):
-    list_display = ('alumnos', 'participacion_en_clases', 'tp_individual_1', 'tp_individual_2', 'leccion_oral_individual', 'evaluacion_escrita', 'exposicion_grupal_nota_grupal', 'exposicion_grupal_nota_individual', 'exposicion_grupal_soporte_presentacion', 'laboratorio_taller', 'carpeta', 'material', 'conducta')
+    list_display = ('alumno', 'participacion_en_clases', 'tp_individual_1', 'tp_individual_2', 'leccion_oral_individual', 'evaluacion_escrita', 'exposicion_grupal_nota_grupal', 'exposicion_grupal_nota_individual', 'exposicion_grupal_soporte_presentacion', 'laboratorio_taller', 'carpeta', 'material', 'conducta')
     search_fields = ('alumnos__nombre', 'participacion_en_clases', 'tp_individual_1', 'tp_individual_2', 'leccion_oral_individual', 'evaluacion_escrita', 'exposicion_grupal_nota_grupal', 'exposicion_grupal_nota_individual', 'exposicion_grupal_soporte_presentacion', 'laboratorio_taller', 'carpeta', 'material', 'conducta')
-    filter_horizontal = ('materias',)
 
 
 

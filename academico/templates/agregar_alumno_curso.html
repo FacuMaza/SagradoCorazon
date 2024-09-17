@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Agregar Alumnos a {{ curso.años }} - {{ curso.Division }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="alumnos">Seleccionar Alumnos:</label>
+    <select multiple class="form-control" id="alumnos" name="alumnos">
+      {% for alumno in alumnos_disponibles %}
+        <option value="{{ alumno.pk }}">{{ alumno }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="año">Año:</label>
+    <input type="text" class="form-control" id="año" name="año" value="{{ año }}" readonly>
+  </div>
+  <div class="form-group">
+    <label for="division">División:</label>
+    <select class="form-control" id="division" name="division">
+      {% for division in divisions %}
+        <option value="{{ division.pk }}" {% if division.pk == curso.Division.pk %}selected{% endif %}>{{ division }}</option>  # Corregido: se compara con curso.Division.pk
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Agregar Alumnos</button>
+</form>
+
+<h3>Alumnos Asignados:</h3>
+<ul>
+  {% for alumno in alumnos_asignados %}
+    <li>{{ alumno }}</li>
+  {% endfor %}
+</ul>
+
+{% endblock %}

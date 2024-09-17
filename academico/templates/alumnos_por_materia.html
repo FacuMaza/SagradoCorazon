@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">
+          Alumnos de la materia: {{ materia.Denominación }}
+        </h1>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-md-12">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <!-- Agrega otras columnas según la información que quieras mostrar -->
+              </tr>
+            </thead>
+            <tbody>
+              {% for alumno in alumnos %}
+              <tr>
+                <td>{{ alumno.Nombres }}</td>
+                <td>{{ alumno.Apellidos }}</td>
+                <!-- Agrega otras columnas según la información que quieras mostrar -->
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-8 text-center">
+        <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="location.href='{% url 'cursos_list' %}'">Volver a la lista de cursos</button>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

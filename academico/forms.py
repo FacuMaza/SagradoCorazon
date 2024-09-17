@@ -31,8 +31,29 @@ class FamiliaForm(forms.ModelForm):
 class AlumnosForm(forms.ModelForm):
     class Meta:
         model = Alumnos
-        fields = '__all__'
-        exclude = ('Fecha_Nacimiento',)  # Excluye el campo Fecha_Nacimiento
+        fields = [
+            'Familia',
+            'Baja_Alumno',
+            'Casa',
+            'Colegio',
+            'Lugar_Nacimiento',
+            'Nacionalidad',
+            'Localidad',
+            'Apellidos',
+            'Nombres',
+            'DNI',
+            'Edad',
+            'Fecha_Nacimiento',
+            'Domicilio',
+            'Email_Institucional',
+            'Email_Personal',
+            'Escuela_Procedencia',
+            'Enfermedades',
+            'Toma_Medicamentos',
+            'Telefono_Urgencia',
+            'Sexo',
+            # ... Otros campos del modelo Alumnos (sin 'curso')
+        ]
 
 
 
@@ -104,19 +125,31 @@ class MateriaForm(forms.ModelForm):
         fields = ['Docente_Titular', 'Denominación',]
 
 
+
 class CursosForm(forms.ModelForm):
- 
+
+    def clean(self):
+        cleaned_data = super().clean()
+        año = cleaned_data.get('años')  # Ensure correct field name
+        division = cleaned_data.get('Division')  # Ensure correct field name
+
+        # Verifica si ya existe un curso con la misma combinación
+        existing_curso = Cursos.objects.filter(años=año, Division=division).exists()
+
+        if existing_curso:
+            raise forms.ValidationError("Ya existe un curso con este año y división.")
+        return cleaned_data
 
     class Meta:
         model = Cursos
-        fields = ['años', 'Division', 'Materias', 'Nivels'] 
+        fields = '__all__'
 
 class NotasForm(forms.ModelForm):
     class Meta:
         model = notas
         fields = [
-            'alumnos',
-            'materias',
+            'alumno',
+            'materia',
             'participacion_en_clases',
             'tp_individual_1',
             'tp_individual_2',

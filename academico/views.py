@@ -1,8 +1,9 @@
 from pyexpat.errors import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Cursos, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor, notas
-from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, NotasForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
+from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
 
 def index(request):
     return render(request, "index.html")
@@ -668,7 +669,13 @@ def materia_delete(request, pk):
 
 def cursos_list(request):
     cursos = Cursos.objects.all()
-    context = {'cursos': cursos}
+    materias = Materias.objects.all()  # Agrega las materias al contexto
+    tutores = Docentes.objects.all()  # Agrega los tutores al contexto
+    context = {
+        'cursos': cursos,
+        'materias': materias,
+        'tutores': tutores
+    }
     return render(request, 'curso_list.html', context)
 
 def curso_detail(request, curso_id):
@@ -708,15 +715,81 @@ def curso_delete(request, curso_id):
     context = {'curso': curso}
     return render(request, 'curso_delete.html', context)
 
+#AGREGO MATERIAS A LOS CURSOS
+def materias_curso(request, curso_id):
+    curso = get_object_or_404(Cursos, pk=curso_id)
+    materias_del_curso = curso.Materias.all()
+    context = {
+        'curso': curso,
+        'materias_del_curso': materias_del_curso,
+    }
+    return render(request, 'materia_por_curso.html', context)
 
 
 
 
+# AGREGAR ALUMNO CURSO
+def agregar_alumno_curso(request, curso_id):
+    curso = get_object_or_404(Cursos, pk=curso_id) 
+
+    if request.method == 'POST':
+        # Obtener los ID de los alumnos seleccionados
+        selected_alumnos_ids = request.POST.getlist('alumnos')
+
+        # Obtener el año y la división del formulario
+        año = request.POST.get('año')
+        division_id = request.POST.get('division') 
+
+        # En este punto, no necesitas buscar el curso de nuevo porque ya tienes "curso"
+        # No necesitas buscar por año y división, ya tienes el ID del curso
+        # curso_correcto = Cursos.objects.get(años=año, Division=division) 
+
+        # Agregar los alumnos seleccionados al curso
+        for alumno_id in selected_alumnos_ids:
+            alumno = get_object_or_404(Alumnos, pk=alumno_id)
+            curso.alumnos.add(alumno)  # Agrega el alumno al curso actual
+            messages.success(request, f"Alumno {alumno} agregado al curso {curso}.")
+
+        return redirect('curso_detail', curso_id=curso.id)  # Redirige al detalle del curso actual
+
+    # Obtener la lista de todos los alumnos
+    todos_alumnos = Alumnos.objects.all()
+
+    # Obtener los alumnos que ya están asignados al curso
+    alumnos_asignados = curso.alumnos.all()
+
+    # Filtrar la lista de alumnos para mostrar solo los que no están asignados
+    alumnos_disponibles = todos_alumnos.exclude(pk__in=alumnos_asignados.values_list('pk', flat=True))
+
+    context = {
+        'curso': curso,  # El curso que se está viendo actualmente
+        'alumnos_disponibles': alumnos_disponibles,
+        'alumnos_asignados': alumnos_asignados,
+        'año': curso.años,  # Pasa el año del curso actual
+        'division': curso.Division,  # Pasa la división del curso actual
+        'divisions': Division.objects.all()  # Pasa una lista de Divisiones
+    }
+    return render(request, 'agregar_alumno_curso.html', context)
 
 
+def alumnos_por_materia(request, materia_id):
+    materia = get_object_or_404(Materias, pk=materia_id)
 
+    # Obtener los cursos asociados a la materia
+    cursos_de_la_materia = Cursos.objects.filter(Materias=materia)
 
+    # Obtener los alumnos de esos cursos
+    alumnos = []
+    for curso in cursos_de_la_materia:
+        alumnos_del_curso = curso.alumnos.all()  # Obtiene los alumnos del curso actual
+        alumnos.extend(alumnos_del_curso)  # Agrega los alumnos a la lista
 
+    context = {
+        'materia': materia,
+        'alumnos': alumnos
+    }
+
+    return render(request, 'alumnos_por_materia.html', context)
 
 
 

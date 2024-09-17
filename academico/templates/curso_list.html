@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%block content%}
+{% block content %}
 <main>
   <div class="container mt-4">
     <div class="row justify-content-center">
@@ -17,10 +17,11 @@
             </tr>
           </thead>
           <tbody>
-            {% for curso in cursos %}
+            {% for curso in cursos|dictsort:"años" %}  <!-- Ordena los cursos de mayor a menor por 'años' -->
             <tr>
               <td>
-                {{ curso.años }} - {{ curso.Division }}
+                <!-- Enlaza el nombre del curso a la vista de materias -->
+                <a href="{% url 'materias_curso' curso.pk %}">{{ curso.años }} - {{ curso.Division }}</a> 
               </td>
               <td>
                 <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
@@ -29,6 +30,7 @@
                         data-toggle="modal" data-target="#cursoEditModal{{ curso.pk }}">Editar</button> | 
                 <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
                         data-toggle="modal" data-target="#cursoDeleteModal{{ curso.pk }}">Eliminar</button>
+                        <a href="{% url 'agregar_alumno_curso' curso.id %}">Asiganar Alumnos</a>
               </td>
             </tr>
             {% endfor %}
@@ -160,4 +162,4 @@
 <script>
   // No se necesita la función confirmDelete ya que ahora usamos modales
 </script>
-{%endblock%}
+{% endblock %}"
