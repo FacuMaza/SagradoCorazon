@@ -176,7 +176,7 @@ urlpatterns += [
 #AGREGAR ALUMNOS EN CURSOS
 urlpatterns += [
    
-    path('cursos/<int:curso_id>/agregar_alumno/', views.agregar_alumno_curso, name='agregar_alumno_curso'),
+    path('curso/<int:curso_id>/agregar_alumnos/', views.agregar_alumno_curso, name='agregar_alumno_curso'),
     path('materia/<int:curso_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_por_materia'),
     path('curso/<int:curso_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_list'),
 ]

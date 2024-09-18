@@ -716,6 +716,9 @@ def curso_delete(request, curso_id):
     context = {'curso': curso}
     return render(request, 'curso_delete.html', context)
 
+
+
+
 #AGREGO MATERIAS A LOS CURSOS
 def materias_curso(request, curso_id):
     curso = get_object_or_404(Cursos, pk=curso_id)
@@ -729,46 +732,26 @@ def materias_curso(request, curso_id):
 
 
 
+
 # AGREGAR ALUMNO CURSO
 def agregar_alumno_curso(request, curso_id):
-    curso = get_object_or_404(Cursos, pk=curso_id) 
+    curso = Cursos.objects.get(pk=curso_id)
+    alumnos = Alumnos.objects.filter(curso__isnull=True)  # Alumnos sin curso
 
     if request.method == 'POST':
-        # Obtener los ID de los alumnos seleccionados
         selected_alumnos_ids = request.POST.getlist('alumnos')
+        selected_alumnos = Alumnos.objects.filter(pk__in=selected_alumnos_ids)
 
-        # Obtener el año y la división del formulario
-        año = request.POST.get('año')
-        division_id = request.POST.get('division') 
+        for alumno in selected_alumnos:
+            alumno.curso = curso
+            alumno.save()
 
-        # En este punto, no necesitas buscar el curso de nuevo porque ya tienes "curso"
-        # No necesitas buscar por año y división, ya tienes el ID del curso
-        # curso_correcto = Cursos.objects.get(años=año, Division=division) 
-
-        # Agregar los alumnos seleccionados al curso
-        for alumno_id in selected_alumnos_ids:
-            alumno = get_object_or_404(Alumnos, pk=alumno_id)
-            curso.alumnos.add(alumno)  # Agrega el alumno al curso actual
-            messages.success(request, f"Alumno {alumno} agregado al curso {curso}.")
-
-        return redirect('curso_detail', curso_id=curso.id)  # Redirige al detalle del curso actual
-
-    # Obtener la lista de todos los alumnos
-    todos_alumnos = Alumnos.objects.all()
-
-    # Obtener los alumnos que ya están asignados al curso
-    alumnos_asignados = curso.alumnos.all()
-
-    # Filtrar la lista de alumnos para mostrar solo los que no están asignados
-    alumnos_disponibles = todos_alumnos.exclude(pk__in=alumnos_asignados.values_list('pk', flat=True))
+        messages.success(request, f'Alumnos asignados al curso {curso}')
+        return redirect('cursos_list')  # Redirige a la lista de cursos
 
     context = {
-        'curso': curso,  # El curso que se está viendo actualmente
-        'alumnos_disponibles': alumnos_disponibles,
-        'alumnos_asignados': alumnos_asignados,
-        'año': curso.años,  # Pasa el año del curso actual
-        'division': curso.Division,  # Pasa la división del curso actual
-        'divisions': Division.objects.all()  # Pasa una lista de Divisiones
+        'curso': curso,
+        'alumnos': alumnos,
     }
     return render(request, 'agregar_alumno_curso.html', context)
 

@@ -1,38 +1,37 @@
 {% extends "base.html" %}
-
 {% block content %}
-<h2>Agregar Alumnos a {{ curso.años }} - {{ curso.Division }}</h2>
+<main>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">Asignar Alumnos al Curso {{ curso.años }} - {{ curso.Division }}</h1>
+      </div>
+    </div>
 
-<form method="post">
-  {% csrf_token %}
-  <div class="form-group">
-    <label for="alumnos">Seleccionar Alumnos:</label>
-    <select multiple class="form-control" id="alumnos" name="alumnos">
-      {% for alumno in alumnos_disponibles %}
-        <option value="{{ alumno.pk }}">{{ alumno }}</option>
-      {% endfor %}
-    </select>
+    <form method="POST" action="{% url 'agregar_alumno_curso' curso.id %}">
+      {% csrf_token %}
+      <table class="table table-striped table-hover">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>DNI</th>
+            <th>Edad</th>
+            <th>Seleccionar</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for alumno in alumnos %}
+          <tr>
+            <td>{{ alumno.Apellidos }} {{ alumno.Nombres }}</td>
+            <td>{{ alumno.DNI }}</td>
+            <td>{{ alumno.Edad }}</td>
+            <td><input type="checkbox" name="alumnos" value="{{ alumno.pk }}"></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-primary">Asignar Alumnos</button>
+    </form>
   </div>
-  <div class="form-group">
-    <label for="año">Año:</label>
-    <input type="text" class="form-control" id="año" name="año" value="{{ año }}" readonly>
-  </div>
-  <div class="form-group">
-    <label for="division">División:</label>
-    <select class="form-control" id="division" name="division">
-      {% for division in divisions %}
-        <option value="{{ division.pk }}" {% if division.pk == curso.Division.pk %}selected{% endif %}>{{ division }}</option>  # Corregido: se compara con curso.Division.pk
-      {% endfor %}
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary">Agregar Alumnos</button>
-</form>
-
-<h3>Alumnos Asignados:</h3>
-<ul>
-  {% for alumno in alumnos_asignados %}
-    <li>{{ alumno }}</li>
-  {% endfor %}
-</ul>
-
+</main>
 {% endblock %}
