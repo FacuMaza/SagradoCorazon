@@ -17,11 +17,12 @@
               <tr>
                 <th>Nombre</th>
                 <th>Apellido</th>
+
                 <!-- Agrega otras columnas según la información que quieras mostrar -->
               </tr>
             </thead>
             <tbody>
-              {% for alumno in alumnos %}
+              {% for alumno in object_list %}
               <tr>
                 <td>{{ alumno.Nombres }}</td>
                 <td>{{ alumno.Apellidos }}</td>

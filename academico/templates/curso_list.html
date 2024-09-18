@@ -30,7 +30,7 @@
                         data-toggle="modal" data-target="#cursoEditModal{{ curso.pk }}">Editar</button> | 
                 <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
                         data-toggle="modal" data-target="#cursoDeleteModal{{ curso.pk }}">Eliminar</button>
-                        <a href="{% url 'agregar_alumno_curso' curso.id %}">Asiganar Alumnos</a>
+                        <br><a href="{% url 'agregar_alumno_curso' curso.id %}">Asignar Alumnos</a>
               </td>
             </tr>
             {% endfor %}
@@ -53,7 +53,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="cursoDetailsModalLabel">Detalles del Curso - {{ curso.años }} - {{ curso.Division }}</h5>
+            <h5 class="modal-title" id="cursoDetailsModalLabel">Detalles del Curso {{ curso.años }} - {{ curso.Division }}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
@@ -61,10 +61,6 @@
           <div class="modal-body">
             <table class="table table-striped">
               <thead>
-                <tr>
-                  <th style="width: 30%;">Campo</th>
-                  
-                </tr>
               </thead>
               <tbody>
                 <tr>
@@ -75,10 +71,17 @@
                   <td>División</td>
                   <td>{{ curso.Division }}</td>
                 </tr>
-                
                 <tr>
-                  <td>Tutor</td>
-                  <td>{{ curso.Tutor }}</td>  <!-- Muestra el nombre del docente -->
+                  <td>Nivel</td>
+                  <td>{{ curso.Nivels }}</td>
+                </tr>
+                <tr>
+                  <td>Materias</td>
+                  <td>
+                  {% for materia in curso.Materias.all %}
+                  <p>{{ materia.Denominación }} - (Prof. {{ materia.Docente_Titular }})</p>
+                  {% endfor %}
+                  </td>
                 </tr>
               </tbody>
             </table>
