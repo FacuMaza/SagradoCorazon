@@ -87,7 +87,7 @@ class CuotasAdmin(admin.ModelAdmin):
 
 @admin.register(Cursos)
 class CursosAdmin(admin.ModelAdmin):
-    list_display = ( 'Division', 'get_materias',) 
+    list_display = ( 'id','años','Division', 'get_materias',) 
     search_fields = ( 'Division__Division', 'Nivel__Nivel',) # Buscar por campos relacionados
     list_filter = ( 'Division',) 
     filter_horizontal = ('Materias',) # Usa filter_horizontal para la relación ManyToMany

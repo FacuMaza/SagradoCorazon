@@ -99,7 +99,7 @@
                   <td>{{ alumno.Domicilio }}</td>
                 </tr>
                 <tr>
-                    <td>curso</td>
+                    <td>Curso</td>
                     <td>{{ alumno.curso }}</td>
                   </tr>
                   <tr>
@@ -220,7 +220,7 @@
               <div class="form-group">
                 <label for="id_curso">Curso:</label>
                 <select class="form-control" id="id_curso" name="curso">
-                    {% for c in curso %}
+                    {% for c in Curso %}
                         <option value="{{ c.pk }}" {% if alumno.curso.pk == c.pk %}selected{% endif %}>{{ c }}</option>
                     {% endfor %}
                 </select>

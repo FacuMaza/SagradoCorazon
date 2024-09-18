@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Cursos, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor, notas
 from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
+from django.views.generic import ListView
 
 def index(request):
     return render(request, "index.html")
@@ -324,7 +325,7 @@ def lista_alumnos(request):
     Localidades = Localidad.objects.all()
     context = {'alumnos': alumnos,
                'Familias':Familias,
-               'curso': curso,
+               'Curso': curso,
                'Casa': Casa,
                'Lugar_Nacimientos': Lugar_Nacimientos,
                'Nacionalidades': Nacionalidades,
@@ -772,7 +773,17 @@ def agregar_alumno_curso(request, curso_id):
     return render(request, 'agregar_alumno_curso.html', context)
 
 
-def alumnos_por_materia(request, materia_id):
+class AlumnosListView(ListView):
+    model = Alumnos
+    template_name = 'alumnos_por_materia.html'
+    
+    def get_queryset(self):
+        curso_id = self.kwargs['curso_id']
+        return Alumnos.objects.filter(curso_id=curso_id)
+ 
+ 
+ 
+"""
     materia = get_object_or_404(Materias, pk=materia_id)
 
     # Obtener los cursos asociados a la materia
@@ -793,36 +804,4 @@ def alumnos_por_materia(request, materia_id):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+"""
