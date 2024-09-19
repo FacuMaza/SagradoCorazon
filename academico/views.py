@@ -735,10 +735,9 @@ def materias_curso(request, curso_id):
 
 
 # AGREGAR ALUMNO CURSO
-def agregar_alumno_curso(request, curso_id,materia_id):
+def agregar_alumno_curso(request, curso_id):
     curso = Cursos.objects.get(pk=curso_id)
     alumnos = Alumnos.objects.filter(curso__isnull=True)  # Alumnos sin curso
-    materias = Materias.objects.filter(pk=materia_id)
 
     if request.method == 'POST':
         selected_alumnos_ids = request.POST.getlist('alumnos')
@@ -754,12 +753,11 @@ def agregar_alumno_curso(request, curso_id,materia_id):
     context = {
         'curso': curso,
         'alumnos': alumnos,
-        'materias': materias,
     }
-    return render(request, 'agregar_alumnos_curso.html', context)
+    return render(request, 'agregar_alumno_curso.html', context)
 
 
-class AlumnosListView( ListView):
+class AlumnosListView(ListView):
     model = Alumnos
     template_name = 'alumnos_por_materia.html'
     form_class = NotasForm
@@ -773,36 +771,31 @@ class AlumnosListView( ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['materia'] = Materias.objects.get(pk=self.kwargs['materia_id'])
-        context['notas_por_alumno'] = self.get_notas_por_alumno()
+        materia = get_object_or_404(Materias, pk=self.kwargs['materia_id'])
+        context['materia'] = materia
         context['curso_id'] = self.kwargs['curso_id']
-        return context
 
-    def get_notas_por_alumno(self):
-        curso_id = self.kwargs['curso_id']
-        materia_id = self.kwargs['materia_id']
-        alumnos = Alumnos.objects.filter(curso_id=curso_id)
-        notas_por_alumno = {}
-        for alumno in alumnos:
-            nota = notas.objects.filter(alumno=alumno, materia_id=materia_id).first()
+        # Obtener las notas de cada alumno en la materia
+        for alumno in context['alumnos']:
+            # Busca las notas del alumno en la materia actual
+            nota = notas.objects.filter(alumno=alumno, materia=materia).first()
             if nota:
-                notas_por_alumno[alumno.id] = nota
+                alumno.notas = nota
             else:
-                # Crea una nota vacía para el alumno
-                notas_por_alumno[alumno.id] = notas(alumno=alumno, materia_id=materia_id)
-        return notas_por_alumno
+                # Si no hay notas para el alumno en esta materia, crea una instancia vacía
+                alumno.notas = notas()
+
+        return context
 
 # Vista para actualizar las notas de un alumno
 class UpdateNotasView(FormView):
     form_class = NotasForm
     template_name = 'update_notas.html'
 
-    
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # Usa self.kwargs dentro de get_context_data para obtener los valores de la URL
-        context['success_url'] = reverse_lazy('alumnos_por_materia', args=[self.kwargs['curso_id'], self.kwargs['materia_id']])
+        context['alumno'] = Alumnos.objects.get(pk=self.kwargs['alumno_id'])
         return context
 
     def get_form_kwargs(self):
@@ -850,6 +843,12 @@ class UpdateNotasView(FormView):
         )
 
         return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirige al listado de alumnos de la materia luego de guardar las notas
+        curso_id = self.kwargs['curso_id']
+        materia_id = self.kwargs['materia_id']
+        return reverse_lazy('alumnos_por_materia', args=[curso_id, materia_id])
  
  
  
