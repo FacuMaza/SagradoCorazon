@@ -201,7 +201,7 @@
               <!-- Fecha de Nacimiento del alumno -->
               <div class="form-group">
                 <label for="id_Fecha_Nacimiento">Fecha de Nacimiento:</label>
-                <input type="date" class="form-control" id="id_Fecha_Nacimiento" name="Fecha_Nacimiento" value="{{ alumno.Fecha_Nacimiento }}">
+                <input type="text" class="form-control" id="id_Fecha_Nacimiento" name="Fecha_Nacimiento" value="{{ alumno.Fecha_Nacimiento|date:"Y-m-d" }}">
               </div>
               <div class="form-group">
                 <label for="id_Casa">Casa:</label>

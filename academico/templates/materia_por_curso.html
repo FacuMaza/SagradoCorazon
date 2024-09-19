@@ -21,7 +21,7 @@
             <tbody>
               {% for materia in materias_del_curso %}
               <tr>
-                <td><a href="{% url 'alumnos_por_materia' curso.id %}">{{ materia.Denominación }}</a></td> 
+                <td><a href="{% url 'alumnos_por_materia' curso.id materia.id %}">{{ materia.Denominación }}</a></td> 
                 <td>
                     <!-- Agrega botones para acciones específicas de la materia -->
                   </td>

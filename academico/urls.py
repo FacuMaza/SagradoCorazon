@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from academico import views
-from .views import AlumnosListView
+from .views import AlumnosListView, UpdateNotasView
 
 urlpatterns = [
     path('', views.index, name= "index"),
@@ -177,6 +177,7 @@ urlpatterns += [
 urlpatterns += [
    
     path('curso/<int:curso_id>/agregar_alumnos/', views.agregar_alumno_curso, name='agregar_alumno_curso'),
-    path('materia/<int:curso_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_por_materia'),
+    path('materia/<int:curso_id>/<int:materia_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_por_materia'),
+    path('materia/<int:curso_id>/<int:materia_id>/alumnos/<int:alumno_id>/notas/', UpdateNotasView.as_view(), name='update_notas'),
     path('curso/<int:curso_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_list'),
 ]

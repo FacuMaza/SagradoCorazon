@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 
 
@@ -229,6 +230,14 @@ class Alumnos(models.Model):
 
     def __str__(self):
         return '%s %s '%(self.Apellidos, self.Nombres)
+    
+    def save(self, *args, **kwargs):
+        # Calculate age when saving
+        if self.Fecha_Nacimiento:
+            today = date.today()
+            age = today.year - self.Fecha_Nacimiento.year - ((today.month, today.day) < (self.Fecha_Nacimiento.month, self.Fecha_Nacimiento.day))
+            self.Edad = age
+        super(Alumnos, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'Alumnos'

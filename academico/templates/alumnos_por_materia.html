@@ -17,16 +17,45 @@
               <tr>
                 <th>Nombre</th>
                 <th>Apellido</th>
-
                 <!-- Agrega otras columnas según la información que quieras mostrar -->
+                <th>Participación en clases</th>
+                <th>TP Individual 1</th>
+                <th>TP Individual 2</th>
+                <th>Lección Oral Individual</th>
+                <th>Evaluación Escrita</th>
+                <th>Exposición Grupal .Nota Grupal</th>
+                <th>Exposición Grupal .Nota Individual</th>
+                <th>Exposición Grupal .Soporte Presentación</th>
+                <th>Laboratorio/Taller</th>
+                <th>Carpeta</th>
+                <th>Material</th>
+                <th>Conducta</th>
+                <th>Acciones</th>
+                <!-- ... Agrega las demás columnas para las notas -->
               </tr>
             </thead>
             <tbody>
-              {% for alumno in object_list %}
+              {% for alumno in alumnos %}
               <tr>
                 <td>{{ alumno.Nombres }}</td>
                 <td>{{ alumno.Apellidos }}</td>
                 <!-- Agrega otras columnas según la información que quieras mostrar -->
+                <td>{{ notas_por_alumno.get.alumno.id.participacion_en_clases|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.tp_individual_1|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.tp_individual_2|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.leccion_oral_individual|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.evaluacion_escrita|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.exposicion_grupal_nota_grupal|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.exposicion_grupal_nota_individual|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.exposicion_grupal_soporte_presentacion|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.laboratorio_taller|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.carpeta|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.material|default_if_none:'' }}</td>
+                <td>{{ notas_por_alumno.get.alumno.id.conducta|default_if_none:'' }}</td>
+                <td>
+                  <a href="{% url 'update_notas' curso_id=curso_id materia_id=materia.id alumno_id=alumno.id %}" class="btn btn-primary btn-sm">Editar</a>
+                </td>
+                <!-- ... Agrega las demás columnas para las notas -->
               </tr>
               {% endfor %}
             </tbody>
@@ -34,6 +63,7 @@
         </div>
       </div>
     </div>
+
     <div class="row justify-content-center mt-3">
       <div class="col-md-8 text-center">
         <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="location.href='{% url 'cursos_list' %}'">Volver a la lista de cursos</button>

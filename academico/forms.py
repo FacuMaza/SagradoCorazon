@@ -149,8 +149,6 @@ class NotasForm(forms.ModelForm):
     class Meta:
         model = notas
         fields = [
-            'alumno',
-            'materia',
             'participacion_en_clases',
             'tp_individual_1',
             'tp_individual_2',
@@ -165,5 +163,21 @@ class NotasForm(forms.ModelForm):
             'conducta',
         ]
         widgets = {
-            'materias': forms.CheckboxSelectMultiple,
+            'participacion_en_clases': forms.TextInput,
+            'tp_individual_1': forms.TextInput,
+            'tp_individual_2': forms.TextInput,
+            'leccion_oral_individual': forms.TextInput,
+            'evaluacion_escrita': forms.TextInput,
+            'exposicion_grupal_nota_grupal': forms.TextInput,
+            'exposicion_grupal_nota_individual': forms.TextInput,
+            'exposicion_grupal_soporte_presentacion': forms.TextInput,
+            'laboratorio_taller': forms.TextInput,
+            'carpeta': forms.TextInput,
+            'material': forms.TextInput,
+            'conducta': forms.TextInput,
         }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            for field in self.fields:
+                self.fields[field].required = False
