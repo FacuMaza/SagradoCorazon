@@ -756,6 +756,29 @@ def agregar_alumno_curso(request, curso_id):
     }
     return render(request, 'agregar_alumno_curso.html', context)
 
+def quitar_alumno_curso(request, curso_id):
+    curso = Cursos.objects.get(pk=curso_id)
+
+    # Obtener todos los alumnos asociados al curso (usando la relación curso)
+    alumnos_curso = Alumnos.objects.filter(curso=curso) 
+
+    if request.method == 'POST':
+        # Obtener los IDs de los alumnos seleccionados desde el formulario
+        selected_alumnos_ids = request.POST.getlist('alumnos_ids')
+
+        # Eliminar los alumnos seleccionados del curso
+        for alumno_id in selected_alumnos_ids:
+            alumno = Alumnos.objects.get(pk=alumno_id)
+            # Eliminamos el alumno del curso 
+            alumno.curso = None # Desasignamos el curso del alumno
+            alumno.save() # Guardamos el cambio en la base de datos
+
+        return redirect('cursos_list')  # Redirige a la lista de cursos
+
+    return render(request, 'quitar_alumno_curso.html', {
+        'curso': curso,
+        'alumnos_curso': alumnos_curso,
+    })
 
 class AlumnosListView(ListView):
     model = Alumnos
