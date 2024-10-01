@@ -171,6 +171,7 @@ urlpatterns += [
 #AGREGAR MATERIAS EN CURSOS
 urlpatterns += [
      path('materias_curso/<int:curso_id>/', views.materias_curso, name='materias_curso'),
+   
 ]
 
 #AGREGAR ALUMNOS EN CURSOS
@@ -181,4 +182,8 @@ urlpatterns += [
     path('materia/<int:curso_id>/<int:materia_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_por_materia'),
     path('materia/<int:curso_id>/<int:materia_id>/alumnos/<int:alumno_id>/notas/', UpdateNotasView.as_view(), name='update_notas'),
     path('curso/<int:curso_id>/alumnos/', AlumnosListView.as_view(), name='alumnos_list'),
+
+    path('alumno/<int:alumno_id>/', views.alumno_detalle, name='alumno_detalle'),
+
+    
 ]

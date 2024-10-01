@@ -197,7 +197,7 @@ class Cursos(models.Model):
     Nivels = models.CharField(max_length=1, choices=nivel, default=1)
 
     def __str__(self):
-        return '%s - %s '% (self.get_años_display() - self.Division)
+        return '%s - %s %s'%(self.id, self.años, self.Division)
 
     class Meta:
         db_table = 'Cursos'

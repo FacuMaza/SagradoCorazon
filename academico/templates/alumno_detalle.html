@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <div class="container-fluid mt-4"> 
+    <div class="row justify-content-center">
+      <div class="col-12 text-center">
+        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">
+          {{ alumno.Nombres }} {{ alumno.Apellidos }}
+        </h1>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover w-100">
+            <thead>
+              <tr>
+                <th>Materia</th>
+                <th>Participación en clases</th>
+                <th>TP Individual 1</th>
+                <th>TP Individual 2</th>
+                <th>Lección Oral Individual</th>
+                <th>Evaluación Escrita</th>
+                <th>Exposición Grupal .Nota Grupal</th>
+                <th>Exposición Grupal .Nota Individual</th>
+                <th>Exposición Grupal .Soporte Presentación</th>
+                <th>Laboratorio/Taller</th>
+                <th>Carpeta</th>
+                <th>Material</th>
+                <th>Conducta</th>
+                <!-- ... Agrega las demás columnas para las notas -->
+              </tr>
+            </thead>
+            <tbody>
+              {% for materia in materias %}
+                <tr>
+                  <td>{{ materia.Denominación }}</td>
+                  {% for nota in notas_alumno %}
+                    {% if nota.materia == materia %}
+                      <td>{{ nota.participacion_en_clases|default:"" }}</td>
+                      <td>{{ nota.tp_individual_1|default:"" }}</td>
+                      <td>{{ nota.tp_individual_2|default:"" }}</td>
+                      <td>{{ nota.leccion_oral_individual|default:"" }}</td>
+                      <td>{{ nota.evaluacion_escrita|default:"" }}</td>
+                      <td>{{ nota.exposicion_grupal_nota_grupal|default:"" }}</td>
+                      <td>{{ nota.exposicion_grupal_nota_individual|default:"" }}</td>
+                      <td>{{ nota.exposicion_grupal_soporte_presentacion|default:"" }}</td>
+                      <td>{{ nota.laboratorio_taller|default:"" }}</td>
+                      <td>{{ nota.carpeta|default:"" }}</td>
+                      <td>{{ nota.material|default:"" }}</td>
+                      <td>{{ nota.conducta|default:"" }}</td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center mt-3">
+      <div class="col-md-8 text-center">
+        <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="location.href='{% url 'cursos_list' %}'">Volver a la lista de cursos</button>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

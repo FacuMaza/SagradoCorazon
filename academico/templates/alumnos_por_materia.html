@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
       <div class="col-12 text-center">
         <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">
-          Alumnos de la materia: {{ materia.Denominación }}
+          {{ materia.Denominación }}
         </h1>
       </div>
     </div>
@@ -35,7 +35,11 @@
             <tbody>
               {% for alumno in alumnos %}
               <tr>
-                <td>{{ alumno.Nombres }} {{ alumno.Apellidos }}</td>
+                <td>
+                  <a href="{% url 'alumno_detalle' alumno_id=alumno.id %}" class="btn btn-link">
+                    {{ alumno.Nombres }} {{ alumno.Apellidos }}
+                  </a>
+                </td>
                 
                 <!-- Agrega otras columnas según la información que quieras mostrar -->
                 <td>{{ alumno.notas.participacion_en_clases|default:"" }}</td>

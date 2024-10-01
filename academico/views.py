@@ -875,25 +875,23 @@ class UpdateNotasView(FormView):
  
  
  
-"""
-    materia = get_object_or_404(Materias, pk=materia_id)
+def alumno_detalle(request, alumno_id, ):
+    alumno = get_object_or_404(Alumnos, pk=alumno_id)
+    
+    # Obtener las notas del alumno en todas las materias
+    notas_alumno = notas.objects.filter(alumno=alumno)
 
-    # Obtener los cursos asociados a la materia
-    cursos_de_la_materia = Cursos.objects.filter(Materias=materia)
-
-    # Obtener los alumnos de esos cursos
-    alumnos = []
-    for curso in cursos_de_la_materia:
-        alumnos_del_curso = curso.alumnos.all()  # Obtiene los alumnos del curso actual
-        alumnos.extend(alumnos_del_curso)  # Agrega los alumnos a la lista
+    # Obtener las materias del alumno
+    materias = []
+    for nota in notas_alumno:
+        if nota.materia not in materias:
+            materias.append(nota.materia)
 
     context = {
-        'materia': materia,
-        'alumnos': alumnos
+        'alumno': alumno,
+        'notas_alumno': notas_alumno,
+        'materias': materias,
+        
+        
     }
-
-    return render(request, 'alumnos_por_materia.html', context)
-
-
-
-"""
+    return render(request, 'alumno_detalle.html', context)

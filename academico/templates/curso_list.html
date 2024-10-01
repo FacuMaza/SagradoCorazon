@@ -21,15 +21,13 @@
             <tr>
               <td>
                 <!-- Enlaza el nombre del curso a la vista de materias -->
-                <a href="{% url 'materias_curso' curso.pk %}">{{ curso.get_años_display }} {{ curso.Division }}</a> 
+                <a href="{% url 'materias_curso' curso.pk %}">{{ curso.años }} {{ curso.Division }}</a> 
               </td>
               <td>
                 <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
-                        data-toggle="modal" data-target="#cursoDetailsModal{{ curso.pk }}">Detalle</button> | 
-                <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" 
-                        data-toggle="modal" data-target="#cursoEditModal{{ curso.pk }}">Editar</button> | 
+                        data-toggle="modal" data-target="#cursoDetailsModal{{ curso.pk }}">Detalle</button> |  
                 <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
-                        data-toggle="modal" data-target="#cursoDeleteModal{{ curso.pk }}">Eliminar</button> | 
+                        data-toggle="modal" data-target="#cursoDeleteModal{{ curso.pk }}">Eliminar</button>
                 <br><br><a href="{% url 'agregar_alumno_curso' curso.id %}" class="btn" style="background-color: rgb(31,40,81); color: white;">Asignar Alumnos</a> | 
                 <a href="{% url 'quitar_alumno_curso' curso.id %}" class="btn" style="background-color: rgb(190,43,39); color: white;">Quitar Alumnos</a> 
               </td>
