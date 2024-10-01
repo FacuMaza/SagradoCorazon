@@ -21,4 +21,6 @@ from django.urls.conf import include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('academico.urls')),
+    path('contable/',include('contable.urls')),
+
 ]

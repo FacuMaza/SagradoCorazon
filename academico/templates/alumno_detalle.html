@@ -60,11 +60,54 @@
       </div>
     </div>
 
-    <div class="row justify-content-center mt-3">
+    <div class="row justify-content-center mt-3" id="buttons-container">
       <div class="col-md-8 text-center">
+        <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="window.print()">Imprimir</button>
         <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" onclick="location.href='{% url 'cursos_list' %}'">Volver a la lista de cursos</button>
       </div>
     </div>
   </div>
 </main>
+
+<script>
+  function hideButtons() {
+    document.getElementById("buttons-container").style.display = "none";
+  }
+
+  window.addEventListener('beforeprint', hideButtons);
+
+  window.addEventListener('afterprint', function() {
+    document.getElementById("buttons-container").style.display = "block";
+  });
+
+  // Para impresión completa y apaisada
+  window.addEventListener('beforeprint', function() {
+    // Añade un estilo que imprime la página completa en apaisado
+    var style = document.createElement('style');
+    style.innerHTML = `
+      @media print {
+        body {
+          margin: 0;
+        }
+        @page {
+          size: landscape; /* Define el tamaño de la página como apaisado */
+        }
+        table {
+          width: 100%; /* Ajusta la tabla al ancho de la página */
+          font-size: 10px; /* Ajusta el tamaño de la fuente para que quepa todo */
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  });
+
+  window.addEventListener('afterprint', function() {
+    // Elimina el estilo temporal creado para la impresión
+    var style = document.querySelector('style[media="print"]');
+    if (style) {
+      document.head.removeChild(style);
+    }
+  });
+</script>
+
 {% endblock %}

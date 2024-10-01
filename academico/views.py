@@ -877,6 +877,7 @@ class UpdateNotasView(FormView):
  
 def alumno_detalle(request, alumno_id, ):
     alumno = get_object_or_404(Alumnos, pk=alumno_id)
+    materias = Materias.objects.all()  # Obtener todas las materias
     
     # Obtener las notas del alumno en todas las materias
     notas_alumno = notas.objects.filter(alumno=alumno)
@@ -891,6 +892,7 @@ def alumno_detalle(request, alumno_id, ):
         'alumno': alumno,
         'notas_alumno': notas_alumno,
         'materias': materias,
+        
         
         
     }
