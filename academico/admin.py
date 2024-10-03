@@ -73,11 +73,21 @@ class LocalidadAdmin(admin.ModelAdmin):
     list_display = ('Localidad',)
     search_fields = ('Localidad',)
 
+
+@admin.register(mes_año)
+class mes_año(admin.ModelAdmin):
+    list_display = ('codigo_mes',  'descripcion',)
+    search_fields = ('codigo_mes', 'descripcion', )  
+    list_filter = ( 'codigo_mes','descripcion',) 
+
+
+
+
 @admin.register(Cuotas)
 class CuotasAdmin(admin.ModelAdmin):
-    list_display = ('Alumnos',  'Fecha_hora', 'Pagado',)
-    search_fields = ('Alumnos__apellidos', 'Alumnos__nombres',  'Fecha_hora',)  # Buscar por campos relacionados
-    list_filter = ( 'Pagado',) 
+    list_display = ('Alumnos',  'Monto_cuota', 'Mes_año','Tutor',)
+    search_fields = ('Alumnos', 'Monto_cuota',  'Mes_año','Tutor',)  # Buscar por campos relacionados
+    list_filter = ( 'Alumnos',) 
 
     # Puedes añadir más opciones a tu administrador aquí:
     #  -  ordering = ('Mes_año',) # para ordenar por mes y año

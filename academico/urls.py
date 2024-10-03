@@ -108,13 +108,13 @@ urlpatterns += [
                     ##CUOTAS
 
 
-urlpatterns += [
-    path('cuotas/', views.cuotas_list, name='cuotas_list'),
-    path('cuotas/<int:pk>/', views.cuota_detail, name='cuota_detail'),
-    path('cuotas/create/', views.cuota_create, name='cuota_create'),
-    path('cuotas/<int:pk>/update/', views.cuota_update, name='cuota_update'),
-    path('cuotas/<int:pk>/delete/', views.cuota_delete, name='cuota_delete'),
-]
+# urlpatterns += [
+#     path('cuotas/', views.cuotas_list, name='cuotas_list'),
+#     path('cuotas/<int:pk>/', views.cuota_detail, name='cuota_detail'),
+#     path('cuotas/create/', views.cuota_create, name='cuota_create'),
+#     path('cuotas/<int:pk>/update/', views.cuota_update, name='cuota_update'),
+#     path('cuotas/<int:pk>/delete/', views.cuota_delete, name='cuota_delete'),
+# ]
 
 
 urlpatterns += [

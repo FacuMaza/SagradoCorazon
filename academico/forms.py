@@ -74,14 +74,14 @@ class ValorForm(forms.ModelForm):
 
 
 
-class CuotaForm(forms.ModelForm):
-    class Meta:
-        model = Cuotas
-        fields = ['Alumnos', 'Mes_año', 'Fecha_hora', 'Pagado']
-        widgets = {
-            'Mes_año': forms.DateInput(attrs={'type': 'date'}),
-            'Fecha_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-        }
+# class CuotaForm(forms.ModelForm):
+#     class Meta:
+#         model = Cuotas
+#         fields = ['Alumnos', 'Mes_año', 'Fecha_hora', 'Pagado']
+#         widgets = {
+#             'Mes_año': forms.DateInput(attrs={'type': 'date'}),
+#             'Fecha_hora': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+#         }
 
 
 class DivisionForm(forms.ModelForm):

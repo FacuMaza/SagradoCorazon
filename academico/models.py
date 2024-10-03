@@ -269,20 +269,44 @@ class Asistencias(models.Model):
         verbose_name = 'Asistencia'
         verbose_name_plural = 'Asistencias'
 
+class mes_año(models.Model):
+    codigo_mes = models.IntegerField(default=None)
+    descripcion = models.CharField(max_length=20)
+
+    def __str__(self):
+        return '%s %s '%(self.codigo_mes, self.descripcion)
+
+    class Meta:
+        db_table = 'mes_años'
+        verbose_name = 'mes_año'
+        verbose_name_plural = 'mes_años'
+
+
+
+
 
 class Cuotas(models.Model):
     Alumnos = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
-    Mes_año = models.DateField(default=None)
-    Fecha_hora = models.DateTimeField()
+    Tutor = models.ForeignKey(Tutores, on_delete=models.CASCADE,default=None)
+    Mes_año = models.ForeignKey(mes_año, on_delete=models.CASCADE) ## MES Y AÑO QUE SE ABONA LA CUOTA
+    Fecha_hora_del_pago = models.DateField(default=None) ## FECHA Y HORA DEL PAGO DE LA CUOTA
+    Monto_cuota = models.FloatField(default=200000)
     Pagado = models.BooleanField(default=False)
+    Anticipado = models.BooleanField(default=False)
+    Anticipado_pagado = models.BooleanField(default=False)
+    Extraordinario = models.CharField(max_length=255, default=None, blank=True)
 
     def __str__(self):
-        return '%s %s '%(self.Alumnos)
+        return '%s %s '%(self.Alumnos, self.Mes_año)
 
     class Meta:
         db_table = 'Cuotas'
         verbose_name = 'Cuota'
         verbose_name_plural = 'Cuotas'
+
+
+
+
 
 
 class notas(models.Model):

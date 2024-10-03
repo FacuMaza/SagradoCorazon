@@ -3,8 +3,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy
-from .models import Alumnos, Asistencias, Casas, Colegios, Cuotas, Cursos, Division, Docentes, Familia, Localidad, Lugar_Nacimiento, Materias, Nacionalidad, Nivel, Nivel_Docente, Parentezco, Titulos_Profesionales, Tutores, Valor, notas
-from .forms import AlumnosForm, AsistenciaForm, CuotaForm, CursosForm, DivisionForm, DocenteForm, FamiliaForm, MateriaForm, NivelDocenteForm, NivelForm, NotasForm, ParentezcoForm, TitulosProfesionalesForm, TutorForm, ValorForm
+from .models import *
+from .forms import *
 from django.views.generic import ListView, UpdateView, FormView
 
 def index(request):
@@ -447,49 +447,49 @@ def asistencia_edit(request, pk):
                                 ##CUOTAS
 
 
-def cuotas_list(request):
-    cuotas = Cuotas.objects.all()
-    context = {'cuotas': cuotas}
-    return render(request, 'cuotas_list.html', context)
+# def cuotas_list(request):
+#     cuotas = Cuotas.objects.all()
+#     context = {'cuotas': cuotas}
+#     return render(request, 'cuotas_list.html', context)
 
-def cuota_detail(request, pk):
-    cuota = get_object_or_404(Cuotas, pk=pk)
-    context = {'cuota': cuota}
-    return render(request, 'cuota_detail.html', context)
+# def cuota_detail(request, pk):
+#     cuota = get_object_or_404(Cuotas, pk=pk)
+#     context = {'cuota': cuota}
+#     return render(request, 'cuota_detail.html', context)
 
-def cuota_create(request):
-    if request.method == 'POST':
-        form = CuotaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Cuota creada correctamente')
-            return redirect('cuotas:cuotas_list')
-    else:
-        form = CuotaForm()
-    context = {'form': form}
-    return render(request, 'cuota_form.html', context)
+# def cuota_create(request):
+#     if request.method == 'POST':
+#         form = CuotaForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Cuota creada correctamente')
+#             return redirect('cuotas:cuotas_list')
+#     else:
+#         form = CuotaForm()
+#     context = {'form': form}
+#     return render(request, 'cuota_form.html', context)
 
-def cuota_update(request, pk):
-    cuota = get_object_or_404(Cuotas, pk=pk)
-    if request.method == 'POST':
-        form = CuotaForm(request.POST, instance=cuota)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Cuota actualizada correctamente')
-            return redirect('cuotas:cuota_detail', pk=cuota.pk)
-    else:
-        form = CuotaForm(instance=cuota)
-    context = {'form': form, 'cuota': cuota}
-    return render(request, 'cuota_form.html', context)
+# def cuota_update(request, pk):
+#     cuota = get_object_or_404(Cuotas, pk=pk)
+#     if request.method == 'POST':
+#         form = CuotaForm(request.POST, instance=cuota)
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Cuota actualizada correctamente')
+#             return redirect('cuotas:cuota_detail', pk=cuota.pk)
+#     else:
+#         form = CuotaForm(instance=cuota)
+#     context = {'form': form, 'cuota': cuota}
+#     return render(request, 'cuota_form.html', context)
 
-def cuota_delete(request, pk):
-    cuota = get_object_or_404(Cuotas, pk=pk)
-    if request.method == 'POST':
-        cuota.delete()
-        messages.success(request, 'Cuota eliminada correctamente')
-        return redirect('cuotas:cuotas_list')
-    context = {'cuota': cuota}
-    return render(request, 'cuota_confirm_delete.html', context)
+# def cuota_delete(request, pk):
+#     cuota = get_object_or_404(Cuotas, pk=pk)
+#     if request.method == 'POST':
+#         cuota.delete()
+#         messages.success(request, 'Cuota eliminada correctamente')
+#         return redirect('cuotas:cuotas_list')
+#     context = {'cuota': cuota}
+#     return render(request, 'cuota_confirm_delete.html', context)
 
 
 
