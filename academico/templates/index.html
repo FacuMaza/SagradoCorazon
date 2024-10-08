@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {%block content%}
-
+{% if request.user.is_authenticated %}
+    Usuario activo: {{ request.user.username }} | 
+    <form action="{% url 'logout' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Salir</button>
+    </form>
+{% else %}
+    <p><a href="{% url 'login' %}">Ingresar</a></p>
+{% endif %}
 {%endblock%}

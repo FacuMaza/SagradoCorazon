@@ -1,0 +1,48 @@
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+    body {
+        background-image: url("{% static 'img/image.png' %}");
+        background-size: contain; /* Ajusta la imagen para que quepa dentro del viewport */
+        background-repeat: no-repeat;
+        background-position: center; /* Centra la imagen */
+        min-height: 100vh; /* Se asegura que el fondo sea tan alto como la ventana */
+    }
+
+    .watermark {
+        background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente */
+        padding: 30px;
+        position: absolute; /* Permite posicionar el elemento */
+        top: 50%; /* Centra verticalmente */
+        left: 50%; /* Centra horizontalmente */
+        transform: translate(-50%, -50%); /* Ajusta la posición */
+        width: 60%; /* Define el ancho de la marca de agua */
+        max-width: 500px; /* Define el ancho máximo de la marca de agua */
+        border-radius: 10px; /* Agrega esquinas redondeadas */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Añade una sombra */
+        z-index: 1; /* Coloca la marca de agua por encima de la imagen de fondo */
+    }
+
+    .watermark form {
+        width: 100%;
+    }
+</style>
+
+<div class="watermark">
+    <form method="POST" class="shadow p-4 rounded">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Nombre de Usuario:</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Contraseña:</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+    </form>
+</div>
+
+{% endblock %}

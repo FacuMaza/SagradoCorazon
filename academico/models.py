@@ -282,9 +282,6 @@ class mes_año(models.Model):
         verbose_name_plural = 'mes_años'
 
 
-
-
-
 class Cuotas(models.Model):
     Alumnos = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
     Tutor = models.ForeignKey(Tutores, on_delete=models.CASCADE,default=None)
@@ -303,9 +300,6 @@ class Cuotas(models.Model):
         db_table = 'Cuotas'
         verbose_name = 'Cuota'
         verbose_name_plural = 'Cuotas'
-
-
-
 
 
 

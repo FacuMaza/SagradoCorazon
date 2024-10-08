@@ -1,4 +1,6 @@
 from pyexpat.errors import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -7,8 +9,36 @@ from .models import *
 from .forms import *
 from django.views.generic import ListView, UpdateView, FormView
 
+
+
+
+
+def exit(request):
+    if request.method == 'POST':
+        logout(request)
+        return redirect('login')
+    else:
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
 def index(request):
-    return render(request, "index.html")
+    return render(request, 'index.html')
+
+
 def configuracion(request):
     return render(request, "baseconfiguracion.html")
 

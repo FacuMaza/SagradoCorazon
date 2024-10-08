@@ -7,6 +7,11 @@ urlpatterns = [
     path('', views.index, name= "index"),
 ]
 
+path('logout/',views.exit,name='logout'), #SALIR
+
+
+
+
 ##URLS DE TUTORES
 
 urlpatterns += [
