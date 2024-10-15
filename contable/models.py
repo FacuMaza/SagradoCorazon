@@ -3,8 +3,9 @@ from django.db import models
 from academico.models import *
  
 
-class matricula (models.Model):
+class Matricula(models.Model):
     alumno = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
+    
     años = [('2022', '2022'),('2023', '2023'),]
     Año = models.CharField(max_length=4, choices=años)
     monto_matricula = models.FloatField()
@@ -18,7 +19,7 @@ class matricula (models.Model):
         verbose_name_plural = 'matriculas'
 
 class pagomatricula(models.Model):
-    matriculas = models.ForeignKey(matricula, on_delete=models.CASCADE)
+    matriculas = models.ForeignKey(Matricula, on_delete=models.CASCADE)
     efectivo = models.FloatField(null=True, blank=True)
     transferencia = models.FloatField(null=True, blank=True)
     cheque = models.FloatField(null=True, blank=True)

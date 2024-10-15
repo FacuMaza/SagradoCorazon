@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import *
 
-@admin.register(matricula)
+@admin.register(Matricula)
 class matricula(admin.ModelAdmin):
     list_display = ('alumno', 'Año', 'monto_matricula','pagado')
     search_fields = ('alumno', 'Año', 'monto_matricula','pagado')

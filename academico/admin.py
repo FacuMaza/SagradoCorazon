@@ -85,8 +85,8 @@ class mes_año(admin.ModelAdmin):
 
 @admin.register(Cuotas)
 class CuotasAdmin(admin.ModelAdmin):
-    list_display = ('Alumnos',  'Monto_cuota', 'Mes_año','Tutor',)
-    search_fields = ('Alumnos', 'Monto_cuota',  'Mes_año','Tutor',)  # Buscar por campos relacionados
+    list_display = ('Alumnos',  'Monto_cuota', 'Mes','Año','Tutor',)
+    search_fields = ('Alumnos', 'Monto_cuota',  'Mes','Año','Tutor',)  # Buscar por campos relacionados
     list_filter = ( 'Alumnos',) 
 
     # Puedes añadir más opciones a tu administrador aquí:

@@ -38,13 +38,14 @@ def exit(request):
 def index(request):
     return render(request, 'index.html')
 
-
+@login_required
 def configuracion(request):
     return render(request, "baseconfiguracion.html")
 
                                 ## VIWS DE TUTORES
 
 # Lista de tutores
+@login_required
 def tutores_list(request):
     tutores = Tutores.objects.all()
     parentezcos = Parentezco.objects.all()
@@ -55,6 +56,7 @@ def tutores_list(request):
     return render(request, 'tutores_list.html', context)
 
 # Crear un tutor
+@login_required
 def tutores_create(request):
     if request.method == 'POST':
         form = TutorForm(request.POST)
@@ -67,6 +69,7 @@ def tutores_create(request):
     return render(request, 'anadirtutor.html', context)
 
 # Actualizar un tutor
+@login_required
 def tutores_update(request, pk):
     tutor = get_object_or_404(Tutores, pk=pk)
     if request.method == 'POST':
@@ -80,6 +83,7 @@ def tutores_update(request, pk):
     return render(request, 'tutores_form.html', context)
 
 # Eliminar un tutor
+@login_required
 def tutores_delete(request, pk):
     tutor = get_object_or_404(Tutores, pk=pk)
     if request.method == 'POST':
@@ -89,6 +93,7 @@ def tutores_delete(request, pk):
     return render(request, 'tutores_confirm_delete.html', context)
 
 # Vista de detalle de un tutor
+@login_required
 def tutores_detail(request, pk):
     tutor = get_object_or_404(Tutores, pk=pk)
     context = {'tutor': tutor}
@@ -101,12 +106,14 @@ def tutores_detail(request, pk):
 
 
 # Lista de Parentezcos
+@login_required
 def parentezcos_list(request):
     parentescos = Parentezco.objects.all()
     context = {'parentescos': parentescos}
     return render(request, 'parentezcos_list.html', context)
 
 # Crear un Parentezco
+@login_required
 def parentezcos_create(request):
     if request.method == 'POST':
         form = ParentezcoForm(request.POST)
@@ -119,6 +126,7 @@ def parentezcos_create(request):
     return render(request, 'parentezco_form.html', context)
 
 # Actualizar un Parentezco
+@login_required
 def parentezcos_update(request, pk):
     parentesco = get_object_or_404(Parentezco, pk=pk)
     if request.method == 'POST':
@@ -132,6 +140,7 @@ def parentezcos_update(request, pk):
     return render(request, 'tutores_form.html', context)
 
 # Eliminar un Parentezco
+@login_required
 def parentezcos_delete(request, pk):
     parentesco = get_object_or_404(Parentezco, pk=pk)
     if request.method == 'POST':
@@ -144,7 +153,7 @@ def parentezcos_delete(request, pk):
 
                                             # VIWS DE FAMILIAS 
                   
-
+@login_required
 def familia_list(request):
     familias = Familia.objects.all()
     tutores = Tutores.objects.all()
@@ -153,7 +162,7 @@ def familia_list(request):
                'tutores': tutores,
                'form': form}
     return render(request, 'familia_list.html', context)
-
+@login_required
 def familia_create(request):
     if request.method == 'POST':
         form = FamiliaForm(request.POST)
@@ -170,7 +179,7 @@ def familia_create(request):
         tutores = Tutores.objects.all()
         context = {'form': form, 'tutores': tutores}  # Pasar la lista al contexto
     return render(request, 'familia_form.html', context)
-
+@login_required
 def familia_update(request, pk):
     familia = get_object_or_404(Familia, pk=pk)
     if request.method == 'POST':
@@ -185,13 +194,13 @@ def familia_update(request, pk):
         form = FamiliaForm(instance=familia)
     context = {'form': form}
     return render(request, 'editar_familia.html', context)
-    
+@login_required   
 def familia_detail(request, pk):
     familia = get_object_or_404(Familia, pk=pk)
     context = {'familia': familia}
     return render(request, 'familia_detail.html', context)
 
-
+@login_required
 def familia_delete(request, pk):
     familia = get_object_or_404(Familia, pk=pk)
     if request.method == 'POST':
@@ -203,14 +212,14 @@ def familia_delete(request, pk):
 
 
                         # CASAS
-
+@login_required
 def casa_list(request):
     casas = Casas.objects.all()
     context = {'casas': casas}
     return render(request, 'casa_list.html', context)
 
 
-
+@login_required
 def casa_create(request):
     if request.method == 'POST':
         # Procesar datos del formulario
@@ -227,14 +236,14 @@ def casa_create(request):
 
                             # COLEGIOS
 
-
+@login_required
 def colegio_list(request):
     colegios = Colegios.objects.all()
     context = {'colegios': colegios}
     return render(request, 'colegio_list.html', context)
 
 
-
+@login_required
 def colegio_create(request):
     if request.method == 'POST':
         # Procesar datos del formulario
@@ -247,14 +256,14 @@ def colegio_create(request):
 
 
 
-                            # LUGAR DE NACIMIENTO
+@login_required                           # LUGAR DE NACIMIENTO
 def lugar_nacimiento_list(request):
     lugares_nacimiento = Lugar_Nacimiento.objects.all()
     context = {'lugares_nacimiento': lugares_nacimiento}
     return render(request, 'lugar_nacimiento_list.html', context)
 
 
-
+@login_required
 def lugar_nacimiento_create(request):
     if request.method == 'POST':
         # Procesar datos del formulario
@@ -264,7 +273,7 @@ def lugar_nacimiento_create(request):
     else:
         # Mostrar el formulario vacío
         return render(request, 'lugar_nacimiento_form.html')
-
+@login_required
 def lugar_nacimiento_update(request, pk):
     lugar_nacimiento = get_object_or_404(Lugar_Nacimiento, pk=pk)
     if request.method == 'POST':
@@ -280,13 +289,14 @@ def lugar_nacimiento_update(request, pk):
 
 
                                 # NACIONALIDAD
+@login_required
 def nacionalidad_list(request):
     nacionalidades = Nacionalidad.objects.all()
     context = {'nacionalidades': nacionalidades}
     return render(request, 'nacionalidad_list.html', context)
 
 
-
+@login_required
 def nacionalidad_create(request):
     if request.method == 'POST':
         # Procesar datos del formulario
@@ -296,7 +306,7 @@ def nacionalidad_create(request):
     else:
         # Mostrar el formulario vacío
         return render(request, 'nacionalidad_form.html')
-
+@login_required
 def nacionalidad_update(request, pk):
     nacionalidad = get_object_or_404(Nacionalidad, pk=pk)
     if request.method == 'POST':
@@ -312,12 +322,13 @@ def nacionalidad_update(request, pk):
 
 
                                     # LOCALIDAD
+@login_required                                   
 def localidad_list(request):
     localidades = Localidad.objects.all()
     context = {'localidades': localidades}
     return render(request, 'localidad_list.html', context)
 
-
+@login_required
 def localidad_create(request):
     if request.method == 'POST':
         # Procesar datos del formulario
@@ -327,7 +338,7 @@ def localidad_create(request):
     else:
         # Mostrar el formulario vacío
         return render(request, 'localidad_form.html')
-
+@login_required
 def localidad_update(request, pk):
     localidad = get_object_or_404(Localidad, pk=pk)
     if request.method == 'POST':
@@ -343,7 +354,7 @@ def localidad_update(request, pk):
                                             ##ALUMNOS
 
 
-
+@login_required
 def lista_alumnos(request):
     alumnos = Alumnos.objects.all()
     Familias = Familia.objects.all()
@@ -363,12 +374,12 @@ def lista_alumnos(request):
                'Localidades': Localidades,
                'colegio':colegio}
     return render(request, 'lista_alumnos.html', context)
-
+@login_required
 def detalle_alumno(request, pk):
     alumno = Alumnos.objects.get(pk=pk)
     context = {'alumno': alumno}
     return render(request, 'alumnos_detail.html', context)
-
+@login_required
 def nuevo_alumno(request):
     if request.method == 'POST':
         form = AlumnosForm(request.POST)
@@ -379,7 +390,7 @@ def nuevo_alumno(request):
         form = AlumnosForm()
     context = {'form': form}
     return render(request, 'alumnos_list.html', context)
-
+@login_required
 def editar_alumno(request, pk):
     alumno = Alumnos.objects.get(pk=pk)
     Familias = Familia.objects.all()
@@ -407,7 +418,7 @@ def editar_alumno(request, pk):
                'Localidades': Localidades,
                'colegio':colegio}
     return render(request, 'editar_alumno.html', context)
-
+@login_required
 def eliminar_alumno(request, pk):
     alumno = Alumnos.objects.get(pk=pk)
     if request.method == 'POST':
@@ -418,11 +429,11 @@ def eliminar_alumno(request, pk):
 
 
                                             ##VALOR ASISTENCIAS
-
+@login_required
 def listar_valores(request):
     valores = Valor.objects.all()
     return render(request, 'listar_valores.html', {'valores': valores})
-
+@login_required
 def crear_valor(request):
     if request.method == 'POST':
         form = ValorForm(request.POST)
@@ -432,7 +443,7 @@ def crear_valor(request):
     else:
         form = ValorForm()
     return render(request, 'crear_valor.html', {'form': form})
-
+@login_required
 def editar_valor(request, valor_id):
     valor = Valor.objects.get(pk=valor_id)
     if request.method == 'POST':
@@ -447,11 +458,11 @@ def editar_valor(request, valor_id):
 
 
 ##ASISTENCIAS
-
+@login_required
 def asistencias_list(request):
     asistencias = Asistencias.objects.all()
     return render(request, 'asistencias_list.html', {'asistencias': asistencias})
-
+@login_required
 def asistencia_add(request):
     if request.method == 'POST':
         form = AsistenciaForm(request.POST)
@@ -461,7 +472,7 @@ def asistencia_add(request):
     else:
         form = AsistenciaForm()
     return render(request, 'asistencia_add.html', {'form': form})
-
+@login_required
 def asistencia_edit(request, pk):
     asistencia = get_object_or_404(Asistencias, pk=pk)
     if request.method == 'POST':
@@ -526,11 +537,11 @@ def asistencia_edit(request, pk):
 
 
 ##DIVISIONES
-
+@login_required
 def list_division(request):
     divisiones = Division.objects.all()
     return render(request, 'list_division.html', {'divisiones': divisiones})
-
+@login_required
 def crear_division(request):
     if request.method == 'POST':
         form = DivisionForm(request.POST)
@@ -543,11 +554,11 @@ def crear_division(request):
 
 
 ##NIVELES
-
+@login_required
 def list_nivel(request):
     niveles = Nivel.objects.all()
     return render(request, 'list_nivel.html', {'niveles': niveles})
-
+@login_required
 def crear_nivel(request):
     if request.method == 'POST':
         form = NivelForm(request.POST)
@@ -561,11 +572,11 @@ def crear_nivel(request):
 
 ##NIVEL DOCENTES
 
-
+@login_required
 def list_nivel_docente(request):
     niveles_docentes = Nivel_Docente.objects.all()
     return render(request, 'list_nivel_docente.html', {'niveles_docentes': niveles_docentes})
-
+@login_required
 def crear_nivel_docente(request):
     if request.method == 'POST':
         form = NivelDocenteForm(request.POST)
@@ -580,11 +591,11 @@ def crear_nivel_docente(request):
 
 ##TITULOS DOCENTES
 
-
+@login_required
 def list_titulos_profesionales(request):
     titulos_profesionales = Titulos_Profesionales.objects.all()
     return render(request, 'list_titulos_profesionales.html', {'titulos_profesionales': titulos_profesionales})
-
+@login_required
 def crear_titulo_profesional(request):
     if request.method == 'POST':
         form = TitulosProfesionalesForm(request.POST)
@@ -599,7 +610,7 @@ def crear_titulo_profesional(request):
 
 
 #DONDENTES
-
+@login_required
 def docentes_list(request):
     docentes = Docentes.objects.all()
     nivel_docente = Nivel_Docente.objects.all()
@@ -608,12 +619,12 @@ def docentes_list(request):
                'nivel_docente': nivel_docente,
                'titulo': titulo,}
     return render(request, 'docentes_list.html', context)
-
+@login_required
 def docente_detail(request, pk):
     docente = get_object_or_404(Docentes, pk=pk)
     context = {'docente': docente}
     return render(request, 'docente_detail.html', context)
-
+@login_required
 def docente_create(request):
     if request.method == 'POST':
         form = DocenteForm(request.POST)
@@ -627,7 +638,7 @@ def docente_create(request):
         form = DocenteForm()
     context = {'form': form}
     return render(request, 'docente_create.html', context)
-
+@login_required
 def docente_update(request, pk):
     docente = get_object_or_404(Docentes, pk=pk)
     if request.method == 'POST':
@@ -642,7 +653,7 @@ def docente_update(request, pk):
         form = DocenteForm(instance=docente)
     context = {'form': form}
     return render(request, 'docente_update.html', context)
-
+@login_required
 def docente_delete(request, pk):
     docente = get_object_or_404(Docentes, pk=pk)
     if request.method == 'POST':
@@ -654,18 +665,18 @@ def docente_delete(request, pk):
 
 #MATERIAS
 
-
+@login_required
 def materia_list(request):
     materias = Materias.objects.all()
     docentes = Docentes.objects.all() # Agrega esto
     context = {'materias': materias, 'docentes': docentes,}
     return render(request, 'materia_list.html', context)
-
+@login_required
 def materia_detail(request, pk):  # Recibe el argumento 'pk'
     materia = get_object_or_404(Materias, pk=pk)  # Utiliza 'pk' para obtener la materia
     context = {'materia': materia}
     return render(request, 'materia_detail.html', context)
-
+@login_required
 def materia_create(request):
     if request.method == 'POST':
         form = MateriaForm(request.POST)
@@ -676,7 +687,7 @@ def materia_create(request):
         form = MateriaForm()
     context = {'form': form}
     return render(request, 'materia_form.html', context)
-
+@login_required
 def materia_update(request, pk):
     materia = get_object_or_404(Materias, pk=pk)
     if request.method == 'POST':
@@ -688,7 +699,7 @@ def materia_update(request, pk):
         form = MateriaForm(instance=materia)
     context = {'form': form}
     return render(request, 'materia_form.html', context)
-
+@login_required
 def materia_delete(request, pk):
     materia = get_object_or_404(Materias, pk=pk)
     if request.method == 'POST':
@@ -698,7 +709,7 @@ def materia_delete(request, pk):
     return render(request, 'materia_confirm_delete.html', context)
 
 ##CURSOS
-
+@login_required
 def cursos_list(request):
     cursos = Cursos.objects.all()
     materias = Materias.objects.all()  # Agrega las materias al contexto
@@ -709,13 +720,13 @@ def cursos_list(request):
         'tutores': tutores
     }
     return render(request, 'curso_list.html', context)
-
+@login_required
 def curso_detail(request, curso_id):
     curso = Cursos.objects.get(pk=curso_id)
     alumnos = curso.alumnos.all()  # Alumnos del curso
     context = {'curso': curso, 'alumnos': alumnos}
     return render(request, 'curso_detail.html', context)
-
+@login_required
 def curso_create(request):
     if request.method == 'POST':
         form = CursosForm(request.POST)
@@ -726,7 +737,7 @@ def curso_create(request):
         form = CursosForm()
     context = {'form': form}
     return render(request, 'curso_form.html', context)
-
+@login_required
 def curso_update(request, curso_id):
     curso = get_object_or_404(Cursos, pk=curso_id)
     if request.method == 'POST':
@@ -738,7 +749,7 @@ def curso_update(request, curso_id):
         form = CursosForm(instance=curso)
     context = {'form': form}
     return render(request, 'curso_form.html', context)
-
+@login_required
 def curso_delete(request, curso_id):
     curso = get_object_or_404(Cursos, pk=curso_id)
     if request.method == 'POST':
@@ -751,6 +762,7 @@ def curso_delete(request, curso_id):
 
 
 #AGREGO MATERIAS A LOS CURSOS
+@login_required
 def materias_curso(request, curso_id):
     curso = get_object_or_404(Cursos, pk=curso_id)
     materias_del_curso = curso.Materias.all()
@@ -765,6 +777,7 @@ def materias_curso(request, curso_id):
 
 
 # AGREGAR ALUMNO CURSO
+@login_required
 def agregar_alumno_curso(request, curso_id):
     curso = Cursos.objects.get(pk=curso_id)
     alumnos = Alumnos.objects.filter(curso__isnull=True)  # Alumnos sin curso
@@ -785,7 +798,7 @@ def agregar_alumno_curso(request, curso_id):
         'alumnos': alumnos,
     }
     return render(request, 'agregar_alumno_curso.html', context)
-
+@login_required
 def quitar_alumno_curso(request, curso_id):
     curso = Cursos.objects.get(pk=curso_id)
 
@@ -809,6 +822,7 @@ def quitar_alumno_curso(request, curso_id):
         'curso': curso,
         'alumnos_curso': alumnos_curso,
     })
+
 
 class AlumnosListView(ListView):
     model = Alumnos
@@ -841,6 +855,7 @@ class AlumnosListView(ListView):
         return context
 
 # Vista para actualizar las notas de un alumno
+
 class UpdateNotasView(FormView):
     form_class = NotasForm
     template_name = 'update_notas.html'
@@ -904,7 +919,7 @@ class UpdateNotasView(FormView):
         return reverse_lazy('alumnos_por_materia', args=[curso_id, materia_id])
  
  
- 
+@login_required
 def alumno_detalle(request, alumno_id, ):
     alumno = get_object_or_404(Alumnos, pk=alumno_id)
     materias = Materias.objects.all()  # Obtener todas las materias

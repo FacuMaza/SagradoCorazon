@@ -285,8 +285,9 @@ class mes_año(models.Model):
 class Cuotas(models.Model):
     Alumnos = models.ForeignKey(Alumnos, on_delete=models.CASCADE)
     Tutor = models.ForeignKey(Tutores, on_delete=models.CASCADE,default=None)
-    Mes_año = models.ForeignKey(mes_año, on_delete=models.CASCADE) ## MES Y AÑO QUE SE ABONA LA CUOTA
-    Fecha_hora_del_pago = models.DateField(default=None) ## FECHA Y HORA DEL PAGO DE LA CUOTA
+    Año = models.CharField(max_length=4,default=1)
+    Mes = models.CharField(max_length=4,default=1) ## MES Y AÑO QUE SE ABONA LA CUOTA
+    Fecha_hora_del_pago = models.DateField(default=None, null=True,blank=True) ## FECHA Y HORA DEL PAGO DE LA CUOTA
     Monto_cuota = models.FloatField(default=200000)
     Pagado = models.BooleanField(default=False)
     Anticipado = models.BooleanField(default=False)

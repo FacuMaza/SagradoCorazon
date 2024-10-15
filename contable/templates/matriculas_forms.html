@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Crear Matrícula</h1>
+    
+    {% if familia_id %}
+        <p>Familia seleccionada: {{ familia.Nombre_Familia }}</p> 
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Crear Matrícula</button>
+    </form>
+
+{% endblock %}
