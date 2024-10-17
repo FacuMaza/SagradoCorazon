@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Registrar Pago</h2>
+  <p>Monto Total: ${{ monto_cuota }}</p>
+  <p>Total Pagado: ${{ total_pagado }}</p>
+  <p>Monto Restante: ${{ monto_restante }}</p>
+
+  {% if mostrar_boton_pagar %}
+    <form method="POST" id="pago-form">
+      {% csrf_token %}
+      <input type="hidden" name="cuota_id" value="{{ cuota.id }}">
+
+      <div class="form-group">
+        <label for="efectivo">Efectivo:</label>
+        <input type="number" class="form-control" id="efectivo" name="efectivo" placeholder="Ingrese el monto" value="{{ pagocuota_obj.efectivo }}">
+      </div>
+
+      <div class="form-group">
+        <label for="transferencia">Transferencia:</label>
+        <input type="number" class="form-control" id="transferencia" name="transferencia" placeholder="Ingrese el monto" value="{{ pagocuota_obj.transferencia }}">
+      </div>
+
+      <div class="form-group">
+        <label for="cheque">Cheque:</label>
+        <input type="number" class="form-control" id="cheque" name="cheque" placeholder="Ingrese el monto" value="{{ pagocuota_obj.cheque }}">
+      </div>
+
+      <div class="form-group">
+        <label for="pagare">Pagaré:</label>
+        <input type="number" class="form-control" id="pagare" name="pagare" placeholder="Ingrese el monto" value="{{ pagocuota_obj.pagare }}">
+      </div>
+
+      {% if mostrar_boton_pagar %}
+    <button type="submit" class="btn btn-primary">Guardar Pago</button>
+{% endif %}
+    </form>
+  {% endif %}
+
+  <ul>
+    {% for pagocuota in cuota.pagocuota_set.all %}
+      <li>
+        Fecha: {{ pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }} <br>
+        Tipos de Pago:
+        <ul>
+          {% if pagocuota.efectivo %}
+            <li>Efectivo: ${{ pagocuota.efectivo }}</li>
+          {% endif %}
+          {% if pagocuota.transferencia %}
+            <li>Transferencia: ${{ pagocuota.transferencia }}</li>
+          {% endif %}
+          {% if pagocuota.cheque %}
+            <li>Cheque: ${{ pagocuota.cheque }}</li>
+          {% endif %}
+          {% if pagocuota.pagare %}
+            <li>Pagaré: ${{ pagocuota.pagare }}</li>
+          {% endif %}
+        </ul>
+      </li> 
+    {% endfor %}
+  </ul>
+
+  <script>
+    // Obtiene el formulario de pago
+    var pagoForm = document.getElementById('pago-form');
+
+    // Agrega un manejador de eventos para el evento "submit" del formulario
+    pagoForm.addEventListener('submit', function(event) {
+      // ... (Tu código actual para procesar el formulario en la vista) ...
+
+      // Actualiza el estado de la cuota visualmente
+      var estadoCuota = document.getElementById('estado-cuota');
+      estadoCuota.textContent = 'Estado: Pagado'; 
+       // Recarga la página
+        location.reload();
+    });
+  </script>
+
+{% endblock %}

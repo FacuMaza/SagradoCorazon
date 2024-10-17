@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Actualización de Cuotas</h1>
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="nuevo_monto">Nuevo Monto de Cuota:</label>
+      <input type="number" class="form-control" id="nuevo_monto" name="nuevo_monto" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Actualizar</button>
+  </form>
+{% endblock %}

@@ -295,7 +295,7 @@ class Cuotas(models.Model):
     Extraordinario = models.CharField(max_length=255, default=None, blank=True)
 
     def __str__(self):
-        return '%s %s '%(self.Alumnos, self.Mes_año)
+        return '%s %s '%(self.Alumnos, self.Mes)
 
     class Meta:
         db_table = 'Cuotas'

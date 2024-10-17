@@ -31,3 +31,31 @@ class MatriculaForm(forms.ModelForm):
                 # Actualizar las opciones del campo 'alumno'
                 alumno_choices = [(alumno.id, f'{alumno.Nombres}') for alumno in alumnos]
                 self.fields['alumno'].choices = alumno_choices
+
+
+class CuotasForm(forms.ModelForm):
+    class Meta:
+        model = Cuotas
+        fields = '__all__'
+
+        widgets = {
+            'Alumnos': forms.Select(attrs={'class': 'form-control'}),
+            'Tutor': forms.Select(attrs={'class': 'form-control'}),
+            'Año': forms.NumberInput(attrs={'class': 'form-control'}),
+            'Mes': forms.TextInput(attrs={'class': 'form-control'}),
+            'Fecha_hora_del_pago': forms.DateInput(attrs={'class': 'form-control'}),
+            'Monto_cuota': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+
+
+class PagocuotaForm(forms.ModelForm):
+    class Meta:
+        model = pagocuota
+        fields = ['efectivo', 'transferencia', 'cheque', 'pagare']
+        widgets = {
+            'efectivo': forms.NumberInput(attrs={'class': 'form-control'}),
+            'transferencia': forms.NumberInput(attrs={'class': 'form-control'}),
+            'cheque': forms.NumberInput(attrs={'class': 'form-control'}),
+            'pagare': forms.NumberInput(attrs={'class': 'form-control'}),
+        }

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Cuotas de {{ alumno }}</h2>
+
+  {% if pago_guardado %}
+    <div class="alert alert-success" role="alert">
+      El pago se guardó correctamente.
+    </div>
+  {% endif %}
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Mes</th>
+        <th>Fecha de Pago</th>
+        <th>Monto</th>
+        <th>Pagado</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cuota in cuotas_alumno %}
+      <tr>
+        <td>{{ cuota.Mes }}</td>
+        <td>
+          {% if cuota.Pagado %}
+            {{ cuota.Fecha_hora_del_pago|date:"Y-m-d" }}
+          {% endif %}
+        </td>
+        <td>{{ cuota.Monto_cuota }}</td>
+        <td>
+          {% if cuota.Pagado %}
+            Sí
+          {% else %}
+            No
+          {% endif %}
+        </td>
+        <td>
+          {% if not cuota.Pagado %}
+            <a href="{% url 'pagocuota_form' cuota.id %}?monto={{ cuota.Monto_cuota|stringformat:"f" }}" class="btn btn-primary">PAGAR</a> 
+            <form method="POST" action="{% url 'pagocuota_form' cuota.id %}">
+              {% csrf_token %}
+              <input type="hidden" name="monto" value="{{ cuota.Monto_cuota }}">
+              
+            </form> 
+          {% else %}
+            <a href="{% url 'detalle_pago' cuota.id %}" class="btn btn-secondary">DETALLE PAGADO</a> 
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

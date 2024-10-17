@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Lista de Alumnos con Matrícula</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Alumno</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for alumno_id, cuotas in cuotas_por_alumno.items %}
+        {% for cuota in cuotas %}
+          <tr>
+            {% if forloop.first %}
+              <td><a href="{% url 'cuotas_alumno' alumno_id %}">{{ cuota.Alumnos }}</a></td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{% url 'actualizar_cuotas' %}" class="btn btn-primary">ACTUALIZACIÓN DE CUOTA</a>
+{% endblock %}

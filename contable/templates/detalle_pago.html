@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>Detalle de Pago - {{ cuota.Mes }}</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th colspan="2">Método de Pago</th>
+        <th>Monto</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% if cuota.pagocuota_set.all %}
+        {% with total_pago=0 %}
+          {% for pagocuota in cuota.pagocuota_set.all %}
+            {% if pagocuota.efectivo %}
+              {% with total_pago=total_pago|add:pagocuota.efectivo %}
+                <tr>
+                  <td></td>
+                  <td>Efectivo:</td>
+                  <td>${{ pagocuota.efectivo|floatformat:2 }}</td>
+                </tr>
+              {% endwith %}
+            {% endif %}
+            {% if pagocuota.transferencia %}
+              {% with total_pago=total_pago|add:pagocuota.transferencia %}
+                <tr>
+                  <td></td>
+                  <td>Transferencia:</td>
+                  <td>${{ pagocuota.transferencia|floatformat:2 }}</td>
+                </tr>
+              {% endwith %}
+            {% endif %}
+            {% if pagocuota.cheque %}
+              {% with total_pago=total_pago|add:pagocuota.cheque %}
+                <tr>
+                  <td></td>
+                  <td>Cheque:</td>
+                  <td>${{ pagocuota.cheque|floatformat:2 }}</td>
+                </tr>
+              {% endwith %}
+            {% endif %}
+            {% if pagocuota.pagare %}
+              {% with total_pago=total_pago|add:pagocuota.pagare %}
+                <tr>
+                  <td></td>
+                  <td>Pagaré:</td>
+                  <td>${{ pagocuota.pagare|floatformat:2 }}</td>
+                </tr>
+              {% endwith %}
+            {% endif %}
+          {% endfor %}
+         
+        {% endwith %}
+      {% else %}
+        <tr>
+          <td colspan="3">No se encontraron registros de pago para esta cuota.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+{% endblock %}

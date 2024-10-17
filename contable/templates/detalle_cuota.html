@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Detalle de Cuota</h1>
+  <dl class="row">
+    <dt class="col-sm-3">Alumno</dt>
+    <dd class="col-sm-9">{{ cuota.Alumnos }}</dd>
+
+    <dt class="col-sm-3">Tutor</dt>
+    <dd class="col-sm-9">{{ cuota.Tutor }}</dd>
+
+    <dt class="col-sm-3">Año</dt>
+    <dd class="col-sm-9">{{ cuota.Año }}</dd>
+
+    <dt class="col-sm-3">Mes</dt>
+    <dd class="col-sm-9">{{ cuota.Mes }}</dd>
+
+    <dt class="col-sm-3">Fecha de Pago</dt>
+    <dd class="col-sm-9">{{ cuota.Fecha_hora_del_pago }}</dd>
+
+    <dt class="col-sm-3">Monto</dt>
+    <dd class="col-sm-9">{{ cuota.Monto_cuota }}</dd>
+
+    <dt class="col-sm-3">Pagado</dt>
+    <dd class="col-sm-9">{% if cuota.Pagado %} Sí {% else %} No {% endif %}</dd>
+
+    <dt class="col-sm-3">Anticipado</dt>
+    <dd class="col-sm-9">{% if cuota.Anticipado %} Sí {% else %} No {% endif %}</dd>
+
+    <dt class="col-sm-3">Anticipado Pagado</dt>
+    <dd class="col-sm-9">{% if cuota.Anticipado_pagado %} Sí {% else %} No {% endif %}</dd>
+
+    <dt class="col-sm-3">Extraordinario</dt>
+    <dd class="col-sm-9">{{ cuota.Extraordinario }}</dd>
+  </dl>
+{% endblock %}

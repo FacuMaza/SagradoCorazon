@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <img src="{% static 'img/LogoColegio.svg' %}" alt="Logo del Colegio" class="mb-2" style="width: 150px;"> 
+        <h3 class="text-center mb-1">Colegio Sagrado Corazón</h3>
+        <h4 class="text-center mb-1">Luz y Guía</h4>
+        <h5 class="text-center mb-2">N°229</h5>
+        <hr style="width: 80%; border-top: 1px solid black; margin: 0 auto;"> 
+      </div>
+    </div>
+    <div class="row justify-content-center mt-4">
+      <div class="col-md-8">
+        <h3 class="text-center">Aceptación del contrato y Firma.</h3>
+        <p class="text-center">Declaramos conocer y aceptar los términos del Contrato de Inscripción 2024 y sus Anexos 1 y 2</p>
+        <br><br>
+        <h4 class="text-center">CONTRATO POR ELLA/OS ALUMNO/A/S</h4>
+        <h5 class="text-center">{{ alumno.Nombres }} {{ alumno.Apellidos }}</h5>
+        <hr style="width: 60%; border-top: 1px solid black; margin: 0 auto;">
+        <br><br>
+        <h4 class="text-center">SALA/GRADO/AÑO QUE INGRESAN {{ año_matriculacion }}</h4>  <!-- Aquí se muestra el año de matriculacion -->
+        <br><br>
+        <hr style="width: 60%; border-top: 1px solid black; margin: 0 auto;">
+        <br><br>
+        {% with tutores|slice:":2" as limited_tutores %}
+        {% for tutor in limited_tutores %}
+          <p>
+            <h4><strong>Nombre y Apellido:</strong> {{ tutor.Nombre }} {{ tutor.Apellido }}</h4><br>
+            <h6><strong>Progenitor/Tutor/Responsable (tachar lo que no corresponda)</strong></h6><br>
+            <h4><strong>Tipo y N° Documento:</strong> {{ tutor.DNI }}</h4>
+          </p>
+        {% endfor %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
