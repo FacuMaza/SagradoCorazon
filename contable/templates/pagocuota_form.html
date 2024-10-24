@@ -2,14 +2,23 @@
 
 {% block content %}
   <h2>Registrar Pago</h2>
-  <p>Monto Total: ${{ monto_cuota }}</p>
+  <p>Monto Total: <span id="monto-total">${{ monto_cuota }}</span></p>  
   <p>Total Pagado: ${{ total_pagado }}</p>
-  <p>Monto Restante: ${{ monto_restante }}</p>
+  <p>Monto Restante: <span id="monto-restante">${{ monto_restante }}</span></p> 
 
   {% if mostrar_boton_pagar %}
     <form method="POST" id="pago-form">
       {% csrf_token %}
       <input type="hidden" name="cuota_id" value="{{ cuota.id }}">
+
+      <div class="form-group">
+        <label for="tutor">Tutor:</label>
+        <select class="form-control" id="tutor" name="tutor">
+          {% for tutor in tutores %}
+            <option value="{{ tutor.id }}">{{ tutor.Nombre }} {{ tutor.Apellido }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
       <div class="form-group">
         <label for="efectivo">Efectivo:</label>
@@ -31,9 +40,12 @@
         <input type="number" class="form-control" id="pagare" name="pagare" placeholder="Ingrese el monto" value="{{ pagocuota_obj.pagare }}">
       </div>
 
-      {% if mostrar_boton_pagar %}
-    <button type="submit" class="btn btn-primary">Guardar Pago</button>
-{% endif %}
+      <div class="form-group">
+        <input type="checkbox" id="descuento" name="descuento">
+        <label for="descuento">Descuento del 5%</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Guardar Pago</button>
     </form>
   {% endif %}
 
@@ -60,9 +72,37 @@
     {% endfor %}
   </ul>
 
+  {% if monto_descuento > 0 %}
+    <p>Descuento aplicado: ${{ monto_descuento }} el {{ fecha_descuento|date:"Y-m-d" }}</p> 
+  {% endif %}
+
   <script>
     // Obtiene el formulario de pago
     var pagoForm = document.getElementById('pago-form');
+
+    // Obtiene el campo de descuento
+    var descuentoCheckbox = document.getElementById('descuento');
+
+    // Obtiene el campo de monto restante
+    var montoRestante = document.getElementById('monto-restante');
+
+    // Obtiene el campo de monto total
+    var montoTotal = document.getElementById('monto-total'); 
+
+    // Agrega un manejador de eventos para el evento "change" del checkbox
+    descuentoCheckbox.addEventListener('change', function(event) {
+      // Obtiene el valor del monto total
+      var montoTotalValor = parseFloat(montoTotal.textContent.replace('$', ''));
+
+      // Calcula el monto restante
+      var nuevoMontoRestante = montoTotalValor;
+      if (descuentoCheckbox.checked) {
+        nuevoMontoRestante *= 0.95; // Aplica el descuento del 5%
+      }
+
+      // Actualiza el valor del monto restante
+      montoRestante.textContent = '$' + nuevoMontoRestante.toFixed(2); 
+    });
 
     // Agrega un manejador de eventos para el evento "submit" del formulario
     pagoForm.addEventListener('submit', function(event) {

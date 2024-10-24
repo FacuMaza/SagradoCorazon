@@ -41,6 +41,7 @@ class pagocuota(models.Model):
     transferencia = models.FloatField(null=True, blank=True)
     cheque = models.FloatField(null=True, blank=True)
     pagare = models.FloatField(null=True, blank=True)
+    descuento = models.FloatField(default=0,null=True, blank=True)
 
     def __str__(self):
         return '%s '%(self.cuota, self.efectivo , self.transferencia , self.cheque , self.pagare)

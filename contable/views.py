@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils import timezone
+from datetime import datetime, date # Importamos datetime para combinar fecha y hora
 from urllib import request
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
@@ -211,7 +212,8 @@ def cuotas_alumno_con_pago_guardado(request, alumno_id):
 ##PAGO DE CUOTAS
 def pagocuota_form(request, cuota_id):
     cuota = get_object_or_404(Cuotas, pk=cuota_id)
-
+    alumno = cuota.Alumnos
+    
     # Obtener el monto de la cuota desde la URL
     monto_cuota = request.GET.get('monto')
     if monto_cuota:
@@ -223,14 +225,37 @@ def pagocuota_form(request, cuota_id):
     except pagocuota.DoesNotExist:
         pagocuota_obj = pagocuota(cuota=cuota)
 
+    # Obtener los tutores del alumno
+    tutores = alumno.Familia.Tutores.all()
+
+    # Variable para almacenar el monto del descuento
+    monto_descuento = 0
+    fecha_descuento = None  # Inicializa fecha_descuento
+
     if request.method == 'POST':
         # Obtiene los datos del formulario
         efectivo = request.POST.get('efectivo')
         transferencia = request.POST.get('transferencia')
         cheque = request.POST.get('cheque')
         pagare = request.POST.get('pagare')
+        # Obtener el tutor seleccionado
+        tutor_seleccionado_id = request.POST.get('tutor')
+        tutor_seleccionado = Tutores.objects.get(pk=tutor_seleccionado_id)
 
-        # Calcular el total pagado
+        # Guardar el ID del tutor seleccionado en la sesión
+        request.session['tutor_seleccionado_id'] = tutor_seleccionado_id
+
+        # Obtiene el descuento seleccionado
+        descuento_aplicado = request.POST.get('descuento')
+
+        # Aplica el descuento si está seleccionado
+        if descuento_aplicado:
+            monto_cuota_original = cuota.Monto_cuota  # Obtén el monto original de la cuota
+            monto_cuota = monto_cuota_original * 0.95  # Descuento del 5%
+            monto_descuento = monto_cuota_original * 0.05  # Calcula el monto del descuento
+            fecha_descuento = timezone.now()  # Guarda la fecha actual
+
+        # Calcula el total pagado
         total_pagado = (float(efectivo) if efectivo else 0) + \
                        (float(transferencia) if transferencia else 0) + \
                        (float(cheque) if cheque else 0) + \
@@ -248,6 +273,9 @@ def pagocuota_form(request, cuota_id):
         pagocuota_obj.transferencia = (pagocuota_obj.transferencia or 0) + (float(transferencia) if transferencia else 0)
         pagocuota_obj.cheque = (pagocuota_obj.cheque or 0) + (float(cheque) if cheque else 0)
         pagocuota_obj.pagare = (pagocuota_obj.pagare or 0) + (float(pagare) if pagare else 0)
+
+        # Guardar el descuento en el registro de pagocuota
+        pagocuota_obj.descuento = monto_descuento  # Guarda el monto total del descuento
         pagocuota_obj.save()
 
         # Actualiza la fecha de pago en la cuota
@@ -285,19 +313,75 @@ def pagocuota_form(request, cuota_id):
         'cuota': cuota,
         'pagocuota_obj': pagocuota_obj,
         'total_pagado': total_pagado,
-        'monto_cuota': monto_cuota,
-        'monto_restante': monto_restante,
+        'monto_cuota': monto_cuota,  # Pasar el monto de la cuota (con descuento)
+        'monto_restante': monto_restante,  # Pasar el monto restante (con descuento)
+        'monto_descuento': monto_descuento,  # Pasar el monto del descuento
+        'fecha_descuento': fecha_descuento,  # Pasar la fecha del descuento
         'fechas_pago': fechas_pago,
-        'mostrar_boton_pagar': not cuota.Pagado
+        'mostrar_boton_pagar': not cuota.Pagado,
+        'tutores': tutores, # Pasa los tutores al contexto
+        'alumno': alumno  # Pasa el alumno al contexto
     }
     return render(request, 'pagocuota_form.html', context)
 
-
-
 def detalle_pago(request, cuota_id):
     cuota = get_object_or_404(Cuotas, pk=cuota_id)
-    context = {'cuota': cuota}
+
+    # Obtén todos los pagos asociados a la cuota
+    pagocuotas = cuota.pagocuota_set.all()
+
+    # Agrupa los pagos por fecha de pago
+    pagos_agrupados = {}
+    for pagocuota in pagocuotas:
+        fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
+        if fecha_pago not in pagos_agrupados:
+            pagos_agrupados[fecha_pago] = []
+        pagos_agrupados[fecha_pago].append(pagocuota)
+
+    # Calcula el total de pago, descuento total y monto final
+    total_pago = 0
+    descuento_total = 0
+    for pagocuota in pagocuotas:
+        total_pago += (pagocuota.efectivo or 0) + (pagocuota.transferencia or 0) + (pagocuota.cheque or 0) + (pagocuota.pagare or 0)
+        descuento_total += pagocuota.descuento or 0
+
+    monto_final = cuota.Monto_cuota - descuento_total
+
+    # Obtén la última fecha de pago (si hay)
+    ultima_fecha_pago = None
+    ultimo_metodo_pago = None
+    for pagocuota in pagocuotas:
+        if pagocuota.cuota.Fecha_hora_del_pago:
+            ultima_fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
+            ultimo_metodo_pago = "Efectivo" if pagocuota.efectivo else "Transferencia" if pagocuota.transferencia else "Cheque" if pagocuota.cheque else "Pagaré" if pagocuota.pagare else "Desconocido"
+            break
+
+    # Obtén el ID del tutor seleccionado de la sesión
+    tutor_seleccionado_id = request.session.get('tutor_seleccionado_id')
+
+    # Obtén el tutor seleccionado (si hay)
+    tutor_seleccionado = None
+    if tutor_seleccionado_id:
+        tutor_seleccionado = Tutores.objects.get(pk=tutor_seleccionado_id)
+
+    # Convertir ultima_fecha_pago a un objeto datetime si es solo una fecha
+    if isinstance(ultima_fecha_pago, date):
+        ultima_fecha_pago = datetime.combine(ultima_fecha_pago, datetime.min.time())
+
+    context = {
+        'cuota': cuota,
+        'pagos_agrupados': pagos_agrupados, # Diccionario con pagos agrupados
+        'total_pago': total_pago,
+        'descuento_total': descuento_total,
+        'monto_final': monto_final,
+        'monto_total': cuota.Monto_cuota,
+        'ultima_fecha_pago': ultima_fecha_pago,
+        'ultimo_metodo_pago': ultimo_metodo_pago,
+        'tutor_seleccionado': tutor_seleccionado 
+    }
+
     return render(request, 'detalle_pago.html', context)
+
 
 
 
