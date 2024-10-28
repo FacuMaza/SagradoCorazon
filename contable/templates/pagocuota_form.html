@@ -10,6 +10,7 @@
     <form method="POST" id="pago-form">
       {% csrf_token %}
       <input type="hidden" name="cuota_id" value="{{ cuota.id }}">
+      <input type="hidden" name="descuento_aplicado" id="descuento-aplicado" value="">
 
       <div class="form-group">
         <label for="tutor">Tutor:</label>
@@ -41,8 +42,9 @@
       </div>
 
       <div class="form-group">
-        <input type="checkbox" id="descuento" name="descuento">
-        <label for="descuento">Descuento del 5%</label>
+        <button type="button" class="btn btn-secondary" id="descuento-5">Descuento 5%</button>
+        <button type="button" class="btn btn-secondary" id="descuento-25">Descuento 25%</button>
+        <button type="button" class="btn btn-secondary" id="descuento-50">Descuento 50%</button>
       </div>
 
       <button type="submit" class="btn btn-primary">Guardar Pago</button>
@@ -80,29 +82,48 @@
     // Obtiene el formulario de pago
     var pagoForm = document.getElementById('pago-form');
 
-    // Obtiene el campo de descuento
-    var descuentoCheckbox = document.getElementById('descuento');
-
     // Obtiene el campo de monto restante
     var montoRestante = document.getElementById('monto-restante');
 
     // Obtiene el campo de monto total
     var montoTotal = document.getElementById('monto-total'); 
 
-    // Agrega un manejador de eventos para el evento "change" del checkbox
-    descuentoCheckbox.addEventListener('change', function(event) {
-      // Obtiene el valor del monto total
-      var montoTotalValor = parseFloat(montoTotal.textContent.replace('$', ''));
+    // Obtiene el campo de descuento aplicado
+    var descuentoAplicado = document.getElementById('descuento-aplicado');
 
-      // Calcula el monto restante
-      var nuevoMontoRestante = montoTotalValor;
-      if (descuentoCheckbox.checked) {
-        nuevoMontoRestante *= 0.95; // Aplica el descuento del 5%
+    // Agrega un manejador de eventos para los botones de descuento
+    document.getElementById('descuento-5').addEventListener('click', function() {
+      aplicarDescuento(0.05, '5');
+    });
+
+    document.getElementById('descuento-25').addEventListener('click', function() {
+      aplicarDescuento(0.25, '25');
+    });
+
+    document.getElementById('descuento-50').addEventListener('click', function() {
+      aplicarDescuento(0.50, '50');
+    });
+
+    // Función para aplicar descuento
+    function aplicarDescuento(porcentaje, valorDescuento) {
+      var montoTotalValor = parseFloat(montoTotal.textContent.replace('$', ''));
+      var nuevoMontoRestante = montoTotalValor * (1 - porcentaje);
+
+      // Redondea al múltiplo de 50, 500 o 5000 más cercano
+      if (nuevoMontoRestante >= 5000) {
+        nuevoMontoRestante = Math.round(nuevoMontoRestante / 5000) * 5000;
+      } else if (nuevoMontoRestante >= 500) {
+        nuevoMontoRestante = Math.round(nuevoMontoRestante / 500) * 500;
+      } else if (nuevoMontoRestante >= 50) {
+        nuevoMontoRestante = Math.round(nuevoMontoRestante / 50) * 50;
+      } else {
+        // Si el monto es menor a 50, mostrar 50
+        nuevoMontoRestante = 50;
       }
 
-      // Actualiza el valor del monto restante
       montoRestante.textContent = '$' + nuevoMontoRestante.toFixed(2); 
-    });
+      descuentoAplicado.value = valorDescuento; // Guarda el valor del descuento en el input oculto
+    }
 
     // Agrega un manejador de eventos para el evento "submit" del formulario
     pagoForm.addEventListener('submit', function(event) {

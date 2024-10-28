@@ -50,3 +50,34 @@ class pagocuota(models.Model):
         db_table = 'pagocuotas'
         verbose_name = 'pagocuota'
         verbose_name_plural = 'pagocuotas'
+
+
+
+class ingresos(models.Model):
+    descripcion = models.CharField(max_length=255)
+    monto = models.FloatField()
+    tipo_ingreso = models.CharField(max_length=20)
+    fecha = models.DateField()
+
+    def __str__(self):
+        return '%s '%(self.descripcion, self.monto , self.tipo_ingreso , self.fecha)
+    
+    class Meta:
+        db_table = 'ingresos'
+        verbose_name = 'ingreso'
+        verbose_name_plural = 'ingresos'
+
+
+class egreso(models.Model):
+    descripcion = models.CharField(max_length=255)
+    monto = models.FloatField()
+    tipo_ingreso = models.CharField(max_length=20)
+    fecha = models.DateField()
+
+    def __str__(self):
+        return '%s '%(self.descripcion, self.monto , self.tipo_ingreso , self.fecha)
+    
+    class Meta:
+        db_table = 'egresos'
+        verbose_name = 'egreso'
+        verbose_name_plural = 'egresos'

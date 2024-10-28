@@ -210,9 +210,11 @@ def cuotas_alumno_con_pago_guardado(request, alumno_id):
 
 
 ##PAGO DE CUOTAS
+
 def pagocuota_form(request, cuota_id):
     cuota = get_object_or_404(Cuotas, pk=cuota_id)
     alumno = cuota.Alumnos
+    nuevo_ingreso = ingresos()
     
     # Obtener el monto de la cuota desde la URL
     monto_cuota = request.GET.get('monto')
@@ -246,13 +248,36 @@ def pagocuota_form(request, cuota_id):
         request.session['tutor_seleccionado_id'] = tutor_seleccionado_id
 
         # Obtiene el descuento seleccionado
-        descuento_aplicado = request.POST.get('descuento')
+        descuento_aplicado = request.POST.get('descuento_aplicado')
 
         # Aplica el descuento si está seleccionado
         if descuento_aplicado:
             monto_cuota_original = cuota.Monto_cuota  # Obtén el monto original de la cuota
-            monto_cuota = monto_cuota_original * 0.95  # Descuento del 5%
-            monto_descuento = monto_cuota_original * 0.05  # Calcula el monto del descuento
+            if descuento_aplicado == '5':
+                monto_cuota = monto_cuota_original * 0.95  # Descuento del 5%
+                monto_descuento = monto_cuota_original * 0.05  # Calcula el monto del descuento
+            elif descuento_aplicado == '25':
+                monto_cuota = monto_cuota_original * 0.75  # Descuento del 25%
+                monto_descuento = monto_cuota_original * 0.25  # Calcula el monto del descuento
+            elif descuento_aplicado == '50':
+                monto_cuota = monto_cuota_original * 0.50  # Descuento del 50%
+                monto_descuento = monto_cuota_original * 0.50  # Calcula el monto del descuento
+
+            # Redondea el monto del descuento al múltiplo de 500 más cercano
+            if monto_descuento >= 500:
+                monto_descuento = round(monto_descuento / 500) * 500
+
+            # Calcula el monto de la cuota con el descuento redondeado
+            monto_cuota = monto_cuota_original - monto_descuento 
+
+            # Redondea el monto de la cuota al múltiplo de 50, 500 o 5000 más cercano
+            if monto_cuota >= 5000:
+                monto_cuota = round(monto_cuota / 5000) * 5000
+            elif monto_cuota >= 500:
+                monto_cuota = round(monto_cuota / 500) * 500
+            elif monto_cuota >= 50:
+                monto_cuota = round(monto_cuota / 50) * 50
+
             fecha_descuento = timezone.now()  # Guarda la fecha actual
 
         # Calcula el total pagado
@@ -345,6 +370,17 @@ def detalle_pago(request, cuota_id):
         total_pago += (pagocuota.efectivo or 0) + (pagocuota.transferencia or 0) + (pagocuota.cheque or 0) + (pagocuota.pagare or 0)
         descuento_total += pagocuota.descuento or 0
 
+    # Define monto_total antes del bloque if
+    monto_total = cuota.Monto_cuota  # Obtén el valor del atributo Monto_cuota
+
+    # Redondea el descuento total al múltiplo de 50, 500 o 5000 más cercano
+    if descuento_total >= 5000:
+        descuento_total = round(descuento_total / 5000) * 5000
+    elif descuento_total >= 500:
+        descuento_total = round(descuento_total / 500) * 500
+    elif descuento_total >= 50:
+        descuento_total = round(descuento_total / 50) * 50
+
     monto_final = cuota.Monto_cuota - descuento_total
 
     # Obtén la última fecha de pago (si hay)
@@ -374,7 +410,7 @@ def detalle_pago(request, cuota_id):
         'total_pago': total_pago,
         'descuento_total': descuento_total,
         'monto_final': monto_final,
-        'monto_total': cuota.Monto_cuota,
+        'monto_total': monto_total,  # Pasar el monto total redondeado
         'ultima_fecha_pago': ultima_fecha_pago,
         'ultimo_metodo_pago': ultimo_metodo_pago,
         'tutor_seleccionado': tutor_seleccionado 
