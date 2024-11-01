@@ -112,14 +112,32 @@ def imprimir_datos_padre_madre(request, matricula_id):
     matricula = get_object_or_404(Matricula, pk=matricula_id)
     alumno = matricula.alumno
     tutores = alumno.Familia.Tutores.all()  # Obtiene los tutores de la familia del alumno
-
-    # Obtén el año de la matricula
     año_matriculacion = matricula.Año
+    
+    # Obtén el año y la división del curso
+    curso_año = alumno.curso.años 
+    curso_division = alumno.curso.Division
+
+    # Define un diccionario para mapear los números a las letras del año
+    letras_año = {
+        '1': 'Primero',
+        '2': 'Segundo',
+        '3': 'Tercero',
+        '4': 'Cuarto',
+        '5': 'Quinto',
+        '6': 'Sexto',
+        '7': 'Septimo',
+    }
+
+    # Obtiene la letra del año usando el diccionario
+    letra_año = letras_año.get(curso_año, curso_año)  # Si no se encuentra la clave, devuelve el mismo valor
 
     context = {
         'alumno': alumno,
         'tutores': tutores,
         'año_matriculacion': año_matriculacion,
+        'letra_año': letra_año,
+        'curso_division': curso_division,
     }
     return render(request, 'imprimir_datos_padre_madre.html', context)
 
