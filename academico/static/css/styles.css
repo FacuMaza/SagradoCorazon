@@ -1,0 +1,24 @@
+/* styles.css */
+@media print {
+    body {
+      margin: 0;
+    }
+    @page {
+      size: landscape; /* Define el tamaño de la página como apaisado */
+    }
+    table {
+      width: 100%; /* Ajusta la tabla al ancho de la página */
+      font-size: 10px; /* Ajusta el tamaño de la fuente para que quepa todo */
+    }
+    h1 {
+      display: flex;
+      align-items: center;
+    }
+    h1 img {
+      margin-right: 10px;
+    }
+    h1 span {
+      color: black;
+      margin-left: auto;
+    }
+  }

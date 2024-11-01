@@ -56,6 +56,14 @@ class AlumnosForm(forms.ModelForm):
             # ... Otros campos del modelo Alumnos (sin 'curso')
         ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Obtener todos los cursos ordenados por el campo "curso"
+        cursos = Cursos.objects.all().order_by('años', 'Division')
+        choices = [(curso.id, f"{curso.get_años_display()} - {curso.Division}") for curso in cursos]
+        self.fields['curso'].widget = forms.Select(choices=choices)
+        
 
 
 
@@ -128,7 +136,6 @@ class MateriaForm(forms.ModelForm):
 
 
 class CursosForm(forms.ModelForm):
-
     def clean(self):
         cleaned_data = super().clean()
         año = cleaned_data.get('años')  # Ensure correct field name
@@ -144,6 +151,14 @@ class CursosForm(forms.ModelForm):
     class Meta:
         model = Cursos
         fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Obtener todos los cursos ordenados por el campo "curso"
+        cursos = Cursos.objects.all().order_by('años', 'Division')
+        choices = [(curso.id, f"{curso.get_años_display()} - {curso.Division}") for curso in cursos]
+        self.fields['años'].widget = forms.Select(choices=choices)
 
 class NotasForm(forms.ModelForm):
     class Meta:

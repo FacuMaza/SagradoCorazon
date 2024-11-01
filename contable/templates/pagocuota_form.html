@@ -109,16 +109,12 @@
       var montoTotalValor = parseFloat(montoTotal.textContent.replace('$', ''));
       var nuevoMontoRestante = montoTotalValor * (1 - porcentaje);
 
-      // Redondea al múltiplo de 50, 500 o 5000 más cercano
-      if (nuevoMontoRestante >= 5000) {
-        nuevoMontoRestante = Math.round(nuevoMontoRestante / 5000) * 5000;
-      } else if (nuevoMontoRestante >= 500) {
-        nuevoMontoRestante = Math.round(nuevoMontoRestante / 500) * 500;
-      } else if (nuevoMontoRestante >= 50) {
-        nuevoMontoRestante = Math.round(nuevoMontoRestante / 50) * 50;
-      } else {
-        // Si el monto es menor a 50, mostrar 50
-        nuevoMontoRestante = 50;
+      // Redondea al múltiplo de 50 más cercano
+      var resto = nuevoMontoRestante % 50;
+      if (resto >= 25) { // Si el resto es 25 o más, redondea hacia arriba
+        nuevoMontoRestante = nuevoMontoRestante + (50 - resto); 
+      } else { // Si el resto es menor que 25, redondea hacia abajo
+        nuevoMontoRestante = nuevoMontoRestante - resto;
       }
 
       montoRestante.textContent = '$' + nuevoMontoRestante.toFixed(2); 
@@ -130,8 +126,10 @@
       // ... (Tu código actual para procesar el formulario en la vista) ...
 
       // Actualiza el estado de la cuota visualmente
-      var estadoCuota = document.getElementById('estado-cuota');
-      estadoCuota.textContent = 'Estado: Pagado'; 
+      // Puedes agregar aquí el código para actualizar el estado de la cuota
+      // en la interfaz de usuario. Por ejemplo:
+      // var estadoCuota = document.getElementById('estado-cuota');
+      // estadoCuota.textContent = 'Estado: Pagado'; 
        // Recarga la página
         location.reload();
     });

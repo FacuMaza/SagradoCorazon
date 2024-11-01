@@ -17,20 +17,20 @@
             </tr>
           </thead>
           <tbody>
-            {% for alumno in alumnos %}
-            <tr>
-              <td>
-                {{ alumno }}
-              </td>
-              <td>
-                <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
-                        data-toggle="modal" data-target="#alumnoDetailsModal{{ alumno.pk }}">Detalle</button> | 
-                <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" 
-                        data-toggle="modal" data-target="#alumnoEditModal{{ alumno.pk }}">Editar</button> | 
-                <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
-                        data-toggle="modal" data-target="#alumnoDeleteModal{{ alumno.pk }}">Eliminar</button>
-              </td>
-            </tr>
+            {% for alumno in alumnos|dictsort:"Apellidos" %} 
+              <tr>
+                <td>
+                  {{ alumno }}
+                </td>
+                <td>
+                  <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
+                          data-toggle="modal" data-target="#alumnoDetailsModal{{ alumno.pk }}">Detalle</button> | 
+                  <button type="button" class="btn" style="background-color: rgb(31,40,81); color: white;" 
+                          data-toggle="modal" data-target="#alumnoEditModal{{ alumno.pk }}">Editar</button> | 
+                  <button type="button" class="btn" style="background-color: rgb(190,43,39); color: white;" 
+                          data-toggle="modal" data-target="#alumnoDeleteModal{{ alumno.pk }}">Eliminar</button>
+                </td>
+              </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -45,7 +45,7 @@
     </div>
 
     <!-- Modales para Detalle, Editar y Eliminar -->
-    {% for alumno in alumnos %}
+    {% for alumno in alumnos|dictsort:"Nombres" %}
     <!-- Modal Detalle -->
     <div class="modal fade" id="alumnoDetailsModal{{ alumno.pk }}" tabindex="-1" role="dialog" aria-labelledby="alumnoDetailsModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">

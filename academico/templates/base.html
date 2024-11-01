@@ -10,7 +10,31 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+    <style>
+        @media print {
+            /* Ocultar elementos no deseables en la impresión */
+            nav, header, footer {
+                display: none;
+            }
+            
+            /* Estilos para la impresión */
+            body {
+                font-size: 12px;
+                line-height: 1.5;
+            }
+            
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            
+            th, td {
+                border: 1px solid black;
+                padding: 5px;
+                text-align: left;
+            }
+        }
+    </style>
     <title>Document</title>
 </head>
 <body>
@@ -77,8 +101,11 @@
   logoLink.addEventListener('click', function() {
     window.location.href = "{% url 'index' %}";
   });
+
+  // Funcion para imprimir
+  function imprimirPagina() {
+    window.print();
+  }
 </script>
 </body>
 </html>
-
-

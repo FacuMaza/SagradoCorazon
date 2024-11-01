@@ -1,6 +1,6 @@
 from django.db.models import Exists, OuterRef
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 from datetime import datetime, date # Importamos datetime para combinar fecha y hora
@@ -24,7 +24,7 @@ def contable(request):
                 ## MATRICULAS
 
 def listar_matriculas(request):
-    matriculas = Matricula.objects.all()
+    matriculas = Matricula.objects.all().order_by('alumno__Apellidos')  # Ordenar por 'alumno__Apellidos'
     context = {'matriculas': matriculas}
     return render(request, 'listar_matriculas.html', context)
 
@@ -42,8 +42,8 @@ def crear_matricula(request):
             existing_matricula = Matricula.objects.filter(alumno=alumno, Año=form.cleaned_data['Año']).exists()
             if existing_matricula:
                 # Si existe, muestra un mensaje de error y redirige al formulario
-              
-                return render(request, 'matricula_existe.html', {'form': form})
+                messages.error(request, "Ya existe una matrícula para este alumno en este año.")
+                return render(request, 'matriculas_forms.html', {'form': form})
 
             # Verifica si el alumno tiene un tutor
             tutor = familia.Tutores.first()
@@ -68,8 +68,8 @@ def crear_matricula(request):
                 return redirect('/matriculas/')
             else:
                 # Si no tiene tutor, muestra un mensaje de error y no guarda la matrícula
-             
-                return render(request, 'sintutor.html', {'form': form})
+                messages.error(request, "El alumno no tiene un tutor asignado.")
+                return render(request, 'matriculas_forms.html', {'form': form})
     else:
         form = MatriculaForm()
         # Obtener la familia seleccionada (si la hay) desde la URL
@@ -85,6 +85,16 @@ def crear_matricula(request):
        
 
         return render(request, 'matriculas_forms.html', {'form': form,'alumnos': alumnos})
+    
+
+def get_familia(request, alumno_id):
+    """Vista para obtener la familia del alumno seleccionado."""
+    try:
+        alumno = Alumnos.objects.get(pk=alumno_id)
+        familia = alumno.Familia
+        return JsonResponse({'familia_id': familia.id, 'familia_nombre': familia.Nombre_Familia})
+    except Alumnos.DoesNotExist:
+        return JsonResponse({'error': 'Alumno no encontrado'}, status=404)
 
     
 
@@ -215,7 +225,7 @@ def pagocuota_form(request, cuota_id):
     cuota = get_object_or_404(Cuotas, pk=cuota_id)
     alumno = cuota.Alumnos
     nuevo_ingreso = ingresos()
-    
+
     # Obtener el monto de la cuota desde la URL
     monto_cuota = request.GET.get('monto')
     if monto_cuota:
@@ -270,13 +280,12 @@ def pagocuota_form(request, cuota_id):
             # Calcula el monto de la cuota con el descuento redondeado
             monto_cuota = monto_cuota_original - monto_descuento 
 
-            # Redondea el monto de la cuota al múltiplo de 50, 500 o 5000 más cercano
-            if monto_cuota >= 5000:
-                monto_cuota = round(monto_cuota / 5000) * 5000
-            elif monto_cuota >= 500:
-                monto_cuota = round(monto_cuota / 500) * 500
-            elif monto_cuota >= 50:
-                monto_cuota = round(monto_cuota / 50) * 50
+            # Aplica la lógica para redondear al múltiplo de 50
+            resto = monto_cuota % 50
+            if resto <= 50:
+                monto_cuota = monto_cuota - resto
+            else:
+                monto_cuota = monto_cuota + (100 - resto)
 
             fecha_descuento = timezone.now()  # Guarda la fecha actual
 

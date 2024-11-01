@@ -12,6 +12,7 @@ urlpatterns += [
     path('matriculas/crear/', views.crear_matricula, name='crear_matricula'),
     path('sin_tutor/<int:alumno_id>/', views.sin_tutor, name='sin_tutor'),
     path('imprimir_datos_padre_madre/<int:matricula_id>/', views.imprimir_datos_padre_madre, name='imprimir_datos_padre_madre'),
+    path('get_familia/<int:alumno_id>/', views.get_familia, name='get_familia'),
 
 ]
 

@@ -1,19 +1,23 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 <main>
   <div class="container-fluid mt-4"> 
     <div class="row justify-content-center">
       <div class="col-12 text-center">
-        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">
-          {{ alumno.Nombres }} {{ alumno.Apellidos }}
+        <h1 style="font-style: italic; background-color: #007bff; padding: 10px; color: black; display: flex; align-items: center;">
+          <img src="{% static 'img/LogoColegio.svg' %}" alt="Logo del Colegio" height="80" style="margin-right: 10px;">
+          <span style="color: black; margin-left: auto;">{{ alumno.Nombres }} {{ alumno.Apellidos }} - 
+          {{ alumno.curso.get_años_display }} {{ alumno.curso.Division.Division }}</span> 
         </h1>
+        
       </div>
     </div>
 
     <div class="row justify-content-center">
       <div class="col-12">
         <div class="table-responsive">
-          <table class="table table-striped table-hover w-100">
+          <table class="table table-striped table-hover w-100" style="background-color: #007bff;"> <!-- Estilo añadido a la tabla -->
             <thead>
               <tr>
                 <th>Materia</th>
@@ -95,6 +99,21 @@
         table {
           width: 100%; /* Ajusta la tabla al ancho de la página */
           font-size: 10px; /* Ajusta el tamaño de la fuente para que quepa todo */
+          background-color: #007bff; /* Agrega el color de fondo a la tabla */
+        }
+        h1 {
+          display: flex;
+          align-items: center;
+          background-color: #007bff; /* Agrega el color de fondo aquí */
+          padding: 10px; /* Agrega el padding aquí */
+          color: black; /* Agrega el color del texto aquí */
+        }
+        h1 img {
+          margin-right: 10px;
+        }
+        h1 span {
+          color: black;
+          margin-left: auto;
         }
       }
     `;

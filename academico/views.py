@@ -1,6 +1,7 @@
 from pyexpat.errors import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
+from datetime import datetime
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
@@ -374,11 +375,17 @@ def lista_alumnos(request):
                'Localidades': Localidades,
                'colegio':colegio}
     return render(request, 'lista_alumnos.html', context)
+
 @login_required
 def detalle_alumno(request, pk):
     alumno = Alumnos.objects.get(pk=pk)
-    context = {'alumno': alumno}
+    año_actual = datetime.now().year  # Obtén el año actual
+    context = {
+        'alumno': alumno,
+        'año_actual': año_actual  # Pasa el año actual al contexto
+    }
     return render(request, 'alumnos_detail.html', context)
+
 @login_required
 def nuevo_alumno(request):
     if request.method == 'POST':

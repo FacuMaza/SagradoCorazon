@@ -21,18 +21,6 @@ class MatriculaForm(forms.ModelForm):
         self.fields['Familia'].empty_label = "Seleccione una familia"
         self.fields['alumno'].empty_label = "Seleccione un alumno"
 
-        # Manejar la actualización de alumnos cuando se selecciona una familia
-        if self.is_bound:
-            # Obtener la familia seleccionada
-            familia_id = self.data.get('Familia')
-            if familia_id:
-                # Obtener los alumnos de la familia seleccionada
-                alumnos = Alumnos.objects.filter(Familia_id=familia_id)
-                # Actualizar las opciones del campo 'alumno'
-                alumno_choices = [(alumno.id, f'{alumno.Nombres}') for alumno in alumnos]
-                self.fields['alumno'].choices = alumno_choices
-
-
 class CuotasForm(forms.ModelForm):
     class Meta:
         model = Cuotas

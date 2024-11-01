@@ -13,4 +13,43 @@
         <button type="submit">Crear Matrícula</button>
     </form>
 
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <script>
+        // Obtener referencias a los elementos del formulario
+        const alumnoSelect = document.getElementById('id_alumno'); 
+        const familiaSelect = document.getElementById('id_Familia'); 
+
+        // Función para actualizar las opciones del campo Familia
+        function actualizarFamilia(alumnoId) {
+            // Realizar una solicitud AJAX a la vista para obtener la familia del alumno
+            fetch(`/get_familia/${alumnoId}/`) 
+                .then(response => response.json())
+                .then(data => {
+                    // Limpiar las opciones del campo Familia
+                    familiaSelect.innerHTML = ''; // Aquí está la corrección
+
+                    // Agregar la opción de la familia del alumno
+                    const familiaOption = document.createElement('option');
+                    familiaOption.value = data.familia_id;
+                    familiaOption.text = data.familia_nombre;
+                    familiaSelect.appendChild(familiaOption);
+                });
+        }
+
+        // Escuchar el cambio en el campo 'alumno'
+        alumnoSelect.addEventListener('change', () => {
+            // Obtener el ID del alumno seleccionado
+            const alumnoId = alumnoSelect.value;
+
+            // Actualizar las opciones del campo Familia
+            actualizarFamilia(alumnoId);
+        });
+    </script>
 {% endblock %}
