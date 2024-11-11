@@ -14,7 +14,7 @@
             <tr>
               <th>Alumno</th>
               <th>Año</th>
-              
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -28,6 +28,7 @@
               </td>
               <td>
                 <a href="{% url 'imprimir_datos_padre_madre' matricula.id %}" class="btn" style="background-color: rgb(214,176,85); color: white;">IMPRIMIR</a>
+                <a href="{% url 'eliminar_matricula' matricula.id %}" class="btn" style="background-color: red; color: white;">ELIMINAR</a>
               </td>
             </tr>
             {% endfor %}

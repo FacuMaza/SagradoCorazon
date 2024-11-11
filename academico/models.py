@@ -288,7 +288,7 @@ class Cuotas(models.Model):
     Año = models.CharField(max_length=4,default=1)
     Mes = models.CharField(max_length=4,default=1) ## MES Y AÑO QUE SE ABONA LA CUOTA
     Fecha_hora_del_pago = models.DateField(default=None, null=True,blank=True) ## FECHA Y HORA DEL PAGO DE LA CUOTA
-    Monto_cuota = models.FloatField(default=200000)
+    Monto_cuota = models.FloatField(default=None)
     Pagado = models.BooleanField(default=False)
     Anticipado = models.BooleanField(default=False)
     Anticipado_pagado = models.BooleanField(default=False)

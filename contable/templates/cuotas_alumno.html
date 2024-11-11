@@ -12,7 +12,7 @@
   <table class="table">
     <thead>
       <tr>
-        <th>Mes</th>
+        <th>Mes y Año</th>
         <th>Fecha de Pago</th>
         <th>Monto</th>
         <th>Pagado</th>
@@ -20,35 +20,72 @@
       </tr>
     </thead>
     <tbody>
+      <!-- Muestra primero las cuotas NO pagadas -->
       {% for cuota in cuotas_alumno %}
-      <tr>
-        <td>{{ cuota.Mes }}</td>
-        <td>
-          {% if cuota.Pagado %}
-            {{ cuota.Fecha_hora_del_pago|date:"Y-m-d" }}
-          {% endif %}
-        </td>
-        <td>{{ cuota.Monto_cuota }}</td>
-        <td>
-          {% if cuota.Pagado %}
-            Sí
-          {% else %}
-            No
-          {% endif %}
-        </td>
-        <td>
-          {% if not cuota.Pagado %}
-            <a href="{% url 'pagocuota_form' cuota.id %}?monto={{ cuota.Monto_cuota|stringformat:"f" }}" class="btn btn-primary">PAGAR</a> 
-            <form method="POST" action="{% url 'pagocuota_form' cuota.id %}">
-              {% csrf_token %}
-              <input type="hidden" name="monto" value="{{ cuota.Monto_cuota }}">
-              
-            </form> 
-          {% else %}
-            <a href="{% url 'detalle_pago' cuota.id %}" class="btn btn-secondary">DETALLE PAGADO</a> 
-          {% endif %}
-        </td>
-      </tr>
+        {% if not cuota.Pagado %}
+          <tr>
+            <td>{{ cuota.mes_nombre }} {{ cuota.Año }}</td>  <!-- Ahora muestra el año junto al mes -->
+            <td>
+              {% if cuota.Pagado %}
+                {{ cuota.Fecha_hora_del_pago|date:"Y-m-d" }}
+              {% endif %}
+            </td>
+            <td>{{ cuota.Monto_cuota }}</td>
+            <td>
+              {% if cuota.Pagado %}
+                Sí
+              {% else %}
+                No
+              {% endif %}
+            </td>
+            <td>
+              {% if not cuota.Pagado %}
+                <a href="{% url 'pagocuota_form' cuota.id %}?monto={{ cuota.Monto_cuota|stringformat:"f" }}" class="btn btn-primary">PAGAR</a> 
+                <form method="POST" action="{% url 'pagocuota_form' cuota.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="monto" value="{{ cuota.Monto_cuota }}">
+                  
+                </form> 
+              {% else %}
+                <a href="{% url 'detalle_pago' cuota.id %}" class="btn btn-secondary">DETALLE PAGADO</a> 
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Luego muestra las cuotas pagadas -->
+      {% for cuota in cuotas_alumno %}
+        {% if cuota.Pagado %}
+          <tr>
+            <td>{{ cuota.mes_nombre }} {{ cuota.Año }}</td>  <!-- Ahora muestra el año junto al mes -->
+            <td>
+              {% if cuota.Pagado %}
+                {{ cuota.Fecha_hora_del_pago|date:"Y-m-d" }}
+              {% endif %}
+            </td>
+            <td>{{ cuota.Monto_cuota }}</td>
+            <td>
+              {% if cuota.Pagado %}
+                Sí
+              {% else %}
+                No
+              {% endif %}
+            </td>
+            <td>
+              {% if not cuota.Pagado %}
+                <a href="{% url 'pagocuota_form' cuota.id %}?monto={{ cuota.Monto_cuota|stringformat:"f" }}" class="btn btn-primary">PAGAR</a> 
+                <form method="POST" action="{% url 'pagocuota_form' cuota.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="monto" value="{{ cuota.Monto_cuota }}">
+                  
+                </form> 
+              {% else %}
+                <a href="{% url 'detalle_pago' cuota.id %}" class="btn btn-secondary">DETALLE PAGADO</a> 
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
       {% endfor %}
     </tbody>
   </table>

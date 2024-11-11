@@ -7,7 +7,8 @@ from datetime import datetime, date # Importamos datetime para combinar fecha y 
 from urllib import request
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
-
+import locale
+from django.db.models import Sum
 from django.contrib.auth import logout
 from .models import *
 from .forms import *
@@ -20,8 +21,247 @@ from django.views.generic import ListView, UpdateView, FormView,CreateView
 def contable(request):
     return render(request, "indexcontable.html")
 
+recibo_contador = 1  
 
+def generar_numero_recibo():
+    global recibo_contador
+    numero = recibo_contador
+    recibo_contador += 1
+    return numero
+
+recibo_contador = 1  # Variable global para el contador de recibos
+
+def generar_numero_recibo():
+    global recibo_contador
+    numero = recibo_contador
+    recibo_contador += 1
+    return numero
+
+@login_required
+def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
+    if recibo_id:
+        # Mostrar el recibo generado
+        recibo = get_object_or_404(Recibo, pk=recibo_id)
+        context = {
+            'recibo': recibo
+        }
+        return render(request, 'recibo_detalle.html', context)
+    
+    if cuota_id:
+        # Recibo de cuota
+        cuota = get_object_or_404(Cuotas, pk=cuota_id)
+
+        # Obtén los pagos asociados a la cuota
+        pagocuotas = cuota.pagocuota_set.all()
+
+
+        # Obtiene la fecha actual
+        fecha_actual = timezone.now().strftime('%d/%m/%Y')
+
+        # Agrupa los pagos por fecha de pago y tutor
+        pagos_agrupados = {}
+        for pagocuota in pagocuotas:
+            fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
+            tutor = pagocuota.cuota.Tutor
+            if fecha_pago not in pagos_agrupados:
+                pagos_agrupados[fecha_pago] = {}
+            if tutor not in pagos_agrupados[fecha_pago]:
+                pagos_agrupados[fecha_pago][tutor] = []
+            pagos_agrupados[fecha_pago][tutor].append({
+                "pagocuota": pagocuota,
+                "nombre_tutor": tutor.Nombre + " " + tutor.Apellido
+            })
+
+        # Calcula el total de pago, descuento total y monto final
+        total_pago = 0
+        descuento_total = 0
+        for pagocuota in pagocuotas:
+            total_pago += (pagocuota.efectivo or 0) + (pagocuota.transferencia or 0) + (pagocuota.cheque or 0) + (pagocuota.pagare or 0)
+            descuento_total += pagocuota.descuento or 0
+
+        # Redondea el descuento total al múltiplo de 50, 500 o 5000 más cercano
+        if descuento_total >= 5000:
+            descuento_total = round(descuento_total / 5000) * 5000
+        elif descuento_total >= 500:
+            descuento_total = round(descuento_total / 500) * 500
+        elif descuento_total >= 50:
+            descuento_total = round(descuento_total / 50) * 50
+
+        # Define monto_total antes del bloque if
+        monto_total = cuota.Monto_cuota
+        monto_final = cuota.Monto_cuota - descuento_total
+
+        # Obtén la última fecha de pago (si hay)
+        ultima_fecha_pago = None
+        ultimo_metodo_pago = None
+        for pagocuota in pagocuotas:
+            if pagocuota.cuota.Fecha_hora_del_pago:
+                ultima_fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
+                ultimo_metodo_pago = "Efectivo" if pagocuota.efectivo else "Transferencia" if pagocuota.transferencia else "Cheque" if pagocuota.cheque else "Pagaré" if pagocuota.pagare else "Desconocido"
+                break
+
+        # Obtén el ID del tutor seleccionado de la sesión
+        tutor_seleccionado_id = request.session.get('tutor_seleccionado_id')
+
+        # Obtén el tutor seleccionado (si hay)
+        tutor_seleccionado = None
+        if tutor_seleccionado_id:
+            tutor_seleccionado = Tutores.objects.get(pk=tutor_seleccionado_id)
+
+        # Obtén los tutores asociados a la cuota
+        tutores_asociados = Tutores.objects.filter(cuotas__in=[cuota])
+
+        # Define un diccionario para obtener el nombre del mes por ID
+        meses = {
+            '1': 'Enero',
+            '2': 'Febrero',
+            '3': 'Marzo',
+            '4': 'Abril',
+            '5': 'Mayo',
+            '6': 'Junio',
+            '7': 'Julio',
+            '8': 'Agosto',
+            '9': 'Septiembre',
+            '10': 'Octubre',
+            '11': 'Noviembre',
+            '12': 'Diciembre'
+        }
+
+        # Verifica si el valor del mes es válido (1-12)
+        if cuota.Mes and 1 <= int(cuota.Mes) <= 12:
+            mes_nombre = meses.get(str(cuota.Mes), 'Mes Desconocido')
+        else:
+            mes_nombre = 'Mes Desconocido'
+
+        # Genera el número de recibo consecutivo
+        recibo_numero = generar_numero_recibo()
+
+        # Guarda el recibo en la base de datos
+        recibo = Recibo.objects.create(
+            matricula=cuota.Alumnos.matricula_set.first(),  # Obtén la matrícula desde la cuota
+            cuota=cuota,
+            tutor=cuota.Tutor,  # Obtén el tutor desde la cuota
+            Fecha_hora_del_pago=ultima_fecha_pago  # Si hay un pago, usa la última fecha
+        )
+
+        # Crea el contexto para el template
+        context = {
+            'cuota': cuota,
+            'pagos_agrupados': pagos_agrupados,
+            'total_pago': total_pago,
+            'descuento_total': descuento_total,
+            'monto_final': monto_final,
+            'monto_total': monto_total,
+            'ultima_fecha_pago': ultima_fecha_pago,
+            'ultimo_metodo_pago': ultimo_metodo_pago,
+            'tutor_seleccionado': tutor_seleccionado,
+            'tutores_asociados': tutores_asociados,
+            'año': cuota.Año,
+            'mes': mes_nombre,
+            'recibo_numero': recibo_numero,
+            'recibo': recibo,
+            'fecha_actual': fecha_actual
+        }
+
+        # Renderiza el template recibo.html
+        return render(request, 'recibo.html', context)
+
+    elif matricula_id:
+        # Recibo de matrícula
+        matricula = get_object_or_404(Matricula, pk=matricula_id)
+
+        # Obtén los pagos de matrícula asociados
+        pagos_matricula = pagocuota.objects.filter(cuota__Alumnos__matricula=matricula)
+
+        # Obtiene la fecha actual
+        fecha_actual = timezone.now().strftime('%d/%m/%Y')
+        # Calcula el total de pago y descuento total
+        total_pago = 0
+        descuento_total = 0
+        for pagocuota in pagos_matricula:
+            total_pago += (pagocuota.efectivo or 0) + (pagocuota.transferencia or 0) + (pagocuota.cheque or 0) + (pagocuota.pagare or 0)
+            descuento_total += pagocuota.descuento or 0
+
+        # Calcula el monto final
+        monto_final = matricula.monto_total - descuento_total
+
+        # Obtén la última fecha de pago (si hay)
+        ultima_fecha_pago = None
+        ultimo_metodo_pago = None
+        for pagocuota in pagos_matricula:
+            if pagocuota.cuota.Fecha_hora_del_pago:
+                ultima_fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
+                ultimo_metodo_pago = "Efectivo" if pagocuota.efectivo else "Transferencia" if pagocuota.transferencia else "Cheque" if pagocuota.cheque else "Pagaré" if pagocuota.pagare else "Desconocido"
+                break
+
+        # Obtén el ID del tutor seleccionado de la sesión
+        tutor_seleccionado_id = request.session.get('tutor_seleccionado_id')
+
+        # Obtén el tutor seleccionado (si hay)
+        tutor_seleccionado = None
+        if tutor_seleccionado_id:
+            tutor_seleccionado = Tutores.objects.get(pk=tutor_seleccionado_id)
+
+        # Genera el número de recibo consecutivo
+        recibo_numero = generar_numero_recibo()
+
+        # Guarda el recibo en la base de datos
+        recibo = Recibo.objects.create(
+            matricula=matricula,
+            cuota=None,  # Si es un recibo de matrícula, cuota es None
+            tutor=matricula.alumno.cuotas.first().Tutor,  # Obtén el tutor desde la matrícula
+            Fecha_hora_del_pago=ultima_fecha_pago  # Si hay un pago, usa la última fecha
+        )
+
+        # Crea el contexto para el template
+        context = {
+            'matricula': matricula,
+            'pagos_matricula': pagos_matricula,  # Lista de pagos de matrícula
+            'total_pago': total_pago,
+            'descuento_total': descuento_total,
+            'monto_final': monto_final,
+            'ultima_fecha_pago': ultima_fecha_pago,
+            'ultimo_metodo_pago': ultimo_metodo_pago,
+            'tutor_seleccionado': tutor_seleccionado,
+            'recibo_numero': recibo_numero,
+            'recibo': recibo,
+            'fecha_actual': fecha_actual  # Agrega el objeto Recibo al contexto
+        }
+
+        # Renderiza el template recibo.html
+        return render(request, 'recibo.html', context)
+
+    else:
+        # Maneja el caso en que no se proporcionó ni cuota_id ni matricula_id
+        return render(request, 'error.html', {'error': 'No se especificó un tipo de recibo válido'})
+
+def lista_recibos(request):
+    # Obtén todos los recibos
+    recibos = Recibo.objects.all()
+    
+   
+
+    # Crea el contexto para el template
+    context = {
+        'recibos': recibos,
+    }
+
+    return render(request, 'lista_recibos.html', context)
+
+def recibo_detalle(request, recibo_id):
+    recibo = get_object_or_404(Recibo, pk=recibo_id)
+
+    context = {
+        'recibo': recibo,
+    }
+
+    return render(request, 'recibo_detalle.html', context)
                 ## MATRICULAS
+
+def eliminar_matricula(request, matricula_id):
+    matricula = Matricula.objects.get(pk=matricula_id)
+    matricula.delete()
+    return redirect('listar_matriculas')  # Redirecciona a la lista de matriculas
 
 def listar_matriculas(request):
     matriculas = Matricula.objects.all().order_by('alumno__Apellidos')  # Ordenar por 'alumno__Apellidos'
@@ -53,13 +293,16 @@ def crear_matricula(request):
                 matricula.pagado = False
                 matricula.save()
 
+                # Obtén el monto_matricula de la instancia recién creada
+                monto_cuota = matricula.monto_matricula
+
                 # Crea las cuotas para el alumno actual
                 meses = ['03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
                 for mes in meses:
                     Cuotas.objects.create(
                         Mes=mes,
                         Año=matricula.Año,
-                        Monto_cuota=200000.00,
+                        Monto_cuota=monto_cuota,  # Usa el monto_matricula de la Matricula
                         Alumnos=alumno,
                         Extraordinario='',
                         Tutor=tutor
@@ -215,7 +458,27 @@ def cuotas_alumno(request, alumno_id):
     alumno = get_object_or_404(Alumnos, pk=alumno_id)
     
     cuotas_alumno = Cuotas.objects.filter(Alumnos=alumno)
-
+    
+    # Convierte el ID del mes a su nombre textual en español
+    meses_es = {
+        1: 'Enero',
+        2: 'Febrero',
+        3: 'Marzo',
+        4: 'Abril',
+        5: 'Mayo',
+        6: 'Junio',
+        7: 'Julio',
+        8: 'Agosto',
+        9: 'Septiembre',
+        10: 'Octubre',
+        11: 'Noviembre',
+        12: 'Diciembre',
+    }
+    
+    # Convierte el ID del mes a su nombre textual
+    for cuota in cuotas_alumno:
+        cuota.mes_nombre = meses_es[int(cuota.Mes)]  # Asigna el nombre del mes
+    
     context = {
         'alumno': alumno,
         'cuotas_alumno': cuotas_alumno,
@@ -291,19 +554,14 @@ def pagocuota_form(request, cuota_id):
                 monto_cuota = monto_cuota_original * 0.50  # Descuento del 50%
                 monto_descuento = monto_cuota_original * 0.50  # Calcula el monto del descuento
 
-            # Redondea el monto del descuento al múltiplo de 500 más cercano
-            if monto_descuento >= 500:
-                monto_descuento = round(monto_descuento / 500) * 500
+            # Redondea el monto del descuento al múltiplo de 1000 más cercano
+            monto_descuento = round(monto_descuento / 1000) * 1000
 
             # Calcula el monto de la cuota con el descuento redondeado
             monto_cuota = monto_cuota_original - monto_descuento 
 
-            # Aplica la lógica para redondear al múltiplo de 50
-            resto = monto_cuota % 50
-            if resto <= 50:
-                monto_cuota = monto_cuota - resto
-            else:
-                monto_cuota = monto_cuota + (100 - resto)
+            # Redondea el monto de la cuota al múltiplo de 1000 más cercano
+            monto_cuota = round(monto_cuota / 1000) * 1000
 
             fecha_descuento = timezone.now()  # Guarda la fecha actual
 
@@ -382,13 +640,20 @@ def detalle_pago(request, cuota_id):
     # Obtén todos los pagos asociados a la cuota
     pagocuotas = cuota.pagocuota_set.all()
 
-    # Agrupa los pagos por fecha de pago
+    # Agrupa los pagos por fecha de pago y tutor
     pagos_agrupados = {}
     for pagocuota in pagocuotas:
         fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
+        tutor = pagocuota.cuota.Tutor  # Obtén el tutor desde la cuota
         if fecha_pago not in pagos_agrupados:
-            pagos_agrupados[fecha_pago] = []
-        pagos_agrupados[fecha_pago].append(pagocuota)
+            pagos_agrupados[fecha_pago] = {}  # Crea un diccionario para cada fecha
+        if tutor not in pagos_agrupados[fecha_pago]:
+            pagos_agrupados[fecha_pago][tutor] = []  # Crea una lista para cada tutor
+        # Agrega el nombre del tutor a los pagos
+        pagos_agrupados[fecha_pago][tutor].append({
+            "pagocuota": pagocuota,
+            "nombre_tutor": tutor.Nombre + " " + tutor.Apellido
+        }) 
 
     # Calcula el total de pago, descuento total y monto final
     total_pago = 0
@@ -431,6 +696,31 @@ def detalle_pago(request, cuota_id):
     if isinstance(ultima_fecha_pago, date):
         ultima_fecha_pago = datetime.combine(ultima_fecha_pago, datetime.min.time())
 
+    # Obtén los tutores asociados a la cuota
+    tutores_asociados = Tutores.objects.filter(cuotas__in=[cuota]) 
+
+    # Define un diccionario para obtener el nombre del mes por ID
+    meses = {
+        '1': 'Enero',
+        '2': 'Febrero',
+        '3': 'Marzo',
+        '4': 'Abril',
+        '5': 'Mayo',
+        '6': 'Junio',
+        '7': 'Julio',
+        '8': 'Agosto',
+        '9': 'Septiembre',
+        '10': 'Octubre',
+        '11': 'Noviembre',
+        '12': 'Diciembre'
+    }
+
+    # Verifica si el valor del mes es válido (1-12)
+    if cuota.Mes and 1 <= int(cuota.Mes) <= 12:
+        mes_nombre = meses.get(str(cuota.Mes), 'Mes Desconocido')
+    else:
+        mes_nombre = 'Mes Desconocido'
+
     context = {
         'cuota': cuota,
         'pagos_agrupados': pagos_agrupados, # Diccionario con pagos agrupados
@@ -440,11 +730,13 @@ def detalle_pago(request, cuota_id):
         'monto_total': monto_total,  # Pasar el monto total redondeado
         'ultima_fecha_pago': ultima_fecha_pago,
         'ultimo_metodo_pago': ultimo_metodo_pago,
-        'tutor_seleccionado': tutor_seleccionado 
+        'tutor_seleccionado': tutor_seleccionado,
+        'tutores_asociados': tutores_asociados, # Pasa la lista de tutores asociados
+        'año': cuota.Año,  # Obtén el año desde el objeto cuota
+        'mes': mes_nombre, 
     }
 
     return render(request, 'detalle_pago.html', context)
-
 
 
 

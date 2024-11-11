@@ -25,6 +25,7 @@ class pagomatricula(models.Model):
     cheque = models.FloatField(null=True, blank=True)
     pagare = models.FloatField(null=True, blank=True)
     fecha_pago_matricula = models.DateField(default=timezone.now)
+    Pagado = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s %s %s %s %s'%(self.matriculas, self.efectivo , self.transferencia , self.cheque , self.pagare)
@@ -81,3 +82,19 @@ class egreso(models.Model):
         db_table = 'egresos'
         verbose_name = 'egreso'
         verbose_name_plural = 'egresos'
+
+
+class Recibo(models.Model):
+    matricula = models.ForeignKey(Matricula, on_delete=models.CASCADE)
+    cuota = models.ForeignKey(Cuotas, on_delete=models.CASCADE)
+    tutor = models.ForeignKey(Tutores, on_delete=models.CASCADE)
+    Fecha_hora_del_pago = models.DateField(default=None, null=True,blank=True)
+    pagado = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '%s '%(self.matricula, self.cuota , self.tutor , self.Fecha_hora_del_pago)
+
+    class Meta:
+        db_table = 'Recibos'
+        verbose_name = 'Recibo'
+        verbose_name_plural = 'Recibos'

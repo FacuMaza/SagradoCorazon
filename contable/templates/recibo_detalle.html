@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* ... (Tu CSS) ... */
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Detalle del Recibo</h2>
+
+  <!-- Muestra los detalles del recibo aquí -->
+  <p>Número de Recibo: {{ recibo.id }}</p>
+  <p>Fecha: {{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</p>
+  <p>Monto: ${{ recibo.cuota.Monto_cuota|floatformat:2 }}</p>
+  <p>Alumno: {{ recibo.cuota.Alumnos.Nombres }} {{ recibo.cuota.Alumnos.Apellidos }}</p>
+  <p>Tutor: {{ recibo.tutor.Nombre }} {{ recibo.tutor.Apellido }}</p>
+
+</div>
+
+</body>
+</html>

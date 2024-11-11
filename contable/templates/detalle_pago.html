@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Detalle de Pago - {{ cuota.Mes }}</h2>
+<h2>Detalle de Pago - {{ mes }}/{{ año }}</h2>
 
   <table class="table">
     <thead>
@@ -9,20 +9,75 @@
         <th>Fecha de Pago</th>
         <th>Tutor</th>
         <th>Método de Pago</th>
-        <th>MONTO TOTAL</th>
+        <th>Monto</th>
         <th>Descuento</th>
         <th>Monto Final</th>
       </tr>
     </thead>
     <tbody>
+      {% for fecha_pago, pagos_de_fecha in pagos_agrupados.items %}
+        {% for tutor, pagocuotas in pagos_de_fecha.items %}
+          {% for pago in pagocuotas %}
+            {% if pago.pagocuota.efectivo %}
+              <tr>
+                <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
+                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>Efectivo</td>
+                <td>${{ pago.pagocuota.efectivo|floatformat:2 }}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            {% endif %}
+            {% if pago.pagocuota.transferencia %}
+              <tr>
+                <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
+                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>Transferencia</td>
+                <td>${{ pago.pagocuota.transferencia|floatformat:2 }}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            {% endif %}
+            {% if pago.pagocuota.cheque %}
+              <tr>
+                <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
+                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>Cheque</td>
+                <td>${{ pago.pagocuota.cheque|floatformat:2 }}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            {% endif %}
+            {% if pago.pagocuota.pagare %}
+              <tr>
+                <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
+                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>Pagaré</td>
+                <td>${{ pago.pagocuota.pagare|floatformat:2 }}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}
       <tr>
-        <td>{{ ultima_fecha_pago|date:"Y-m-d" }}</td>
-        <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td>  <!-- Muestra el tutor si está definido -->
-        <td>{{ ultimo_metodo_pago }}</td>
-        <td>${{ monto_total|floatformat:2 }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
         <td>${{ descuento_total|floatformat:2 }}</td>
         <td>${{ monto_final|floatformat:2 }}</td>
       </tr>
     </tbody>
   </table>
+
+  {% if not recibo_generado %}
+  <form method="post" action="{% url 'recibo' cuota_id=cuota.id %}">
+    {% csrf_token %}
+    <input type="hidden" name="generar_recibo" value="true">
+    <button type="submit">Generar Recibo</button>
+  </form>
+{% endif %}
+
 {% endblock %}

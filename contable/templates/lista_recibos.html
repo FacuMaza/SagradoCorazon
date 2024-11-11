@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* ... (Tu CSS) ... */
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Lista de Recibos</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Número de Recibo</th>
+        <th>Fecha</th>
+        <th>Monto</th>
+        <th>Alumno</th>
+        <th>Tutor</th>
+        <th>Acciones</th> 
+      </tr>
+    </thead>
+    <tbody>
+      {% for recibo in recibos %}
+        <tr>
+          <td>{{ recibo.id }}</td>  <!-- Muestra el ID del recibo -->
+          <td>{{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</td>
+          <td>{{ recibo.cuota.Monto_cuota|floatformat:2 }}</td>
+          <td>{{ recibo.cuota.Alumnos.Nombres }} {{ recibo.cuota.Alumnos.Apellidos }}</td>
+          <td>{{ recibo.tutor.Nombre }} {{ recibo.tutor.Apellido }}</td>
+          <td>
+            <a href="{% url 'recibo_detalle' recibo.id %}">Ver</a> 
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+</body>
+</html>

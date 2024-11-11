@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f0f0; /* Color de fondo para mejor visualización */
+}
+
+.container {
+  border: 1px solid black;
+  padding: 10px;
+  width: 60%; /* Ajustar el ancho del contenedor */
+  max-width: 600px; /* Limitar el ancho máximo del contenedor */
+  margin: 0 auto; /* Centrar el contenedor horizontalmente */
+  background-color: white; /* Color de fondo del contenedor */
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0 auto; /* Centrar la tabla horizontalmente */
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid black;
+  font-size: 14px; /* Tamaño de fuente más pequeño */
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+th {
+  /* Se elimina el fondo verde */
+  /* background-color: #4CAF50; */
+  color: black;
+}
+
+.logo-container {
+  display: flex; /* Para colocar la imagen y el texto en la misma fila */
+  align-items: center; /* Para alinear verticalmente la imagen y el texto */
+}
+
+.logo {
+  width: 80px; /* Ajustar el ancho del logo */
+  height: auto; /* Ajustar la altura del logo proporcionalmente */
+  margin-right: 10px; /* Espacio entre la imagen y el texto */
+}
+
+.logo-right {
+  text-align: right; /* Alinea el logo a la derecha */
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between; /* Distribuye el espacio entre los elementos */
+  align-items: center;
+}
+
+.header-left {
+  display: flex;
+  align-items: center; /* Alinea verticalmente los elementos */
+}
+
+.header-left h2 {
+  margin-right: 10px; /* Agrega un poco de espacio entre el título y el recibo */
+}
+
+.header-left table {
+  margin-bottom: 0; /* Elimina el margen inferior de la tabla */
+}
+
+.header-left td {
+  text-align: center; /* Centra el contenido de las celdas de la tabla */
+}
+</style>
+</head>
+<body>
+  
+    <div class="container">
+      <div class="header-row">
+        <div class="header-left">
+          <h2 style="text-align: left;">ORIGINAL</h2>
+          <table border="1">
+            <tr>
+              <td align="center">
+                RECIBO: {{ recibo_numero }} 
+              </td>
+              <td align="center">
+                Fecha: {{ fecha_actual }}
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="logo-right">
+          <img src="{% static 'img/LogoColegio.svg' %}" alt="Logo del Colegio" class="mb-2" style="width: 150px;">
+        </div>
+      </div>
+    
+      <table border="1">
+        <tr>
+          <td colspan="2">COLEGIO SAGRADO CORAZÓN - LUZ Y GUÍA</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="2">Grupo Educativo San Elena S.R.L.</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="2">Estanislao del Campo 1100 - (4401) "V" San Lorenzo - Salta</td>
+          <td>CUIT</td>
+        </tr>
+        <tr>
+          <td colspan="2">IVA EXENTO</td>
+          <td>DGR Insc.</td>
+        </tr>
+        <tr>
+          <td colspan="2">IVA EXENTO</td>
+          <td>INICIO ACTIV.</td>
+        </tr>
+    
+      </table>
+    
+      <table border="1">
+        <tr>
+          <th>Alumno:</th>
+          <td>{{ cuota.Alumnos.Nombres }} {{ cuota.Alumnos.Apellidos }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Curso:</th>
+          <td>{{ cuota.Alumnos.curso.get_años_display }}  {{ cuota.Alumnos.curso.Division }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Tutor:</th>
+          <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Mes:</th>
+          <td>{{ mes }} - {{ año }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Monto Total:</th>
+          <td>${{ monto_total|floatformat:2 }}</td>
+          <td></td>
+        </tr>
+      </table>
+    
+      <h2>Detalles de Pago</h2>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Tutor</th>
+            <th>Efectivo</th>
+            <th>Transferencia</th>
+            <th>Cheque</th>
+            <th>Pagaré</th>
+            
+          </tr>
+        </thead>
+        <tbody>
+          {% for fecha, pagos_de_fecha in pagos_agrupados.items %}
+            {% for tutor, pagocuotas in pagos_de_fecha.items %}
+              {% for pago in pagocuotas %}
+                <tr>
+                  <td>{{ fecha|date:"d/m/Y" }}</td>
+                  <td>{{ pago.nombre_tutor }}</td>
+                  <td>${{ pago.pagocuota.efectivo|floatformat:2 }}</td>
+                  <td>${{ pago.pagocuota.transferencia|floatformat:2 }}</td>
+                  <td>${{ pago.pagocuota.cheque|floatformat:2 }}</td>
+                  <td>${{ pago.pagocuota.pagare|floatformat:2 }}</td>
+                 
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
+    
+      <table border="1">
+        <tr>
+          <th>Total de Pago:</th>
+          <td>${{ total_pago|floatformat:2 }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Descuento:</th>
+          <td>${{ descuento_total|floatformat:2 }}</td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>Monto Final:</th>
+          <td>${{ monto_final|floatformat:2 }}</td>
+          <td></td>
+        </tr>
+      </table>
+    
+    
+
+    </div>
+
+    <script>
+      // Manejador de eventos para el botón "Imprimir Pagos"
+      document.getElementById('imprimir-pagos').addEventListener('click', function() {
+        // Genera un enlace a la vista de recibo
+        var reciboUrl = "/recibo/{{ cuota.id }}"; // Reemplaza {{ cuota.id }} con el ID de la cuota actual
+        // Redirecciona a la vista de recibo
+        window.location.href = reciboUrl; 
+      });
+    </script>
+
+</body>
+</html>
