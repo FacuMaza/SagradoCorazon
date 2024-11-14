@@ -1,0 +1,15 @@
+{% extends 'baseconfiguracion.html' %}
+
+{% block content %}
+<h1>Lista de Años</h1>
+<ul>
+    {% for año in object_list %}
+    <li>
+        {{ año.Año }}
+        <a href="{% url 'años_edit' año.pk %}">Editar</a>
+        <a href="{% url 'años_delete' año.pk %}">Eliminar</a>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{% url 'años_add' %}">Agregar nuevo año</a>
+{% endblock %}

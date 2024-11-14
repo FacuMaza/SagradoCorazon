@@ -195,32 +195,28 @@ th {
       <table border="1">
         <tr>
           <th>Alumno:</th>
-          <td>{{ cuota.Alumnos.Nombres }} {{ cuota.Alumnos.Apellidos }}</td>
+          <td>{{ matricula.alumno.Nombres }} {{ matricula.alumno.Apellidos }}</td>
           
         </tr>
         <tr>
           <th>Division:</th>
-          <td>{{ cuota.Alumnos.curso.Nivels }}  </td>
+          <td>{{ matricula.alumno.curso.Nivels }}  </td>
           
         </tr>
         <tr>
           <th>Curso:</th>
-          <td>{{ cuota.Alumnos.curso.años }}  {{ cuota.Alumnos.curso.Division }}</td>
+          <td>{{ matricula.alumno.curso.años }}  {{ matricula.alumno.curso.Division }}</td>
           
         </tr>
+        
+       
         <tr>
-          <th>Tutor:</th>
-          <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td>
-          
-        </tr>
-        <tr>
-          <th>Mes:</th>
-          <td>{{ mes_nombre }} - {{ año }}</td>
-          
+          <th>Año de Matrícula:</th>
+          <td>{{ año_matricula }}</td>
         </tr>
         <tr>
           <th>Monto Total:</th>
-          <td>${{ monto_total|floatformat:2 }}</td>
+          <td>${{ matricula.monto_matricula|floatformat:2 }}</td>
         </tr>
       </table>
     
@@ -229,29 +225,40 @@ th {
         <thead>
           <tr>
             <th>Fecha</th>
-            <th>Tutor</th>
-            <th>Efectivo</th>
-            <th>Transferencia</th>
-            <th>Cheque</th>
-            <th>Pagaré</th>
-            
+            <th>Método de Pago</th>
+            <th>Monto</th>
           </tr>
         </thead>
         <tbody>
-          {% for fecha, pagos_de_fecha in pagos_agrupados.items %}
-            {% for tutor, pagocuotas in pagos_de_fecha.items %}
-              {% for pago in pagocuotas %}
-                <tr>
-                  <td>{{ fecha|date:"d/m/Y" }}</td>
-                  <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td>
-                  <td>${{ pago.pagocuota.efectivo|floatformat:2 }}</td>
-                  <td>${{ pago.pagocuota.transferencia|floatformat:2 }}</td>
-                  <td>${{ pago.pagocuota.cheque|floatformat:2 }}</td>
-                  <td>${{ pago.pagocuota.pagare|floatformat:2 }}</td>
-                 
-                </tr>
-              {% endfor %}
-            {% endfor %}
+          {% for pago in pagos %}
+            {% if pago.efectivo is not None %}
+              <tr>
+                <td>{{ pago.fecha_pago_matricula|date:"d/m/Y" }}</td>
+                <td>Efectivo</td>
+                <td>${{ pago.efectivo|floatformat:2 }}</td>
+              </tr>
+            {% endif %}
+            {% if pago.transferencia is not None %}
+              <tr>
+                <td>{{ pago.fecha_pago_matricula|date:"d/m/Y" }}</td>
+                <td>Transferencia</td>
+                <td>${{ pago.transferencia|floatformat:2 }}</td>
+              </tr>
+            {% endif %}
+            {% if pago.cheque is not None %}
+              <tr>
+                <td>{{ pago.fecha_pago_matricula|date:"d/m/Y" }}</td>
+                <td>Cheque</td>
+                <td>${{ pago.cheque|floatformat:2 }}</td>
+              </tr>
+            {% endif %}
+            {% if pago.pagare is not None %}
+              <tr>
+                <td>{{ pago.fecha_pago_matricula|date:"d/m/Y" }}</td>
+                <td>Pagaré</td>
+                <td>${{ pago.pagare|floatformat:2 }}</td>
+              </tr>
+            {% endif %}
           {% endfor %}
         </tbody>
       </table>
@@ -259,18 +266,18 @@ th {
       <table border="1">
         <tr>
           <th>Total de Pago:</th>
-          <td>${{ total_pago|floatformat:2 }}</td>
-          <td></td>
+          <td>${{ total_pagado|floatformat:2 }}</td>
+          
         </tr>
         <tr>
           <th>Descuento:</th>
           <td>${{ descuento_total|floatformat:2 }}</td>
-          <td></td>
+          
         </tr>
         <tr>
           <th>Monto Final:</th>
           <td>${{ monto_final|floatformat:2 }}</td>
-          <td></td>
+          
         </tr>
       </table>
     
@@ -282,7 +289,7 @@ th {
     <div style="text-align: center;"> 
       <button id="imprimir-pagos" class="imprimir-button">IMPRIMIR</button>
       <br> <br>  <!-- Espacios entre botones -->
-      <a href="{% url 'lista_cuotas' %}" class="imprimir-button">CUOTAS</a>
+      <a href="{% url 'listar_matriculas' %}" class="imprimir-button">MATRICULA</a>
     </div> 
 
     <script>

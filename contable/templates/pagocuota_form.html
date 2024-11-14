@@ -1,53 +1,73 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Registrar Pago</h2>
-  <p>Monto Total: <span id="monto-total">${{ monto_cuota }}</span></p>  
-  <p>Total Pagado: ${{ total_pagado }}</p>
-  <p>Monto Restante: <span id="monto-restante">${{ monto_restante }}</span></p> 
+  <div class="col-md-2 offset-md-5">
+    <div class="card">
+      <div class="card-body">
+        <h2>Registrar Pago</h2>
+        <p>Monto Total: <span id="monto-total">${{ monto_cuota }}</span></p>  
+        <p>Total Pagado: ${{ total_pagado }}</p>
+        <p>Monto Restante: <span id="monto-restante">${{ monto_restante }}</span></p> 
+      </div>
+    </div>
+  </div>
 
   {% if mostrar_boton_pagar %}
-    <form method="POST" id="pago-form">
+    <form method="POST" id="pago-form" class="col-md-6 offset-md-3">
       {% csrf_token %}
       <input type="hidden" name="cuota_id" value="{{ cuota.id }}">
       <input type="hidden" name="descuento_aplicado" id="descuento-aplicado" value="">
 
-      <div class="form-group">
-        <label for="tutor">Tutor:</label>
-        <select class="form-control" id="tutor" name="tutor">
-          {% for tutor in tutores %}
-            <option value="{{ tutor.id }}">{{ tutor.Nombre }} {{ tutor.Apellido }}</option>
-          {% endfor %}
-        </select>
+      <div class="card">
+        <div class="card-body">
+          <div class="form-group">
+            <label for="tutor">Tutor:</label>
+            <select class="form-control" id="tutor" name="tutor">
+              {% for tutor in tutores %}
+                <option value="{{ tutor.id }}">{{ tutor.Nombre }} {{ tutor.Apellido }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="efectivo">Efectivo:</label>
+            <input type="number" class="form-control" id="efectivo" name="efectivo" placeholder="Ingrese el monto" value="{{ pagocuota_obj.efectivo }}">
+          </div>
+
+          <div class="form-group">
+            <label for="transferencia">Transferencia:</label>
+            <input type="number" class="form-control" id="transferencia" name="transferencia" placeholder="Ingrese el monto" value="{{ pagocuota_obj.transferencia }}">
+          </div>
+
+          <div class="form-group">
+            <label for="cheque">Cheque:</label>
+            <input type="number" class="form-control" id="cheque" name="cheque" placeholder="Ingrese el monto" value="{{ pagocuota_obj.cheque }}">
+          </div>
+
+          <div class="form-group">
+            <label for="pagare">Pagaré:</label>
+            <input type="number" class="form-control" id="pagare" name="pagare" placeholder="Ingrese el monto" value="{{ pagocuota_obj.pagare }}">
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="efectivo">Efectivo:</label>
-        <input type="number" class="form-control" id="efectivo" name="efectivo" placeholder="Ingrese el monto" value="{{ pagocuota_obj.efectivo }}">
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <button type="button" class="btn btn-secondary" id="descuento-5">Descuento 5%</button>
+        </div>
+        <div class="col-md-4">
+          <button type="button" class="btn btn-secondary" id="descuento-25">Descuento 25%</button>
+        </div>
+        <div class="col-md-4">
+          <button type="button" class="btn btn-secondary" id="descuento-50">Descuento 50%</button>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label for="transferencia">Transferencia:</label>
-        <input type="number" class="form-control" id="transferencia" name="transferencia" placeholder="Ingrese el monto" value="{{ pagocuota_obj.transferencia }}">
+      <div class="row mt-3">
+        <div class="col-md-12">
+          <button type="submit" class="btn btn-primary">Guardar Pago</button>
+        </div>
       </div>
-
-      <div class="form-group">
-        <label for="cheque">Cheque:</label>
-        <input type="number" class="form-control" id="cheque" name="cheque" placeholder="Ingrese el monto" value="{{ pagocuota_obj.cheque }}">
-      </div>
-
-      <div class="form-group">
-        <label for="pagare">Pagaré:</label>
-        <input type="number" class="form-control" id="pagare" name="pagare" placeholder="Ingrese el monto" value="{{ pagocuota_obj.pagare }}">
-      </div>
-
-      <div class="form-group">
-        <button type="button" class="btn btn-secondary" id="descuento-5">Descuento 5%</button>
-        <button type="button" class="btn btn-secondary" id="descuento-25">Descuento 25%</button>
-        <button type="button" class="btn btn-secondary" id="descuento-50">Descuento 50%</button>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Guardar Pago</button>
     </form>
   {% endif %}
 

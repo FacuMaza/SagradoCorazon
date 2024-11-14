@@ -8,6 +8,7 @@ from urllib import request
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 import locale
+from django.views.decorators.csrf import csrf_exempt  # Exenta de la comprobación CSRF
 from django.db.models import Sum
 from django.contrib.auth import logout
 from .models import *
@@ -21,13 +22,7 @@ from django.views.generic import ListView, UpdateView, FormView,CreateView
 def contable(request):
     return render(request, "indexcontable.html")
 
-recibo_contador = 1  
 
-def generar_numero_recibo():
-    global recibo_contador
-    numero = recibo_contador
-    recibo_contador += 1
-    return numero
 
 recibo_contador = 1  # Variable global para el contador de recibos
 
@@ -38,6 +33,7 @@ def generar_numero_recibo():
     return numero
 
 @login_required
+
 def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
     if recibo_id:
         # Mostrar el recibo generado
@@ -53,7 +49,6 @@ def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
 
         # Obtén los pagos asociados a la cuota
         pagocuotas = cuota.pagocuota_set.all()
-
 
         # Obtiene la fecha actual
         fecha_actual = timezone.now().strftime('%d/%m/%Y')
@@ -113,25 +108,21 @@ def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
 
         # Define un diccionario para obtener el nombre del mes por ID
         meses = {
-            '1': 'Enero',
-            '2': 'Febrero',
-            '3': 'Marzo',
-            '4': 'Abril',
-            '5': 'Mayo',
-            '6': 'Junio',
-            '7': 'Julio',
-            '8': 'Agosto',
-            '9': 'Septiembre',
+            '01': 'Enero',
+            '02': 'Febrero',
+            '03': 'Marzo',
+            '04': 'Abril',
+            '05': 'Mayo',
+            '06': 'Junio',
+            '07': 'Julio',
+            '08': 'Agosto',
+            '09': 'Septiembre',
             '10': 'Octubre',
             '11': 'Noviembre',
-            '12': 'Diciembre'
+            '12': 'Diciembre',
         }
 
-        # Verifica si el valor del mes es válido (1-12)
-        if cuota.Mes and 1 <= int(cuota.Mes) <= 12:
-            mes_nombre = meses.get(str(cuota.Mes), 'Mes Desconocido')
-        else:
-            mes_nombre = 'Mes Desconocido'
+        mes_nombre = meses.get(cuota.Mes, cuota.Mes) # Si la clave no está en el diccionario, usa el valor de cuota.Mes
 
         # Genera el número de recibo consecutivo
         recibo_numero = generar_numero_recibo()
@@ -157,7 +148,7 @@ def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
             'tutor_seleccionado': tutor_seleccionado,
             'tutores_asociados': tutores_asociados,
             'año': cuota.Año,
-            'mes': mes_nombre,
+            'mes_nombre': mes_nombre,
             'recibo_numero': recibo_numero,
             'recibo': recibo,
             'fecha_actual': fecha_actual
@@ -171,16 +162,17 @@ def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
         matricula = get_object_or_404(Matricula, pk=matricula_id)
 
         # Obtén los pagos de matrícula asociados
-        pagos_matricula = pagocuota.objects.filter(cuota__Alumnos__matricula=matricula)
+        pagos_matricula = pagomatricula.objects.filter(matriculas=matricula)
 
         # Obtiene la fecha actual
         fecha_actual = timezone.now().strftime('%d/%m/%Y')
+        
         # Calcula el total de pago y descuento total
         total_pago = 0
         descuento_total = 0
-        for pagocuota in pagos_matricula:
-            total_pago += (pagocuota.efectivo or 0) + (pagocuota.transferencia or 0) + (pagocuota.cheque or 0) + (pagocuota.pagare or 0)
-            descuento_total += pagocuota.descuento or 0
+        for pago in pagos_matricula:
+            total_pago += (pago.efectivo or 0) + (pago.transferencia or 0) + (pago.cheque or 0) + (pago.pagare or 0)
+            descuento_total += pago.descuento or 0
 
         # Calcula el monto final
         monto_final = matricula.monto_total - descuento_total
@@ -188,10 +180,10 @@ def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
         # Obtén la última fecha de pago (si hay)
         ultima_fecha_pago = None
         ultimo_metodo_pago = None
-        for pagocuota in pagos_matricula:
-            if pagocuota.cuota.Fecha_hora_del_pago:
-                ultima_fecha_pago = pagocuota.cuota.Fecha_hora_del_pago
-                ultimo_metodo_pago = "Efectivo" if pagocuota.efectivo else "Transferencia" if pagocuota.transferencia else "Cheque" if pagocuota.cheque else "Pagaré" if pagocuota.pagare else "Desconocido"
+        for pago in pagos_matricula:
+            if pago.fecha_pago_matricula:
+                ultima_fecha_pago = pago.fecha_pago_matricula
+                ultimo_metodo_pago = "Efectivo" if pago.efectivo else "Transferencia" if pago.transferencia else "Cheque" if pago.cheque else "Pagaré" if pago.pagare else "Desconocido"
                 break
 
         # Obtén el ID del tutor seleccionado de la sesión
@@ -229,17 +221,23 @@ def recibo(request, cuota_id=None, matricula_id=None, recibo_id=None):
         }
 
         # Renderiza el template recibo.html
-        return render(request, 'recibo.html', context)
+        return redirect('recibo_detalle', recibo_id=recibo.id)  # Redirige al detalle del recibo
 
     else:
         # Maneja el caso en que no se proporcionó ni cuota_id ni matricula_id
         return render(request, 'error.html', {'error': 'No se especificó un tipo de recibo válido'})
-
 def lista_recibos(request):
     # Obtén todos los recibos
     recibos = Recibo.objects.all()
-    
-   
+
+    # Agrega el atributo "tipo" a cada recibo
+    for recibo in recibos:
+        if recibo.cuota:
+            recibo.tipo = 'Cuota'
+        elif recibo.matricula:
+            recibo.tipo = 'Matrícula'
+        else:
+            recibo.tipo = 'Desconocido'  # En caso de que no se pueda determinar el tipo
 
     # Crea el contexto para el template
     context = {
@@ -258,10 +256,19 @@ def recibo_detalle(request, recibo_id):
     return render(request, 'recibo_detalle.html', context)
                 ## MATRICULAS
 
+@login_required  # Asegúrate de que el usuario esté autenticado
+@csrf_exempt  # Exenta de la comprobación CSRF
 def eliminar_matricula(request, matricula_id):
-    matricula = Matricula.objects.get(pk=matricula_id)
-    matricula.delete()
-    return redirect('listar_matriculas')  # Redirecciona a la lista de matriculas
+    if request.method == 'POST':
+        try:
+            matricula = Matricula.objects.get(pk=matricula_id)
+            matricula.delete()
+            return JsonResponse({'success': True})  # Retorna un JSON para indicar éxito
+        except Matricula.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Matrícula no encontrada'})
+    else:
+        # Maneja las solicitudes no POST (por ejemplo, muestra un error)
+        return JsonResponse({'success': False, 'message': 'Método no permitido'})
 
 def listar_matriculas(request):
     matriculas = Matricula.objects.all().order_by('alumno__Apellidos')  # Ordenar por 'alumno__Apellidos'
@@ -308,7 +315,8 @@ def crear_matricula(request):
                         Tutor=tutor
                     )
             
-                return redirect('/matriculas/')
+                # Redirige a la vista de pago con el monto de la matrícula
+                return redirect('pagar_matricula', matricula_id=matricula.id)
             else:
                 # Si no tiene tutor, muestra un mensaje de error y no guarda la matrícula
                 messages.error(request, "El alumno no tiene un tutor asignado.")
@@ -490,6 +498,24 @@ def cuotas_alumno_con_pago_guardado(request, alumno_id):
     
     cuotas_alumno = Cuotas.objects.filter(Alumnos=alumno)
 
+    meses_es = {
+        1: 'Enero',
+        2: 'Febrero',
+        3: 'Marzo',
+        4: 'Abril',
+        5: 'Mayo',
+        6: 'Junio',
+        7: 'Julio',
+        8: 'Agosto',
+        9: 'Septiembre',
+        10: 'Octubre',
+        11: 'Noviembre',
+        12: 'Diciembre',
+    }
+    # Convierte el ID del mes a su nombre textual
+    for cuota in cuotas_alumno:
+        cuota.mes_nombre = meses_es[int(cuota.Mes)]  # Asigna el nombre del mes
+
     context = {
         'alumno': alumno,
         'cuotas_alumno': cuotas_alumno,
@@ -505,7 +531,7 @@ def cuotas_alumno_con_pago_guardado(request, alumno_id):
 def pagocuota_form(request, cuota_id):
     cuota = get_object_or_404(Cuotas, pk=cuota_id)
     alumno = cuota.Alumnos
-    nuevo_ingreso = ingresos()
+    nuevo_ingreso = ingresos()  # Elimina la instancia de ingresos aquí
 
     # Obtener el monto de la cuota desde la URL
     monto_cuota = request.GET.get('monto')
@@ -604,6 +630,14 @@ def pagocuota_form(request, cuota_id):
         # Guarda los cambios en la cuota
         cuota.save()
 
+        # Impacta el pago en el modelo ingresos
+        nuevo_ingreso = ingresos.objects.create(
+            descripcion=f"Pago de cuota {cuota.id} - {alumno}",
+            monto=total_pagado,
+            tipo_ingreso="Cuota",
+            fecha=timezone.now().date()
+        )
+
         # Redirecciona a 'cuotas_alumno_con_pago_guardado'
         return redirect('cuotas_alumno_con_pago_guardado', alumno_id=cuota.Alumnos.id)
 
@@ -701,25 +735,21 @@ def detalle_pago(request, cuota_id):
 
     # Define un diccionario para obtener el nombre del mes por ID
     meses = {
-        '1': 'Enero',
-        '2': 'Febrero',
-        '3': 'Marzo',
-        '4': 'Abril',
-        '5': 'Mayo',
-        '6': 'Junio',
-        '7': 'Julio',
-        '8': 'Agosto',
-        '9': 'Septiembre',
+        '01': 'Enero',
+        '02': 'Febrero',
+        '03': 'Marzo',
+        '04': 'Abril',
+        '05': 'Mayo',
+        '06': 'Junio',
+        '07': 'Julio',
+        '08': 'Agosto',
+        '09': 'Septiembre',
         '10': 'Octubre',
         '11': 'Noviembre',
-        '12': 'Diciembre'
+        '12': 'Diciembre',
     }
 
-    # Verifica si el valor del mes es válido (1-12)
-    if cuota.Mes and 1 <= int(cuota.Mes) <= 12:
-        mes_nombre = meses.get(str(cuota.Mes), 'Mes Desconocido')
-    else:
-        mes_nombre = 'Mes Desconocido'
+    mes_nombre = meses.get(cuota.Mes, cuota.Mes) # Si la clave no está en el diccionario, usa el valor de cuota.Mes
 
     context = {
         'cuota': cuota,
@@ -733,7 +763,7 @@ def detalle_pago(request, cuota_id):
         'tutor_seleccionado': tutor_seleccionado,
         'tutores_asociados': tutores_asociados, # Pasa la lista de tutores asociados
         'año': cuota.Año,  # Obtén el año desde el objeto cuota
-        'mes': mes_nombre, 
+        'mes_nombre': mes_nombre, 
     }
 
     return render(request, 'detalle_pago.html', context)
@@ -762,3 +792,272 @@ def actualizar_cuotas(request):
     else:
         # Muestra el formulario de actualización
         return render(request, 'actualizar_cuotas.html')
+    
+
+
+## PAGO DE MATRICULA
+
+def pagar_matricula(request, matricula_id):
+    matricula = get_object_or_404(Matricula, pk=matricula_id)
+    monto_total = matricula.monto_matricula
+
+    if request.method == 'POST':
+        # Obtén los datos del formulario de pago
+        efectivo = request.POST.get('efectivo', 0)
+        transferencia = request.POST.get('transferencia', 0)
+        cheque = request.POST.get('cheque', 0)
+        pagare = request.POST.get('pagare', 0)
+        descuento = request.POST.get('descuento', 0)
+
+        # Valida que al menos un método de pago esté seleccionado
+        if not any([efectivo, transferencia, cheque, pagare]):
+            messages.error(request, "Debes seleccionar al menos un método de pago.")
+            return render(request, 'pagar_matricula.html', {'monto_total': monto_total, 'matricula': matricula})
+
+        # Valida pagos únicos
+        if pagomatricula.objects.filter(matriculas=matricula).exists():
+            messages.error(request, "Esta matrícula ya ha sido pagada.")
+            return render(request, 'pagar_matricula.html', {'monto_total': monto_total, 'matricula': matricula})
+
+        # Convierte los valores a números si no están vacíos
+        efectivo = float(efectivo) if efectivo else 0.0 
+        transferencia = float(transferencia) if transferencia else 0.0 
+        cheque = float(cheque) if cheque else 0.0 
+        pagare = float(pagare) if pagare else 0.0
+        descuento = float(descuento) if descuento else 0.0
+
+        # Crea un nuevo objeto Pagomatricula
+        nuevo_pago = pagomatricula.objects.create(
+            matriculas=matricula,  # Usa la relación 'matriculas'
+            efectivo=efectivo,
+            transferencia=transferencia,
+            cheque=cheque,
+            pagare=pagare,
+            descuento=descuento,  # Guarda el descuento
+            Pagado=True  # Marca como pagado
+        )
+
+        # Calcula el monto total pagado (con descuento)
+        total_pagado = efectivo + transferencia + cheque + pagare - descuento
+
+        # Actualiza el estado "pagado" en la matrícula
+        matricula.pagado = True
+        matricula.save()
+
+        # Registra el pago en el modelo "ingresos"
+        ingresos.objects.create(
+            descripcion=f"Pago de matrícula {matricula.alumno.Nombres} {matricula.alumno.Apellidos}",
+            monto=total_pagado,
+            tipo_ingreso="Matrícula",
+            fecha=nuevo_pago.fecha_pago_matricula  # Usa la fecha del pago
+        )
+
+        # Redirige a la vista 'listar_matriculas'
+        return redirect('listar_matriculas')
+    else:
+        return render(request, 'pagar_matricula.html', {'monto_total': monto_total, 'matricula': matricula})
+
+def detalle_pago_matricula(request, matricula_id):
+    # Busca la matrícula por ID
+    matricula = get_object_or_404(Matricula, pk=matricula_id)
+    
+    # Busca los detalles del pago para esta matrícula
+    pagos = pagomatricula.objects.filter(matriculas=matricula)
+
+    # Crea un diccionario para agrupar los pagos por fecha
+    pagos_agrupados = {}
+    for pago in pagos:
+        fecha_pago = pago.fecha_pago_matricula.strftime("%Y-%m-%d")
+        if fecha_pago not in pagos_agrupados:
+            pagos_agrupados[fecha_pago] = []
+        pagos_agrupados[fecha_pago].append(pago)
+
+    # Calcula el total pagado
+    total_pagado = sum([
+        (pago.efectivo or 0) + (pago.transferencia or 0) + (pago.cheque or 0) + (pago.pagare or 0)
+        for pago in pagos
+    ])
+     # Obtén el año de la matrícula
+    año_matricula = matricula.Año
+    # Obtén el mes y el año actual
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    mes_actual = datetime.now().strftime("%B")  # Nombre completo del mes en inglés
+    año_actual = datetime.now().year
+    return render(request, 'detalle_pago_matricula.html', {
+        'matricula': matricula,
+        'pagos_agrupados': pagos_agrupados,
+        'total_pagado': total_pagado,
+        'año_matricula': matricula.Año  # Pasa el año como contexto
+    })
+
+def generar_recibo(request, matricula_id):
+    matricula = get_object_or_404(Matricula, pk=matricula_id)
+    pagos = pagomatricula.objects.filter(matriculas=matricula)
+
+    # Obtener el año de la matrícula
+    año_matricula = matricula.Año
+    # Obtén el mes y el año actual
+    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+    mes_actual = datetime.now().strftime("%B")  # Nombre completo del mes en inglés
+    año_actual = datetime.now().year
+
+    # Calcular el total pagado
+    total_pagado = 0
+    for pago in pagos:
+        total_pagado += (pago.efectivo or 0) + (pago.transferencia or 0) + (pago.cheque or 0) + (pago.pagare or 0)
+
+    # Calcular descuentos (si aplica)
+    descuento_total = 0  # Reemplaza con la lógica para calcular descuentos
+    recibo_numero = generar_numero_recibo()
+    # Calcular monto final
+    monto_final = total_pagado - descuento_total
+
+    # Crear un nuevo objeto Recibo
+    recibo = Recibo.objects.create(
+        matricula=matricula,
+        cuota=None,  # Ya establecido anteriormente
+        tutor=None,  # Establecer tutor como None si no hay tutor asociado
+        Fecha_hora_del_pago=datetime.now(),  # Fecha y hora actual
+        pagado=True  # Se asume que el recibo se genera cuando el pago se realiza
+    )
+
+    # Guardar el recibo en la base de datos
+    recibo.save()
+
+    return render(request, 'recibo_matricula.html', {
+        'matricula': matricula,
+        'pagos': pagos,
+        'año_matricula' : año_matricula,
+        'recibo_numero' : recibo_numero,
+        'mes_actual': mes_actual,
+        'año_actual': año_actual,
+        'total_pagado': total_pagado,
+        'descuento_total': descuento_total,
+        'monto_final': monto_final,
+        'fecha_actual' : fecha_actual,
+        'recibo': recibo  # Pasar el objeto Recibo a la plantilla
+    })
+
+
+
+
+def confirmacion_pago(request):
+    if request.method == 'POST':
+        # Obtén la matrícula de la sesión
+        matricula_id = request.session.get('matricula_id')
+        matricula = Matricula.objects.get(pk=matricula_id)
+
+        # Actualiza el estado de pagado de la matrícula
+        matricula.pagado = True
+        matricula.save()
+
+        # Elimina la información de la matrícula de la sesión
+        del request.session['matricula_id']
+
+        # Redirige a la lista de matriculas
+        messages.success(request, "Pago realizado correctamente!")
+        return redirect('listar_matriculas')
+    else:
+        # Si no se realiza una solicitud POST, redirige a la lista de matriculas
+        return redirect('listar_matriculas')
+
+def actualizar_matricula(request, matricula_id):
+    if request.method == 'POST':
+        matricula = get_object_or_404(Matricula, pk=matricula_id)
+
+        # Verifica si hay pagos asociados a la matrícula
+        if pagomatricula.objects.filter(matriculas=matricula).exists():
+            matricula.pagado = True 
+        else:
+            matricula.pagado = False 
+
+        matricula.save()
+
+        return JsonResponse({'pagado': matricula.pagado}) 
+    else:
+        return JsonResponse({'error': 'Método no permitido'})
+    
+
+
+## EXTRAS
+
+def extras_list(request):
+    all_extras = extras.objects.all()  # Obtiene todos los extras
+    context = {'extras': all_extras}
+    return render(request, 'extras_list.html', context)
+
+def extras_create(request):
+    if request.method == 'POST':
+        form = ExtrasForm(request.POST)
+        if form.is_valid():
+            tipo = form.cleaned_data['tipo']
+            fecha_actual = date.today()  # Obtiene la fecha actual
+            if tipo == 'INGRESO':
+                # Crea un objeto Ingreso
+                ingreso = ingresos(
+                    descripcion=form.cleaned_data['descripcion'],
+                    monto=form.cleaned_data['monto'],
+                    tipo_ingreso=form.cleaned_data['tipo'], 
+                    fecha=fecha_actual
+                )
+                ingreso.save()
+
+                # Crea un objeto extras relacionado al ingreso
+                extras_obj = extras(
+                    ingreso=ingreso,  # Relaciona con el ingreso
+                    descripcion=form.cleaned_data['descripcion'],
+                    monto=form.cleaned_data['monto'],
+                    fecha=fecha_actual
+                )
+                extras_obj.save()
+
+            elif tipo == 'EGRESO':
+                # Crea un objeto Egreso
+                egresos = egreso(
+                    descripcion=form.cleaned_data['descripcion'],
+                    monto=form.cleaned_data['monto'],
+                    tipo_ingreso=form.cleaned_data['tipo'], 
+                    fecha=fecha_actual
+                )
+                egresos.save()
+
+                # Crea un objeto extras relacionado al egreso
+                extras_obj = extras(
+                    egreso=egresos,  # Relaciona con el egreso
+                    descripcion=form.cleaned_data['descripcion'],
+                    monto=form.cleaned_data['monto'],
+                    fecha=fecha_actual
+                )
+                extras_obj.save()
+
+            return redirect('extras_list')  # Reemplaza con la URL de tu lista
+    else:
+        form = ExtrasForm()
+    context = {'form': form}
+    return render(request, 'extras_form.html', context)
+
+def extras_detail(request, pk):
+    extras_item = get_object_or_404(extras, pk=pk)
+    context = {'extras': extras_item}
+    return render(request, 'extras_detail.html', context)
+
+def extras_update(request, pk):
+    extras_item = get_object_or_404(extras, pk=pk)
+    if request.method == 'POST':
+        form = ExtrasForm(request.POST, instance=extras_item)
+        if form.is_valid():
+            form.save()
+            return redirect('extras_list')
+    else:
+        form = ExtrasForm(instance=extras_item)
+    context = {'form': form}
+    return render(request, 'extras_form.html', context)
+
+def extras_delete(request, pk):
+    extras_item = get_object_or_404(extras, pk=pk)
+    if request.method == 'POST':
+        extras_item.delete()
+        return redirect('extras_list')
+    context = {'extras': extras_item}
+    return render(request, 'extras_confirm_delete.html', context)
+

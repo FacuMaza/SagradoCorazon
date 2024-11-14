@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from .models import *
 from .forms import *
-from django.views.generic import ListView, UpdateView, FormView
+from django.views.generic import ListView, UpdateView, FormView, CreateView, DeleteView
 
 
 
@@ -20,19 +20,6 @@ def exit(request):
         return redirect('login')
     else:
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @login_required
@@ -715,12 +702,32 @@ def materia_delete(request, pk):
     context = {'materia': materia}
     return render(request, 'materia_confirm_delete.html', context)
 
+
+
+
+
+
+##AÑOS
+
+class AñosListView(ListView):
+    model = Años
+    template_name = 'año_list.html'
+
+class AñosCreateView(CreateView):
+    model = Años
+    form_class = AñosForm
+    template_name = 'año_form.html'
+
+
+
+
+
 ##CURSOS
 @login_required
 def cursos_list(request):
-    cursos = Cursos.objects.all()
-    materias = Materias.objects.all()  # Agrega las materias al contexto
-    tutores = Docentes.objects.all()  # Agrega los tutores al contexto
+    cursos = Cursos.objects.all().order_by('años__Año')  # Ordena por el campo 'Año' del modelo Años
+    materias = Materias.objects.all()
+    tutores = Docentes.objects.all()
     context = {
         'cursos': cursos,
         'materias': materias,
@@ -733,17 +740,41 @@ def curso_detail(request, curso_id):
     alumnos = curso.alumnos.all()  # Alumnos del curso
     context = {'curso': curso, 'alumnos': alumnos}
     return render(request, 'curso_detail.html', context)
+
+
+
+
+
+
 @login_required
 def curso_create(request):
     if request.method == 'POST':
         form = CursosForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('cursos_list')
+            return redirect('cursos_list')  # Reemplaza 'cursos_list' con el nombre de tu vista de listado de cursos
     else:
         form = CursosForm()
-    context = {'form': form}
+    
+    # Obtiene los años y niveles de la base de datos
+    años = Años.objects.all()
+    niveles = Nivel.objects.all()
+    divisiones = Division.objects.all()
+    materias = Materias.objects.all()
+
+    context = {
+        'form': form,
+        'años': años,
+        'niveles': niveles,
+        'divisiones': divisiones,
+        'materias': materias,
+    }
     return render(request, 'curso_form.html', context)
+
+
+
+
+
 @login_required
 def curso_update(request, curso_id):
     curso = get_object_or_404(Cursos, pk=curso_id)
@@ -949,3 +980,6 @@ def alumno_detalle(request, alumno_id, ):
         
     }
     return render(request, 'alumno_detalle.html', context)
+
+
+

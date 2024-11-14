@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>¿Seguro que quieres eliminar este extra?</h1>
+    <p>Descripción: {{ extras.descripcion }}</p>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Sí, eliminar</button>
+    </form>
+    <a href="{% url 'extras_list' %}">Cancelar</a>
+{% endblock %}

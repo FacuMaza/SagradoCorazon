@@ -61,7 +61,7 @@ class AlumnosForm(forms.ModelForm):
 
         # Obtener todos los cursos ordenados por el campo "curso"
         cursos = Cursos.objects.all().order_by('años', 'Division')
-        choices = [(curso.id, f"{curso.get_años_display()} - {curso.Division}") for curso in cursos]
+        choices = [(curso.id, f"{curso.años.Año} - {curso.Division}") for curso in cursos]
         self.fields['curso'].widget = forms.Select(choices=choices)
         
 
@@ -135,6 +135,18 @@ class MateriaForm(forms.ModelForm):
 
 
 
+class NivelForm(forms.ModelForm):
+    class Meta:
+        model = Nivel
+        fields = '__all__'
+
+class AñosForm(forms.ModelForm):
+    class Meta:
+        model = Años
+        fields = '__all__'
+
+
+
 class CursosForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
@@ -155,10 +167,17 @@ class CursosForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Obtener todos los cursos ordenados por el campo "curso"
-        cursos = Cursos.objects.all().order_by('años', 'Division')
-        choices = [(curso.id, f"{curso.get_años_display()} - {curso.Division}") for curso in cursos]
-        self.fields['años'].widget = forms.Select(choices=choices)
+        # Obtener todos los años y niveles
+        años = Años.objects.all()
+        niveles = Nivel.objects.all()
+
+        # Prepara las opciones para el campo 'años' en el formulario
+        año_choices = [(año.id, str(año)) for año in años]
+        self.fields['años'].widget = forms.Select(choices=año_choices)
+
+        # Prepara las opciones para el campo 'Nivels' en el formulario
+        nivel_choices = [(nivel.id, str(nivel)) for nivel in niveles]
+        self.fields['Nivels'].widget = forms.Select(choices=nivel_choices)
 
 class NotasForm(forms.ModelForm):
     class Meta:

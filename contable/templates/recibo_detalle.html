@@ -1,24 +1,71 @@
+{% extends "base.html" %}
 {% load static %}
+{% block content %}
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-  /* ... (Tu CSS) ... */
-</style>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  
 </head>
 <body>
 
-<div class="container">
-  <h2>Detalle del Recibo</h2>
+  <div class="container">
+    <h2>Detalle del Recibo</h2>
 
-  <!-- Muestra los detalles del recibo aquí -->
-  <p>Número de Recibo: {{ recibo.id }}</p>
-  <p>Fecha: {{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</p>
-  <p>Monto: ${{ recibo.cuota.Monto_cuota|floatformat:2 }}</p>
-  <p>Alumno: {{ recibo.cuota.Alumnos.Nombres }} {{ recibo.cuota.Alumnos.Apellidos }}</p>
-  <p>Tutor: {{ recibo.tutor.Nombre }} {{ recibo.tutor.Apellido }}</p>
+    <!-- Muestra los detalles del recibo aquí -->
+    <table class="table table-striped">
+      <tr>
+        <th>Número de Recibo</th>
+        <td>{{ recibo.id }}</td>
+      </tr>
+      <tr>
+        <th>Fecha</th>
+        <td>{{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</td>
+      </tr>
+      {% if recibo.cuota %}
+        <tr>
+          <th>Tipo de Recibo</th>
+          <td>Cuota</td>
+        </tr>
+        <tr>
+          <th>Monto</th>
+          <td>${{ recibo.cuota.Monto_cuota|floatformat:2 }}</td>
+        </tr>
+        <tr>
+          <th>Alumno</th>
+          <td>{{ recibo.cuota.Alumnos.Nombres }} {{ recibo.cuota.Alumnos.Apellidos }}</td>
+        </tr>
+        <tr>
+          <th>Tutor</th>
+          <td>{{ recibo.tutor.Nombre }} {{ recibo.tutor.Apellido }}</td>
+        </tr>
+      {% elif recibo.matricula %}
+        <tr>
+          <th>Tipo de Recibo</th>
+          <td>Matrícula</td>
+        </tr>
+        <tr>
+          <th>Monto</th>
+          <td>${{ recibo.matricula.monto_matricula|floatformat:2 }}</td>
+        </tr>
+        <tr>
+          <th>Alumno</th>
+          <td>{{ recibo.matricula.alumno.Nombres }} {{ recibo.matricula.alumno.Apellidos }}</td>
+        </tr>
+        <tr>
+          <th>Año</th>
+          <td>{{ recibo.matricula.Año }}</td>
+        </tr>
+        <tr>
+          <th>Tutor</th>
+          <td>{{ recibo.tutor.Nombre }} {{ recibo.tutor.Apellido }}</td>
+        </tr>
+      {% endif %}
+    </table>
 
-</div>
+  </div>
 
 </body>
 </html>
+{% endblock %}

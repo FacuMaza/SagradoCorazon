@@ -161,6 +161,17 @@ urlpatterns += [
     path('materia/<int:pk>/delete/', views.materia_delete, name='materia_delete'),
 ]
 
+## AÑO
+urlpatterns += [
+   
+    
+
+
+    path('años_list/', views.AñosListView.as_view(), name='años_list'),
+    path('años/add/', views.AñosCreateView.as_view(), name='años_add'),
+    
+]
+
 #CURSOS
 
 urlpatterns += [

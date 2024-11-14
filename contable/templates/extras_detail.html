@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Detalles del Extra</h1>
+    <p>Descripción: {{ extras.descripcion }}</p>
+    <p>Monto: {{ extras.monto }}</p>
+    <p>Fecha: {{ extras.fecha }}</p>
+    <a href="{% url 'extras_update' extras.pk %}">Editar</a>
+    <a href="{% url 'extras_delete' extras.pk %}">Eliminar</a>
+{% endblock %}

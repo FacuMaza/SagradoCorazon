@@ -37,21 +37,44 @@ urlpatterns += [
     
 ]
 
-##recibos
+##PAGAR MATRICULA
+
+urlpatterns += [
+   path('pagar_matricula/<int:matricula_id>/', views.pagar_matricula, name='pagar_matricula'),
+   path('confirmacion_pago/', views.confirmacion_pago, name='confirmacion_pago'),
+    path('actualizar_matricula/<int:matricula_id>/', views.actualizar_matricula, name='actualizar_matricula'),
+    path('detalle_pago_matricula/<int:matricula_id>/', views.detalle_pago_matricula, name='detalle_pago_matricula'),
+    path('generar_recibo/<int:matricula_id>/', views.generar_recibo, name='generar_recibo'), 
+    
+]
 
 ##actualizacion de cuota
 urlpatterns += [
     
     path('recibo/<int:cuota_id>/', views.recibo, name='recibo'),
-    path('recibo/<int:matricula_id>/', views.recibo, name='recibo'),
+    path('recibo/<int:matricula_id>/recibo_matricula/', views.recibo, name='recibo_matricula'),
     path('recibo/<int:recibo_id>/', views.recibo, name='recibo'),
     path('recibo_detalle/<int:recibo_id>/', views.recibo_detalle, name='recibo_detalle'),
     path('lista_recibos/', views.lista_recibos, name='lista_recibos'),
+    
     ]
 
 ##actualizacion de cuota
 urlpatterns += [
    path('actualizar_cuotas/', views.actualizar_cuotas, name='actualizar_cuotas'),
+
+]
+
+
+##EXTRAS
+
+
+urlpatterns += [
+    path('extras_list/', views.extras_list, name='extras_list'),
+    path('extras_list/create/', views.extras_create, name='extras_create'),
+    path('extras_list/<int:pk>/', views.extras_detail, name='extras_detail'),
+    path('extras_list/<int:pk>/update/', views.extras_update, name='extras_update'),
+    path('extras_list/<int:pk>/delete/', views.extras_delete, name='extras_delete'),
 ]
 
 

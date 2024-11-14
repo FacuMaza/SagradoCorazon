@@ -26,6 +26,7 @@ class pagomatricula(models.Model):
     pagare = models.FloatField(null=True, blank=True)
     fecha_pago_matricula = models.DateField(default=timezone.now)
     Pagado = models.BooleanField(default=False)
+    descuento = models.FloatField(default=0,null=True, blank=True)
 
     def __str__(self):
         return '%s %s %s %s %s'%(self.matriculas, self.efectivo , self.transferencia , self.cheque , self.pagare)
@@ -76,18 +77,32 @@ class egreso(models.Model):
     fecha = models.DateField()
 
     def __str__(self):
-        return '%s '%(self.descripcion, self.monto , self.tipo_ingreso , self.fecha)
+        return '%s %s %s %s'%(self.descripcion, self.monto , self.tipo_ingreso , self.fecha)
     
     class Meta:
         db_table = 'egresos'
         verbose_name = 'egreso'
         verbose_name_plural = 'egresos'
 
+class extras(models.Model):
+    ingreso = models.ForeignKey(ingresos, on_delete=models.CASCADE, null=True, blank=True)
+    egreso = models.ForeignKey(egreso, on_delete=models.CASCADE, null=True, blank=True)
+    descripcion = models.CharField(max_length=255)
+    monto = models.FloatField()
+    fecha = models.DateField()
+
+    def __str__(self):
+        return '%s '%(self.ingreso, self.egreso , self.descripcion , self.monto, self.fecha)
+
+    class Meta:
+        db_table = 'extras'
+        verbose_name = 'extra'
+        verbose_name_plural = 'extras'
 
 class Recibo(models.Model):
-    matricula = models.ForeignKey(Matricula, on_delete=models.CASCADE)
-    cuota = models.ForeignKey(Cuotas, on_delete=models.CASCADE)
-    tutor = models.ForeignKey(Tutores, on_delete=models.CASCADE)
+    matricula = models.ForeignKey(Matricula, on_delete=models.CASCADE, null=True, blank=True)
+    cuota = models.ForeignKey(Cuotas, on_delete=models.CASCADE, null=True, blank=True)
+    tutor = models.ForeignKey(Tutores, on_delete=models.CASCADE, null=True, blank=True)
     Fecha_hora_del_pago = models.DateField(default=None, null=True,blank=True)
     pagado = models.BooleanField(default=False)
 

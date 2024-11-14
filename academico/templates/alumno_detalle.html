@@ -8,7 +8,7 @@
         <h1 style="font-style: italic; background-color: #007bff; padding: 10px; color: black; display: flex; align-items: center;">
           <img src="{% static 'img/LogoColegio.svg' %}" alt="Logo del Colegio" height="80" style="margin-right: 10px;">
           <span style="color: black; margin-left: auto;">{{ alumno.Nombres }} {{ alumno.Apellidos }} - 
-          {{ alumno.curso.get_años_display }} {{ alumno.curso.Division.Division }}</span> 
+          {{ alumno.curso.años }}  {{ alumno.curso.Division }} - {{ alumno.curso.Nivels }}</span> 
         </h1>
         
       </div>

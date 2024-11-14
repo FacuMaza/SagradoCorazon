@@ -187,14 +187,24 @@ class Nivel(models.Model):
         verbose_name = 'Nivel'
         verbose_name_plural = 'Niveles'
 
+class Años(models.Model):
+    Año = models.CharField(max_length=255)
+
+    def __str__(self):
+        return '%s '%(self.Año)
+
+    class Meta:
+        db_table = 'Años'
+        verbose_name = 'Año'
+        verbose_name_plural = 'Años'
+
 
 class Cursos(models.Model):
-    año = [('1', 'Primero'),('2', 'Segundo'),('3', 'Tercero'),('4', 'Cuarto'),('5', 'Quinto'),('6', 'Sexto'),('7', 'Septimo'),]
-    años = models.CharField(max_length=1, choices=año, default=1)
+    años = models.ForeignKey(Años, on_delete=models.CASCADE)
     Division = models.ForeignKey(Division, on_delete=models.CASCADE)
     Materias = models.ManyToManyField(Materias,blank=False, related_name="cursos")
-    nivel = [('1', 'Inicial'),('2', 'Primario'),('3', 'Secundario')]
-    Nivels = models.CharField(max_length=1, choices=nivel, default=1)
+    
+    Nivels = models.ForeignKey(Nivel, on_delete=models.CASCADE)
 
     def __str__(self):
         return '%s - %s %s'%(self.id, self.años, self.Division)

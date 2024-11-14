@@ -1,42 +1,192 @@
+{% extends "base.html" %}
 {% load static %}
+{% block content %}
+
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
-  /* ... (Tu CSS) ... */
+  /* Estilos generales */
+  body {
+    font-family: sans-serif;
+  }
+
+  .container {
+    display: flex;
+  }
+
+  .column {
+    flex: 1;
+    margin: 0 10px; /* Espacio entre columnas */
+  }
+
+  /* Estilos para la tabla */
+  .table-responsive {
+    overflow-x: auto; 
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  /* Estilos para los botones */
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* Estilos para los botones de acción */
+  .btn-action {
+    background-color: rgb(214,176,85);
+    color: white;
+  }
+
+  .btn-delete {
+    background-color: rgb(190,43,39);
+    color: white;
+  }
+
+  /* Estilos para los enlaces */
+  a {
+    text-decoration: none;
+    color: blue;
+  }
+
+  /* Estilos específicos del primer HTML */
+  .mt-4 {
+    margin-top: 2rem;
+  }
+
+  .justify-content-center {
+    display: flex;
+    justify-content: center;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  h1 {
+    font-style: italic;
+    background-color: #f2f2f2;
+    padding: 5px; /* Achica el padding */
+    text-align: center; /* Centra el texto */
+  }
+
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+
+  /* Estilos para el botón "Volver" */
+  .btn-volver {
+    background-color: rgb(214,176,85);
+    color: white;
+  }
+
+  /* Estilos para el botón "Crear Curso" */
+  .btn-crear-curso {
+    background-color: rgb(31,40,81);
+    color: white;
+  }
+
+  /* Estilos para el modal */
+  .modal-header {
+    background-color: #f2f2f2;
+  }
+
+  /* Estilos para los títulos de Matrículas y Cuotas */
+  .column h3 {
+    background-color: #f2f2f2; /* Color de fondo */
+    padding: 5px; /* Espacio interno */
+    text-align: center; /* Centra el texto */
+  }
+
+  /* Estilos para los UL */
+  ul {
+    list-style: none; /* Quita las viñetas */
+    padding: 0; /* Quita el espacio interno */
+  }
+
+  /* Estilos para el cuadro */
+  .cuadro {
+    border: 1px solid #ddd; /* Borde del cuadro */
+    padding: 10px; /* Espacio interno */
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h2>Lista de Recibos</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Número de Recibo</th>
-        <th>Fecha</th>
-        <th>Monto</th>
-        <th>Alumno</th>
-        <th>Tutor</th>
-        <th>Acciones</th> 
-      </tr>
-    </thead>
-    <tbody>
-      {% for recibo in recibos %}
-        <tr>
-          <td>{{ recibo.id }}</td>  <!-- Muestra el ID del recibo -->
-          <td>{{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</td>
-          <td>{{ recibo.cuota.Monto_cuota|floatformat:2 }}</td>
-          <td>{{ recibo.cuota.Alumnos.Nombres }} {{ recibo.cuota.Alumnos.Apellidos }}</td>
-          <td>{{ recibo.tutor.Nombre }} {{ recibo.tutor.Apellido }}</td>
-          <td>
-            <a href="{% url 'recibo_detalle' recibo.id %}">Ver</a> 
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+  <div class="column">
+    <div class="cuadro">
+      <h3>Cuotas</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Recibo</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for recibo in recibos %}
+            {% if recibo.tipo == 'Cuota' %}
+              <tr>
+                <td><a href="{% url 'recibo_detalle' recibo.id %}">Recibo #{{ recibo.id }}</a></td>
+                <td>{{ recibo.tipo }}</td>
+                <td>{{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 
+  <div class="column">
+    <div class="cuadro">
+      <h3>Matrículas</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Recibo</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for recibo in recibos %}
+            {% if recibo.tipo == 'Matrícula' %}
+              <tr>
+                <td><a href="{% url 'recibo_detalle' recibo.id %}">Recibo #{{ recibo.id }}</a></td>
+                <td>{{ recibo.tipo }}</td>
+                <td>{{ recibo.Fecha_hora_del_pago|date:"d/m/Y" }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
 </body>
 </html>
+{% endblock %}

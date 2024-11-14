@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{%block content%}
+{% block content %}
 <main>
   <div class="container mt-4">
     <div class="row justify-content-center">
@@ -8,12 +8,13 @@
       </div>
     </div>
     <div class="row justify-content-center"> 
-      <div class="col-md-12"> <div class="table-responsive">  <!-- Ajusta el ancho de la columna -->
+      <div class="col-md-12"> <div class="table-responsive">  
         <table class="table table-striped table-hover"> 
           <thead>
             <tr>
               <th>Alumno</th>
               <th>Año</th>
+              <th>Estado</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -26,9 +27,22 @@
               <td>
                 {{ matricula.Año }}
               </td>
-              <td>
+              <td class="estado-matricula" data-matricula-id="{{ matricula.id }}">
+                {% if matricula.pagado %}
+                  Pagada
+                {% else %}
+                  Pendiente
+                {% endif %}
+              </td>
+              <td class="acciones-matricula" data-matricula-id="{{ matricula.id }}"> 
                 <a href="{% url 'imprimir_datos_padre_madre' matricula.id %}" class="btn" style="background-color: rgb(214,176,85); color: white;">IMPRIMIR</a>
-                <a href="{% url 'eliminar_matricula' matricula.id %}" class="btn" style="background-color: red; color: white;">ELIMINAR</a>
+                {% if matricula.pagado == False %}  <!-- Muestra el botón PAGAR si no está pagado -->
+                  <a href="{% url 'pagar_matricula' matricula.id %}" class="btn" style="background-color: blue; color: white;">PAGAR</a> 
+                {% endif %}
+                {% if matricula.pagado %}  <!-- Muestra el botón DETALLE DE PAGO si está pagado -->
+                  <a href="{% url 'detalle_pago_matricula' matricula.id %}" class="btn" style="background-color: green; color: white;">DETALLE DE PAGO</a> 
+                {% endif %}
+                <a href="#" class="btn eliminar-matricula" data-matricula-id="{{ matricula.id }}" style="background-color: red; color: white;">ELIMINAR</a>
               </td>
             </tr>
             {% endfor %}
@@ -44,4 +58,58 @@
     </div>
   </div>
 </main>
-{%endblock%}
+
+<script>
+  // Función para eliminar una matrícula (AJAX)
+  function eliminarMatricula(matriculaId) {
+    fetch(`/eliminar_matricula/${matriculaId}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': '{{ csrf_token }}' // Token CSRF
+      }
+    })
+    .then(response => {
+      if (response.ok) {
+        // Elimina la fila de la tabla
+        const fila = document.querySelector(`.acciones-matricula[data-matricula-id="${matriculaId}"]`).parentElement;
+        fila.remove(); 
+      } else {
+        // Maneja el error en caso de que la eliminación falle
+        console.error('Error al eliminar la matrícula:', response.statusText);
+        // Puedes mostrar un mensaje de error al usuario aquí, 
+        // por ejemplo, usando un alert o un modal
+        alert('Error al eliminar la matrícula. Intente de nuevo.');
+      }
+    })
+    .catch(error => {
+      console.error('Error al eliminar la matrícula:', error);
+      // También puedes mostrar un mensaje de error al usuario aquí
+      alert('Error al eliminar la matrícula. Intente de nuevo.');
+    });
+  }
+
+  // Escucha los eventos de clic en los enlaces "ELIMINAR"
+  const eliminarEnlaces = document.querySelectorAll('.eliminar-matricula');
+  eliminarEnlaces.forEach(enlace => {
+    enlace.addEventListener('click', function(event) {
+      event.preventDefault(); // Impide que la página se recargue
+      const matriculaId = this.getAttribute('data-matricula-id'); 
+      if (confirm('¿Está seguro de que desea eliminar esta matrícula?')) {
+        eliminarMatricula(matriculaId); // Llama a la función para eliminar la matrícula
+      }
+    });
+  });
+
+  // Escucha los eventos de clic en los enlaces "PAGAR"
+  const pagarEnlaces = document.querySelectorAll('.acciones-matricula a[href^="/pagar_matricula/"]');
+  pagarEnlaces.forEach(enlace => {
+    enlace.addEventListener('click', function(event) {
+      event.preventDefault(); // Impide que la página se recargue
+      const matriculaId = this.parentElement.getAttribute('data-matricula-id');
+      // Redirige al usuario a la página de pago
+      window.location.href = `/pagar_matricula/${matriculaId}/`;
+    });
+  });
+</script>
+{% endblock %}

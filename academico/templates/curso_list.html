@@ -17,11 +17,11 @@
             </tr>
           </thead>
           <tbody>
-            {% for curso in cursos|dictsort:"años" %}  <!-- Ordena los cursos de mayor a menor por 'años' -->
+            {% for curso in cursos %}  <!-- No se necesita el dictsort aquí -->
             <tr>
               <td>
                 <!-- Enlaza el nombre del curso a la vista de materias -->
-                <a href="{% url 'materias_curso' curso.pk %}">{{ curso.get_años_display }} - {{ curso.Division }}</a> 
+                <a href="{% url 'materias_curso' curso.pk %}">{{ curso.años.Año }} - {{ curso.Division }}</a> 
               </td>
               <td>
                 <button type="button" class="btn" style="background-color: rgb(214,176,85); color: white;" 
@@ -52,7 +52,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="cursoDetailsModalLabel">Detalles del Curso {{ curso.get_años_display }} - {{ curso.Division }}</h5>
+            <h5 class="modal-title" id="cursoDetailsModalLabel">Detalles del Curso {{ curso.años.Año }} - {{ curso.Division }}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
@@ -64,7 +64,7 @@
               <tbody>
                 <tr>
                   <td>Año</td>
-                  <td>{{ curso.get_años_display }}</td>
+                  <td>{{ curso.años.Año }}</td>
                 </tr>
                 <tr>
                   <td>División</td>
@@ -97,7 +97,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="cursoEditModalLabel">Editar Curso - {{ curso.get_años_display }} - {{ curso.Division }}</h5>
+            <h5 class="modal-title" id="cursoEditModalLabel">Editar Curso - {{ curso.años.Año }} - {{ curso.Division }}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
@@ -109,7 +109,7 @@
               <!-- Año del curso -->
               <div class="form-group">
                 <label for="id_años">Año:</label>
-                <input type="text" class="form-control" id="id_años" name="años" value="{{ curso.años }}">
+                <input type="text" class="form-control" id="id_años" name="años" value="{{ curso.años.Año }}">
               </div>
               <!-- División del curso -->
               <div class="form-group">
@@ -142,13 +142,13 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="cursoDeleteModalLabel">Eliminar Curso - {{ curso.get_años_display }} - {{ curso.Division }}</h5>
+            <h5 class="modal-title" id="cursoDeleteModalLabel">Eliminar Curso - {{ curso.años.Año }} - {{ curso.Division }}</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">×</span>
             </button>
           </div>
           <div class="modal-body">
-            ¿Estás seguro de que quieres eliminar a {{ curso.get_años_display }} - {{ curso.Division }}?
+            ¿Estás seguro de que quieres eliminar a {{ curso.años.Año }} - {{ curso.Division }}?
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<main>
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-12 text-center">
+        <h1 style="font-style: italic; background-color: #f2f2f2; padding: 10px;">Pagar Matrícula</h1>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <p>Monto total de la matrícula: ${{ matricula.monto_matricula }}</p> 
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label for="efectivo">Efectivo:</label>
+            <input type="number" class="form-control" id="efectivo" name="efectivo">
+          </div>
+
+          <div class="form-group">
+            <label for="transferencia">Transferencia:</label>
+            <input type="number" class="form-control" id="transferencia" name="transferencia">
+          </div>
+
+          <div class="form-group">
+            <label for="cheque">Cheque:</label>
+            <input type="number" class="form-control" id="cheque" name="cheque">
+          </div>
+
+          <div class="form-group">
+            <label for="pagare">Pagaré:</label>
+            <input type="number" class="form-control" id="pagare" name="pagare">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Pagar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}

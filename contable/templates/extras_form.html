@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="tipo">Tipo:</label>
+            {{ form.tipo }}
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            {{ form.descripcion }}
+        </div>
+
+        <div class="form-group">
+            <label for="monto">Monto:</label>
+            {{ form.monto }}
+        </div>
+
+        <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            {{ form.fecha }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+{% endblock %}

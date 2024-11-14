@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Detalle de Pago - {{ mes }}/{{ año }}</h2>
+<h2>Detalle de Pago - {{ mes_nombre }}/{{ año }}</h2>
 
   <table class="table">
     <thead>
@@ -21,7 +21,7 @@
             {% if pago.pagocuota.efectivo %}
               <tr>
                 <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
-                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td> 
                 <td>Efectivo</td>
                 <td>${{ pago.pagocuota.efectivo|floatformat:2 }}</td>
                 <td></td>
@@ -31,7 +31,7 @@
             {% if pago.pagocuota.transferencia %}
               <tr>
                 <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
-                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td> 
                 <td>Transferencia</td>
                 <td>${{ pago.pagocuota.transferencia|floatformat:2 }}</td>
                 <td></td>
@@ -41,7 +41,7 @@
             {% if pago.pagocuota.cheque %}
               <tr>
                 <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
-                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td> 
                 <td>Cheque</td>
                 <td>${{ pago.pagocuota.cheque|floatformat:2 }}</td>
                 <td></td>
@@ -51,7 +51,7 @@
             {% if pago.pagocuota.pagare %}
               <tr>
                 <td>{{ pago.pagocuota.cuota.Fecha_hora_del_pago|date:"Y-m-d" }}</td> 
-                <td>{{ tutor.Nombre }} {{ tutor.Apellido }}</td> 
+                <td>{% if tutor_seleccionado %}{{ tutor_seleccionado.Nombre }} {{ tutor_seleccionado.Apellido }}{% endif %}</td> 
                 <td>Pagaré</td>
                 <td>${{ pago.pagocuota.pagare|floatformat:2 }}</td>
                 <td></td>

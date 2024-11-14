@@ -47,3 +47,29 @@ class PagocuotaForm(forms.ModelForm):
             'cheque': forms.NumberInput(attrs={'class': 'form-control'}),
             'pagare': forms.NumberInput(attrs={'class': 'form-control'}),
         }
+
+
+class ExtrasForm(forms.ModelForm):
+    tipo = forms.ChoiceField(
+        choices=[('INGRESO', 'Ingreso'), ('EGRESO', 'Egreso')],
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Tipo'
+    )
+    fecha = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'readonly': 'readonly'}),
+        initial=date.today().strftime('%Y-%m-%d'),
+        label='Fecha'
+    )
+
+    class Meta:
+        model = extras
+        fields = ['tipo', 'descripcion', 'monto', 'fecha']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        tipo = cleaned_data.get("tipo")
+        monto = cleaned_data.get("monto")
+
+        if tipo == 'EGRESO' and not monto:
+            raise forms.ValidationError("El monto es requerido para un egreso.")
+        return cleaned_data

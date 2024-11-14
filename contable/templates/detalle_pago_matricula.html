@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Matrícula  Año: {{ año_matricula }}</h2>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th>Fecha de Pago</th>
+        <th>Método de Pago</th>
+        <th>Monto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for fecha_pago, pagos_de_fecha in pagos_agrupados.items %}
+        {% for pago in pagos_de_fecha %}
+          {% if pago.efectivo is not None %}
+            <tr>
+              <td>{{ fecha_pago }}</td> 
+              <td>Efectivo</td>
+              <td>${{ pago.efectivo|floatformat:2 }}</td>
+            </tr>
+          {% endif %}
+          {% if pago.transferencia is not None %}
+            <tr>
+              <td>{{ fecha_pago }}</td> 
+              <td>Transferencia</td>
+              <td>${{ pago.transferencia|floatformat:2 }}</td>
+            </tr>
+          {% endif %}
+          {% if pago.cheque is not None %}
+            <tr>
+              <td>{{ fecha_pago }}</td> 
+              <td>Cheque</td>
+              <td>${{ pago.cheque|floatformat:2 }}</td>
+            </tr>
+          {% endif %}
+          {% if pago.pagare is not None %}
+            <tr>
+              <td>{{ fecha_pago }}</td> 
+              <td>Pagaré</td>
+              <td>${{ pago.pagare|floatformat:2 }}</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+      <tr>
+        <td></td>
+        <td><strong>Total Pagado</strong></td>
+        <td><strong>${{ total_pagado|floatformat:2 }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <a href="{% url 'generar_recibo' matricula.pk %}" class="btn btn-primary">GENERAR RECIBO</a>
+  
+{% endblock %}

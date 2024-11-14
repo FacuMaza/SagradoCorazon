@@ -1,8 +1,13 @@
 {% extends 'baseconfiguracion.html' %}
 
 {% block content %}
-<h1>Crear Año</h1>
-<form method="post">
+<h1>{{ object.Año }}</h1>
+{% if object.pk %}
+    <p>Editando año</p>
+{% else %}
+    <p>Nuevo año</p>
+{% endif %}
+<form method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Guardar</button>
